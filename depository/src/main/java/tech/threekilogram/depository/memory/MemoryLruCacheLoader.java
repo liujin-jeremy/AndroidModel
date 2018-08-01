@@ -59,16 +59,22 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
       }
 
       @Override
-      public V putInToMemory (K key, V v) {
-
-            return mContainer.put(key, v);
-      }
-
-      @Override
       public boolean containsOfKey (K key) {
 
             V v = mContainer.get(key);
             return v != null;
+      }
+
+      @Override
+      public void clear () {
+
+            mContainer.evictAll();
+      }
+
+      @Override
+      public V save (K key, V v) {
+
+            return mContainer.put(key, v);
       }
 
       @Override
@@ -78,15 +84,9 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
       }
 
       @Override
-      public V removeFromMemory (K key) {
+      public V remove (K key) {
 
             return mContainer.remove(key);
-      }
-
-      @Override
-      public void clear () {
-
-            mContainer.evictAll();
       }
 
       // ========================= lru cache =========================

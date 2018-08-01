@@ -1,9 +1,12 @@
-package tech.threekilogram.depository.file;
+package tech.threekilogram.depository.file.common;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import tech.threekilogram.depository.file.ValueFileConverter;
+import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.NameFunction;
 
 /**
  * @author: Liujin
@@ -11,16 +14,16 @@ import java.io.IOException;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class StringStringFileMapper implements FileMapper<String, String> {
+public class StringFileConverter implements ValueFileConverter<String, String,File> {
 
       @Override
-      public File keyToFile (String key) {
+      public String stringKey (String key) {
 
-            return new File(key);
+            return NameFunction.nameFromMd5(key);
       }
 
       @Override
-      public String fileToValue (File file) throws IOException {
+      public String toValue (File file) throws Exception {
 
             if(file.exists()) {
                   int length = (int) file.length();
@@ -30,13 +33,10 @@ public class StringStringFileMapper implements FileMapper<String, String> {
                   try {
                         inputStream = new FileInputStream(file);
                         int read = inputStream.read(bytes);
-                        inputStream.close();
                         return new String(bytes);
                   } finally {
 
-                        if(inputStream != null) {
-                              inputStream.close();
-                        }
+                        CloseFunction.close(inputStream);
                   }
             }
 
@@ -44,11 +44,10 @@ public class StringStringFileMapper implements FileMapper<String, String> {
       }
 
       @Override
-      public void writeToFile (String key, String value) throws IOException {
+      public void saveValue (File file, String value) throws IOException {
 
-            File file = keyToFile(key);
             if(file.exists()) {
-                  file.delete();
+                  boolean delete = file.delete();
             }
 
             FileOutputStream outputStream = null;
@@ -58,10 +57,7 @@ public class StringStringFileMapper implements FileMapper<String, String> {
                   outputStream.write(value.getBytes());
             } finally {
 
-                  if(outputStream != null) {
-
-                        outputStream.close();
-                  }
+                  CloseFunction.close(outputStream);
             }
       }
 }

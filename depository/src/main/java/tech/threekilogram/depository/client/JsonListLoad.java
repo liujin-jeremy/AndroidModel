@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.client;
 
 import com.google.gson.Gson;
-import tech.threekilogram.depository.file.FileLoader;
+import tech.threekilogram.depository.file.common.FileLoader;
 import tech.threekilogram.depository.global.GsonClient;
 import tech.threekilogram.depository.memory.MemoryListLoader;
 import tech.threekilogram.depository.net.retrofit.download.RetrofitDownLoader;

@@ -1,9 +1,7 @@
 package tech.threekilogram.depository.memory;
 
-import java.util.ArrayList;
-
 /**
- * use a {@link ArrayList} to save value in memory
+ * save value with int index
  *
  * @param <V> type of value
  *

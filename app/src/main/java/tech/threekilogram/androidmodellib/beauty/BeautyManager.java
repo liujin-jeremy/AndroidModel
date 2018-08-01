@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import tech.threekilogram.androidmodellib.GankCategoryBean;
-import tech.threekilogram.depository.file.FileLoader;
-import tech.threekilogram.depository.file.GsonFileMapper;
+import tech.threekilogram.depository.file.common.FileLoader;
+import tech.threekilogram.depository.file.common.GsonFileConverter;
 import tech.threekilogram.depository.memory.MemoryListLoader;
 import tech.threekilogram.depository.net.retrofit.get.RetrofitGetLoader;
 import tech.threekilogram.depository.net.retrofit.get.RetrofitStringMapper;
@@ -40,7 +40,7 @@ public class BeautyManager {
 
             if(mFileLoader == null) {
                   File file = activity.getApplicationContext().getExternalFilesDir("gank");
-                  GsonFileMapper<GankCategoryBean> fileMapper = new GsonFileMapper<>(
+                  GsonFileConverter<GankCategoryBean> fileMapper = new GsonFileConverter<>(
                       file, GankCategoryBean.class);
                   mFileLoader = new FileLoader<>(fileMapper);
             }

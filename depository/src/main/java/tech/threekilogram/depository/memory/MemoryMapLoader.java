@@ -1,8 +1,6 @@
 package tech.threekilogram.depository.memory;
 
 import android.support.v4.util.ArrayMap;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * use {@link ArrayMap} to save value in memory
@@ -12,7 +10,7 @@ import java.util.Iterator;
  *
  * @author liujin
  */
-public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, V, K> {
+public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, K, V> {
 
       private ArrayMap<K, V> mContainer;
 
@@ -38,12 +36,6 @@ public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, 
             return mContainer.size();
       }
 
-      @Override
-      public V putInToMemory (K key, V v) {
-
-            return mContainer.put(key, v);
-      }
-
       public boolean containsOfValue (V v) {
 
             return mContainer.containsValue(v);
@@ -56,30 +48,26 @@ public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, 
       }
 
       @Override
-      public V loadFromMemory (K key) {
-
-            return mContainer.get(key);
-      }
-
-      @Override
-      public V removeFromMemory (K key) {
-
-            return mContainer.remove(key);
-      }
-
-      @Override
       public void clear () {
 
             mContainer.clear();
       }
 
-      public Collection<V> allValue () {
+      @Override
+      public V save (K key, V value) {
 
-            return mContainer.values();
+            return mContainer.put(key, value);
       }
 
-      public Iterator<V> iterator () {
+      @Override
+      public V remove (K key) {
 
-            return allValue().iterator();
+            return mContainer.remove(key);
+      }
+
+      @Override
+      public V load (K key) {
+
+            return mContainer.get(key);
       }
 }
