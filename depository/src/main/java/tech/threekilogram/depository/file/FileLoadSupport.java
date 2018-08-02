@@ -2,6 +2,8 @@ package tech.threekilogram.depository.file;
 
 import android.support.annotation.IntDef;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import tech.threekilogram.depository.ContainerLoader;
 
 /**
@@ -27,7 +29,8 @@ public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
       interface ExceptionHandler<K, V> {
 
             /**
-             * a exception occur at {@link ValueFileConverter#toValue(Object)} will call this
+             * a exception occur at {@link ValueFileConverter#toValue(Object, InputStream)} will
+             * call this
              *
              * @param e exception
              * @param key which key occur
@@ -35,7 +38,8 @@ public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
             void onConvertToValue (Exception e, K key);
 
             /**
-             * a exception occur at {@link ValueFileConverter#saveValue(Object, Object)} will call
+             * a exception occur at {@link ValueFileConverter#saveValue(Object, OutputStream,
+             * Object)} will call
              * this
              *
              * @param e exception

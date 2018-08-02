@@ -1,6 +1,9 @@
 package tech.threekilogram.depository;
 
 import java.io.File;
+import tech.threekilogram.depository.file.converter.StringFileConverter;
+import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
+import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 
@@ -26,6 +29,48 @@ class Test {
 
       public static void main (String[] args) {
 
+            testLruFileLoader();
+      }
+
+      private static void testLruFileLoader () {
+
+            final int size = 1024 * 1024;
+            DiskLruCacheLoader<String, String> loader = new DiskLruCacheLoader<>(
+                TEMP, size, new DiskLruStringConverter());
+
+            final String key = "HelloLruLoader";
+            final String msg = "HelloLoader:this is a msg to DiskLru";
+
+            loader.save(key, msg);
+
+            boolean containsOf = loader.containsOf(key);
+            System.out.println("contains of : " + containsOf);
+
+            String load = loader.load(key);
+            System.out.println("load --> " + key + " : " + load);
+      }
+
+      private static void testFileLoader () {
+
+            FileLoader<String, String> loader = new FileLoader<>(TEMP, new StringFileConverter());
+
+            final String key = "HelloLoader";
+            final String msg = "HelloLoader:this is a msg";
+
+            loader.save(key, msg);
+
+            File file = loader.getFile(key);
+            System.out.println("file path: " + file.getAbsolutePath() + " " + file.exists());
+
+            boolean containsOf = loader.containsOf(key);
+            System.out.println("contains of : " + containsOf);
+
+            String load = loader.load(key);
+            System.out.println("load --> " + key + " : " + load);
+
+            String remove = loader.remove(key);
+            String value = loader.load(key);
+            System.out.println("after remove value : " + value);
       }
 
       private static void testMemoryLru () {

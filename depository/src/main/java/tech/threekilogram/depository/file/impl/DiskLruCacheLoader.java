@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.file.lru;
+package tech.threekilogram.depository.file.impl;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.jakewharton.disklrucache.DiskLruCache.Editor;
@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileLoadSupport;
+import tech.threekilogram.depository.file.ValueFileConverter;
 import tech.threekilogram.depository.function.CloseFunction;
 
 /**
@@ -28,7 +29,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       /**
        * 辅助该类完成stream到{@link V}的转换工作
        */
-      private BaseDiskLruCacheConverter<K, V> mConverter;
+      private ValueFileConverter<K, V> mConverter;
 
       /**
        * @param folder which dir to save data
@@ -38,7 +39,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       public DiskLruCacheLoader (
           File folder,
           long maxSize,
-          BaseDiskLruCacheConverter<K, V> converter) {
+          ValueFileConverter<K, V> converter) {
 
             /* create DiskLruCache */
 
@@ -103,7 +104,8 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             try {
 
-                  mConverter.saveValue(outputStream, value);
+                  mConverter.saveValue(key, outputStream, value);
+                  CloseFunction.close(outputStream);
                   editor.commit();
             } catch(IOException e) {
 
@@ -169,7 +171,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
                   try {
 
-                        return mConverter.toValue(inputStream);
+                        return mConverter.toValue(key, inputStream);
                   } catch(Exception e) {
 
                         e.printStackTrace();
