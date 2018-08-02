@@ -19,7 +19,7 @@ import tech.threekilogram.depository.global.GsonClient;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class DiskLruGsonConverter<T> extends DiskLruCacheConverter<String, T> {
+public class DiskLruGsonConverter<T> extends BaseDiskLruCacheConverter<String, T> {
 
       private static Gson sGson = GsonClient.INSTANCE;
       private Class<T> mValueType;

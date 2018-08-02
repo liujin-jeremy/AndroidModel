@@ -11,33 +11,36 @@ import tech.threekilogram.depository.file.BaseFileLoadSupport;
 import tech.threekilogram.depository.function.CloseFunction;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-07-30
- * @time: 18:13
+ * 底层使用{@link DiskLruCache}缓存数据到文件夹
+ *
+ * @param <K> kye 类型
+ * @param <V> value 类型
+ *
+ * @author liujin
  */
 public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
-      private DiskLruCache                mDiskLruCache;
-      private DiskLruCacheConverter<K, V> mConverter;
+      /**
+       * 保存数据
+       */
+      private DiskLruCache mDiskLruCache;
+
+      /**
+       * 辅助该类完成stream到{@link V}的转换工作
+       */
+      private BaseDiskLruCacheConverter<K, V> mConverter;
 
       /**
        * @param folder which dir to save data
        * @param maxSize max data size
        * @param converter function to do
        */
-      public DiskLruCacheLoader (File folder, long maxSize, DiskLruCacheConverter<K, V> converter) {
+      public DiskLruCacheLoader (
+          File folder,
+          long maxSize,
+          BaseDiskLruCacheConverter<K, V> converter) {
 
-            /* make folder is exists and folder is must a directory */
-
-            if(!folder.exists()) {
-                  boolean mkdirs = folder.mkdirs();
-            }
-
-            if(folder.isFile()) {
-                  boolean delete = folder.delete();
-                  boolean mkdirs = folder.mkdirs();
-            }
+            /* create DiskLruCache */
 
             try {
                   mDiskLruCache = DiskLruCache.open(folder, 1, 1, maxSize);
@@ -53,62 +56,91 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V save (K key, V value) {
 
-            OutputStream outputStream = null;
-            Editor edit = null;
+            String name = mConverter.fileName(key);
 
             V result = null;
 
+            /* try to read old value at this key if have a value */
+
+            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
+
+                  /* config should return old value to this key , so read old */
+
+                  result = load(key);
+            }
+
+            /* try to get Editor */
+
+            Editor editor = null;
+
             try {
-                  String name = mConverter.fileName(key);
 
-                  if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
-                        Snapshot snapshot = mDiskLruCache.get(name);
-                        if(snapshot != null) {
-                              result = loadFromSnapshot(key, snapshot);
-                        }
-                  }
+                  editor = mDiskLruCache.edit(name);
+            } catch(IOException e) {
 
-                  edit = mDiskLruCache.edit(name);
-                  outputStream = edit.newOutputStream(0);
+                  e.printStackTrace();
+            }
 
-                  try {
-                        mConverter.saveValue(outputStream, value);
-                        edit.commit();
-                  } catch(IOException e) {
+            if(editor == null) {
+                  return null;
+            }
 
-                        try {
-                              edit.abort();
-                        } catch(IOException e1) {
-                              e1.printStackTrace();
-                        }
-                  }
-            } catch(Exception e) {
+            /* try to get output stream */
 
-                  if(edit != null) {
-                        try {
-                              edit.abort();
-                        } catch(IOException e1) {
-                              e1.printStackTrace();
-                        }
-                  }
+            OutputStream outputStream = null;
+
+            try {
+                  outputStream = editor.newOutputStream(0);
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+
+            if(outputStream == null) {
+                  return null;
+            }
+
+            /* try to save value */
+
+            try {
+
+                  mConverter.saveValue(outputStream, value);
+                  editor.commit();
+            } catch(IOException e) {
+
+                  /* save failed abort operator */
+
+                  e.printStackTrace();
+                  abortEditor(editor);
             } finally {
 
                   CloseFunction.close(outputStream);
+            }
 
-                  try {
-                        mDiskLruCache.flush();
-                  } catch(IOException e) {
-                        e.printStackTrace();
-                  }
+            try {
+                  mDiskLruCache.flush();
+            } catch(IOException e) {
+                  e.printStackTrace();
             }
 
             return result;
       }
 
+      private void abortEditor (Editor edit) {
+
+            try {
+                  if(edit != null) {
+
+                        edit.abort();
+                  }
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+      }
+
       @Override
       public V remove (K key) {
 
-            /* disk lru cache will remove file auto , so didn't support */
+            /* disk lru cache will remove file auto , so didn't support this operator */
 
             return null;
       }
@@ -117,44 +149,40 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       public V load (K key) {
 
             InputStream inputStream = null;
+
+            String stringKey = mConverter.fileName(key);
+
+            /* try to get snapShort */
+
+            Snapshot snapshot = null;
             try {
-                  String stringKey = mConverter.fileName(key);
-                  Snapshot snapshot = mDiskLruCache.get(stringKey);
-
-                  if(snapshot != null) {
-                        inputStream = snapshot.getInputStream(0);
-                        return mConverter.toValue(inputStream);
-                  }
-            } catch(Exception e) {
-
-                  if(mExceptionHandler != null) {
-                        mExceptionHandler.onConvertToValue(e, key);
-                  }
-            } finally {
-
-                  CloseFunction.close(inputStream);
+                  snapshot = mDiskLruCache.get(stringKey);
+            } catch(IOException e) {
+                  e.printStackTrace();
             }
 
-            return null;
-      }
+            /* try to load value from snapShot's stream */
 
-      private V loadFromSnapshot (K key, Snapshot snapshot) {
+            if(snapshot != null) {
 
-            InputStream inputStream = null;
-            try {
-                  if(snapshot != null) {
-                        inputStream = snapshot.getInputStream(0);
+                  inputStream = snapshot.getInputStream(0);
+
+                  try {
+
                         return mConverter.toValue(inputStream);
-                  }
-            } catch(Exception e) {
+                  } catch(Exception e) {
 
-                  if(mExceptionHandler != null) {
-                        mExceptionHandler.onConvertToValue(e, key);
-                  }
-            } finally {
+                        e.printStackTrace();
 
-                  CloseFunction.close(inputStream);
+                        if(mExceptionHandler != null) {
+                              mExceptionHandler.onConvertToValue(e, key);
+                        }
+                  } finally {
+
+                        CloseFunction.close(inputStream);
+                  }
             }
+
             return null;
       }
 

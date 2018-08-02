@@ -6,13 +6,16 @@ import java.io.OutputStream;
 import tech.threekilogram.depository.file.ValueFileConverter;
 
 /**
+ * adapter类,用于将中间类型{@link Cloneable}类转为{@link InputStream}和{@link OutputStream},该类一般用于{@link
+ * DiskLruCacheLoader}转换工作
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-07-30
  * @time: 18:22
  */
-@SuppressWarnings("AlibabaAbstractClassShouldStartWithAbstractNaming")
-public abstract class DiskLruCacheConverter<K, V> implements ValueFileConverter<K, V, Cloneable> {
+public abstract class BaseDiskLruCacheConverter<K, V> implements
+                                                      ValueFileConverter<K, V, Cloneable> {
 
       @Override
       public V toValue (Cloneable file) throws Exception {

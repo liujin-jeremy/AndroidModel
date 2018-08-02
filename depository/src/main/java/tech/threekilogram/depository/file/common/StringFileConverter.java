@@ -9,6 +9,9 @@ import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.function.NameFunction;
 
 /**
+ * {@link ValueFileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
+ * 通过一个{@link String}key 从本地文件系统读取成{@link String}类型的实例
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-07-30

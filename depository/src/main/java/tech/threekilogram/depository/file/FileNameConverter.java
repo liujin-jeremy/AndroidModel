@@ -1,6 +1,8 @@
 package tech.threekilogram.depository.file;
 
 /**
+ * 该接口用于从一个key获取文件名字
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-02

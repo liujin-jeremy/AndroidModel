@@ -7,10 +7,12 @@ import tech.threekilogram.depository.file.FileLoadSupport;
 import tech.threekilogram.depository.file.ValueFileConverter;
 
 /**
- * to get a value from a file defined by key
+ * 从本地文件系统中读取缓存对象,需要一个{@link ValueFileConverter}来辅助将{@link File}转换为{@link V}
  *
- * @param <K> key to get file
- * @param <V> value get from file
+ *
+ *
+ * @param <K> key 的类型
+ * @param <V> value 的类型
  *
  * @author liujin
  */
@@ -19,30 +21,40 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
       /**
        * 辅助loader正常工作
        */
-      private ValueFileConverter<K, V, File> mFileValueConverter;
+      private ValueFileConverter<K, V, File> mConverter;
 
       /**
        * 一个文件夹用于统一保存key对应的文件
        */
       private File mDir;
 
-      public FileLoader (File dir, ValueFileConverter<K, V, File> fileValueConverter) {
+      /**
+       * @param dir 保存文件的文件夹
+       * @param converter 用于转换{@link File}为{@link V}类型的实例
+       */
+      public FileLoader (File dir, ValueFileConverter<K, V, File> converter) {
 
             mDir = dir;
-            mFileValueConverter = fileValueConverter;
+            mConverter = converter;
       }
 
       @Override
       public V save (K key, V value) {
 
-            String name = mFileValueConverter.fileName(key);
+            /* get file to this key */
+
+            String name = mConverter.fileName(key);
             File file = new File(mDir, name);
             V result = null;
 
+            /* to decide how to write a value to file */
+
             if(file.exists() && mSaveStrategy == FileLoadSupport.SAVE_STRATEGY_COVER) {
 
+                  /* if should return old value ; get it */
+
                   try {
-                        result = mFileValueConverter.toValue(file);
+                        result = mConverter.toValue(file);
                   } catch(Exception e) {
 
                         /* maybe can't convert */
@@ -53,21 +65,28 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   }
             }
 
+            /* save value to file */
+
             try {
-                  mFileValueConverter.saveValue(file, value);
+                  mConverter.saveValue(file, value);
             } catch(IOException e) {
+
+                  /* maybe can't save */
 
                   if(mExceptionHandler != null) {
                         mExceptionHandler.onSaveValueToFile(e, key, value);
                   }
             }
+
+            /* return old value if should return */
+
             return result;
       }
 
       @Override
       public V remove (K key) {
 
-            String name = mFileValueConverter.fileName(key);
+            String name = mConverter.fileName(key);
             File file = new File(mDir, name);
             V result = null;
 
@@ -75,8 +94,10 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
                   if(mSaveStrategy == FileLoadSupport.SAVE_STRATEGY_COVER) {
 
+                        /* should return old value,get old value */
+
                         try {
-                              result = mFileValueConverter.toValue(file);
+                              result = mConverter.toValue(file);
                         } catch(Exception e) {
 
                               /* maybe can't convert */
@@ -87,6 +108,8 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
                         }
                   }
 
+                  /* delete file */
+
                   boolean delete = file.delete();
             }
 
@@ -96,14 +119,16 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V load (K key) {
 
-            String name = mFileValueConverter.fileName(key);
+            String name = mConverter.fileName(key);
             File file = new File(mDir, name);
             V result = null;
 
             if(file.exists()) {
 
                   try {
-                        result = mFileValueConverter.toValue(file);
+                        /* convert the file to value */
+
+                        result = mConverter.toValue(file);
                   } catch(Exception e) {
 
                         /* maybe can't convert */
@@ -120,7 +145,7 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public boolean containsOf (K key) {
 
-            String name = mFileValueConverter.fileName(key);
+            String name = mConverter.fileName(key);
             File file = new File(mDir, name);
 
             return file.exists();

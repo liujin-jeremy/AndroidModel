@@ -11,7 +11,7 @@ import tech.threekilogram.depository.function.NameFunction;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class DiskLruStringConverter extends DiskLruCacheConverter<String, String> {
+public class DiskLruStringConverter extends BaseDiskLruCacheConverter<String, String> {
 
       @Override
       public String fileName (String key) {

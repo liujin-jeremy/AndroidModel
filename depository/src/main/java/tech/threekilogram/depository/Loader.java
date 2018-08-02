@@ -14,7 +14,7 @@ package tech.threekilogram.depository;
 public interface Loader<K, V> {
 
       /**
-       * save a value to key
+       * save a value to key,then could load value with this key
        *
        * @param key where to save
        * @param value value to save
@@ -24,7 +24,7 @@ public interface Loader<K, V> {
       V save (K key, V value);
 
       /**
-       * remove a value at key
+       * remove the value to this key
        *
        * @param key remove the value at key
        *

@@ -16,17 +16,27 @@ import tech.threekilogram.depository.function.NameFunction;
 import tech.threekilogram.depository.global.GsonClient;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-07-30
- * @time: 17:17
+ * {@link ValueFileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
+ * 通过一个{@link String}key 从本地文件系统读取成{@link T}类型的实例
+ *
+ * @param <T> 想要获取的类型
+ *
+ * @author liujin
  */
 public class GsonFileConverter<T> implements ValueFileConverter<String, T, File> {
 
+      /**
+       * gson
+       */
       private static Gson sGson = GsonClient.INSTANCE;
+      /**
+       * value 类型
+       */
       private Class<T> mValueType;
 
       /**
+       * 传入value类型
+       *
        * @param valueType type of value
        */
       public GsonFileConverter (Class<T> valueType) {
@@ -35,9 +45,11 @@ public class GsonFileConverter<T> implements ValueFileConverter<String, T, File>
       }
 
       @Override
-      public String fileName (String url) {
+      public String fileName (String key) {
 
-            return NameFunction.nameFromMd5(url);
+            /* 默认将该key md5 一下,防止有非法的字符 */
+
+            return NameFunction.nameFromMd5(key);
       }
 
       @Override
