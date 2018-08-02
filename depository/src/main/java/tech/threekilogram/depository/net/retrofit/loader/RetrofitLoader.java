@@ -23,21 +23,21 @@ import tech.threekilogram.depository.net.retrofit.service.StreamService;
  */
 public class RetrofitLoader<K, V> implements Loader<K, V> {
 
-      private UrlFactory<K>         mUrlFactory;
-      private RetrofitConverter<V>  mRetrofitConverter;
-      private ContainerLoader<K, V> mLoader;
-      private OnNetErrorListener<K> mOnNetErrorListener;
+      private UrlFactory<K>           mUrlFactory;
+      private RetrofitConverter<K, V> mRetrofitConverter;
+      private ContainerLoader<K, V>   mLoader;
+      private OnNetErrorListener<K>   mOnNetErrorListener;
 
       public RetrofitLoader (
           @NonNull UrlFactory<K> urlFactory,
-          @NonNull RetrofitConverter<V> retrofitConverter) {
+          @NonNull RetrofitConverter<K, V> retrofitConverter) {
 
             this(urlFactory, retrofitConverter, null);
       }
 
       public RetrofitLoader (
           @NonNull UrlFactory<K> urlFactory,
-          @NonNull RetrofitConverter<V> retrofitConverter,
+          @NonNull RetrofitConverter<K, V> retrofitConverter,
           ContainerLoader<K, V> loader) {
 
             mUrlFactory = urlFactory;
@@ -112,7 +112,7 @@ public class RetrofitLoader<K, V> implements Loader<K, V> {
                               V value = null;
                               try {
                                     value = mRetrofitConverter
-                                        .onResponse(contentLength, inputStream);
+                                        .onResponse(key, contentLength, inputStream);
                               } catch(Exception e) {
 
                                     /* maybe exception if convert failed */

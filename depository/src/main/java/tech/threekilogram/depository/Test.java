@@ -1,12 +1,9 @@
 package tech.threekilogram.depository;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-07-29
- * @time: 21:50
+ * test this lib
  */
-public class Test {
+class Test {
 
       public static void main (String[] args) {
 
