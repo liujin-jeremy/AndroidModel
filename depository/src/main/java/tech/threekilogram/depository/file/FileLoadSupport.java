@@ -2,7 +2,7 @@ package tech.threekilogram.depository.file;
 
 import android.support.annotation.IntDef;
 import java.io.IOException;
-import tech.threekilogram.depository.Loader;
+import tech.threekilogram.depository.ContainerLoader;
 
 /**
  * 使用一个key从文件系统加载数据
@@ -12,7 +12,7 @@ import tech.threekilogram.depository.Loader;
  *
  * @author liujin
  */
-public interface FileLoadSupport<K, V> extends Loader<K, V> {
+public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
 
       int SAVE_STRATEGY_COVER      = 0;
       int SAVE_STRATEGY_RETURN_OLD = 1;

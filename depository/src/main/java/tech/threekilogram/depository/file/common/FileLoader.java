@@ -35,7 +35,7 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V save (K key, V value) {
 
-            String name = mFileValueConverter.stringKey(key);
+            String name = mFileValueConverter.fileName(key);
             File file = new File(mDir, name);
             V result = null;
 
@@ -67,7 +67,7 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V remove (K key) {
 
-            String name = mFileValueConverter.stringKey(key);
+            String name = mFileValueConverter.fileName(key);
             File file = new File(mDir, name);
             V result = null;
 
@@ -96,7 +96,7 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V load (K key) {
 
-            String name = mFileValueConverter.stringKey(key);
+            String name = mFileValueConverter.fileName(key);
             File file = new File(mDir, name);
             V result = null;
 
@@ -115,5 +115,14 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
             }
 
             return result;
+      }
+
+      @Override
+      public boolean containsOf (K key) {
+
+            String name = mFileValueConverter.fileName(key);
+            File file = new File(mDir, name);
+
+            return file.exists();
       }
 }

@@ -1,6 +1,5 @@
 package tech.threekilogram.depository.file;
 
-import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.file.common.FileLoader;
 
@@ -11,16 +10,7 @@ import tech.threekilogram.depository.file.common.FileLoader;
  *
  * @author liujin
  */
-public interface ValueFileConverter<K, V, M> {
-
-      /**
-       * to get a file from key
-       *
-       * @param key key to map a file {@link File#isFile()} must return true
-       *
-       * @return file name defined by this key, not a path
-       */
-      String stringKey (K key);
+public interface ValueFileConverter<K, V, M> extends FileNameConverter<K> {
 
       /**
        * convert a file to value

@@ -14,10 +14,10 @@ import tech.threekilogram.depository.function.NameFunction;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class StringFileConverter implements ValueFileConverter<String, String,File> {
+public class StringFileConverter implements ValueFileConverter<String, String, File> {
 
       @Override
-      public String stringKey (String key) {
+      public String fileName (String key) {
 
             return NameFunction.nameFromMd5(key);
       }

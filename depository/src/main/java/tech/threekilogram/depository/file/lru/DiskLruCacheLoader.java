@@ -59,7 +59,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
             V result = null;
 
             try {
-                  String name = mConverter.stringKey(key);
+                  String name = mConverter.fileName(key);
 
                   if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
                         Snapshot snapshot = mDiskLruCache.get(name);
@@ -118,7 +118,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             InputStream inputStream = null;
             try {
-                  String stringKey = mConverter.stringKey(key);
+                  String stringKey = mConverter.fileName(key);
                   Snapshot snapshot = mDiskLruCache.get(stringKey);
 
                   if(snapshot != null) {
@@ -156,5 +156,19 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   CloseFunction.close(inputStream);
             }
             return null;
+      }
+
+      @Override
+      public boolean containsOf (K key) {
+
+            String name = mConverter.fileName(key);
+
+            try {
+                  Snapshot snapshot = mDiskLruCache.get(name);
+                  return snapshot != null;
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+            return false;
       }
 }

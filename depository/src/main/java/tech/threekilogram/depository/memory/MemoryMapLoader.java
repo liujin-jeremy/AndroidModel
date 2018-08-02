@@ -70,4 +70,10 @@ public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, 
 
             return mContainer.get(key);
       }
+
+      @Override
+      public boolean containsOf (K key) {
+
+            return mContainer.containsKey(key);
+      }
 }

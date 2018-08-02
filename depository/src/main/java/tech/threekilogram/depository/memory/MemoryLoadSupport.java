@@ -1,6 +1,6 @@
 package tech.threekilogram.depository.memory;
 
-import tech.threekilogram.depository.Loader;
+import tech.threekilogram.depository.ContainerLoader;
 
 /**
  * this make some Object could load from Memory
@@ -11,7 +11,7 @@ import tech.threekilogram.depository.Loader;
  *
  * @author liujin
  */
-public interface MemoryLoadSupport<C, K, V> extends Loader<K, V> {
+public interface MemoryLoadSupport<C, K, V> extends ContainerLoader<K, V> {
 
       /**
        * use this container to save Value in memory could use this to get all operating, such as

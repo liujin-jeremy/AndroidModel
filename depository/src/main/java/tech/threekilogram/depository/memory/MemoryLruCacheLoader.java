@@ -89,6 +89,12 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
             return mContainer.remove(key);
       }
 
+      @Override
+      public boolean containsOf (K key) {
+
+            return mContainer.get(key) != null;
+      }
+
       // ========================= lru cache =========================
 
       private class ConstructLruCache extends LruCache<K, V> {

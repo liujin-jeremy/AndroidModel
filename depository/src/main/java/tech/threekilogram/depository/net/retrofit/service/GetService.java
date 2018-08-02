@@ -1,9 +1,8 @@
-package tech.threekilogram.depository.net.retrofit.download;
+package tech.threekilogram.depository.net.retrofit.service;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
 /**
@@ -12,7 +11,7 @@ import retrofit2.http.Url;
  * @date: 2018-07-31
  * @time: 9:40
  */
-public interface StreamService {
+public interface GetService {
 
       /**
        * use this url to get a response from net
@@ -22,6 +21,5 @@ public interface StreamService {
        * @return response
        */
       @GET
-      @Streaming
       Call<ResponseBody> toGet (@Url String url);
 }

@@ -35,7 +35,7 @@ public class GsonFileConverter<T> implements ValueFileConverter<String, T, File>
       }
 
       @Override
-      public String stringKey (String url) {
+      public String fileName (String url) {
 
             return NameFunction.nameFromMd5(url);
       }
