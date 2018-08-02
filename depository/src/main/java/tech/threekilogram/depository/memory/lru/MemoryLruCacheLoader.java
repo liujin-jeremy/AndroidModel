@@ -1,10 +1,13 @@
-package tech.threekilogram.depository.memory;
+package tech.threekilogram.depository.memory.lru;
 
 import android.support.v4.util.LruCache;
-import tech.threekilogram.depository.size.DefaultValueSize;
-import tech.threekilogram.depository.size.ValueSize;
+import tech.threekilogram.depository.memory.MemoryLoadSupport;
+import tech.threekilogram.depository.memory.lru.size.DefaultValueSize;
+import tech.threekilogram.depository.memory.lru.size.ValueSize;
 
 /**
+ * 使用{@link LruCache}在内存中保存数据
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-07-30
@@ -34,7 +37,7 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
       }
 
       /**
-       * 创建一个指定最大数量,指定每个数据大小的容器
+       * 创建一个指定最大数量,指定每个数据大小的缓存
        *
        * @param maxSize 最大容量
        * @param valueSize 每个数据大小计算
@@ -56,13 +59,6 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
       public int size () {
 
             return mContainer.size();
-      }
-
-      @Override
-      public boolean containsOfKey (K key) {
-
-            V v = mContainer.get(key);
-            return v != null;
       }
 
       @Override
@@ -102,9 +98,11 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
             private ValueSize<K, V> mValueSize;
 
             /**
-             * @param maxSize for caches that do not override {@link #sizeOf}, this is the maximum
-             * number of entries in the cache. For all other caches, this is the maximum sum of the
-             * sizes of the entries in this cache.
+             * @param maxSize for caches that do not override {@link #sizeOf}, this is the
+             *     maximum
+             *     number of entries in the cache. For all other caches, this is the maximum sum of
+             *     the
+             *     sizes of the entries in this cache.
              */
             public ConstructLruCache (int maxSize, ValueSize<K, V> valueSize) {
 

@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.size;
+package tech.threekilogram.depository.memory.lru.size;
 
 /**
  * @author: Liujin

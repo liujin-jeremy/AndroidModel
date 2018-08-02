@@ -1,8 +1,11 @@
-package tech.threekilogram.depository.memory;
+package tech.threekilogram.depository.memory.map;
 
 import android.support.v4.util.ArrayMap;
+import tech.threekilogram.depository.memory.MemoryLoadSupport;
 
 /**
+ * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap}
+ * <p>
  * use {@link ArrayMap} to save value in memory
  *
  * @param <K> the key type of value
@@ -34,17 +37,6 @@ public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, 
       public int size () {
 
             return mContainer.size();
-      }
-
-      public boolean containsOfValue (V v) {
-
-            return mContainer.containsValue(v);
-      }
-
-      @Override
-      public boolean containsOfKey (K key) {
-
-            return mContainer.containsKey(key);
       }
 
       @Override
