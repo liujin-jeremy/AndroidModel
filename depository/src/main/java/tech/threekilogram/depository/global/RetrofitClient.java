@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.global;
 
 import retrofit2.Retrofit;
-import tech.threekilogram.depository.net.UrlFactory;
+import tech.threekilogram.depository.net.UrlConverter;
 import tech.threekilogram.depository.net.retrofit.service.GetService;
 
 /**
@@ -13,7 +13,7 @@ import tech.threekilogram.depository.net.retrofit.service.GetService;
 public class RetrofitClient {
 
       /**
-       * this baseUrl means nothing, because real url is from {@link UrlFactory}
+       * this baseUrl means nothing, because real urlPath is from {@link UrlConverter}
        * to {@link GetService}'s params
        */
       public static Retrofit INSTANCE = new Retrofit

@@ -49,7 +49,7 @@ public class BeautyActivity extends AppCompatActivity {
       }
 
       /**
-       * test url method is correct or not
+       * test urlPath method is correct or not
        */
       private void testUrl () {
 
