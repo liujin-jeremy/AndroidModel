@@ -70,6 +70,12 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   result = load(key);
             }
 
+            try {
+                  mDiskLruCache.remove(name);
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+
             /* try to get Editor */
 
             Editor editor = null;
@@ -144,7 +150,20 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             /* disk lru cache will remove file auto , so didn't support this operator */
 
-            return null;
+            String fileName = mConverter.fileName(key);
+
+            V result = null;
+
+            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
+                  result = load(key);
+            }
+
+            try {
+                  mDiskLruCache.remove(fileName);
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+            return result;
       }
 
       @Override
@@ -182,6 +201,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   } finally {
 
                         CloseFunction.close(inputStream);
+                        CloseFunction.close(snapshot);
                   }
             }
 
@@ -195,7 +215,11 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             try {
                   Snapshot snapshot = mDiskLruCache.get(name);
-                  return snapshot != null;
+                  boolean result = snapshot != null;
+                  if(result) {
+                        snapshot.close();
+                  }
+                  return result;
             } catch(IOException e) {
                   e.printStackTrace();
             }

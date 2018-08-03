@@ -9,10 +9,13 @@ import tech.threekilogram.depository.global.RetrofitClient;
 import tech.threekilogram.depository.net.NetLoaderConverter;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-02
- * @time: 14:13
+ * 该类是{@link NetLoaderConverter}的retrofit实现版本,用于和{@link tech.threekilogram.depository.net.NetLoader}配合
+ *
+ * @param <K> key 类型
+ * @param <V> value 类型
+ * @param <S> 用于{@link retrofit2.Retrofit#create(Class)}中的class类型,即:retrofit服务类型
+ *
+ * @author liujin
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConverter<K, V> {
@@ -25,31 +28,56 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
             mServiceType = serviceType;
       }
 
+      /**
+       * 设置一个新的 {@link Retrofit}
+       *
+       * @param retrofit 新的{@link Retrofit}
+       */
+      public void setRetrofit (Retrofit retrofit) {
+
+            mRetrofit = retrofit;
+      }
+
       @Override
       public V loadFromNet (K key) {
+
+            /* 1. 获得url */
 
             String urlFromKey = urlFromKey(key);
             S service = mRetrofit.create(mServiceType);
 
+            /* 2. 制造一个call对象 */
+
             Call<ResponseBody> call = configService(key, urlFromKey, service);
+
+            /* 3. 执行call */
 
             try {
                   Response<ResponseBody> response = call.execute();
                   if(response.isSuccessful()) {
 
+                        /* 4. 如果成功获得数据 */
+
                         ResponseBody responseBody = response.body();
 
                         try {
 
+                              /* 5. 转换数据 */
                               return onExecuteSuccess(responseBody);
                         } catch(Exception e) {
 
+                              /* 6. 转换异常 */
                               onConvertException(key, urlFromKey, e);
                         }
                   } else {
+
+                        /* 4. 连接到网络,但是没有获取到数据 */
+
                         onExecuteFailed(response.code(), response.errorBody());
                   }
             } catch(IOException e) {
+
+                  /* 4. 没有连接到网络 */
 
                   onConnectException(key, urlFromKey, e);
             }

@@ -16,7 +16,13 @@ import tech.threekilogram.depository.ContainerLoader;
  */
 public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
 
+      /**
+       * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话
+       */
       int SAVE_STRATEGY_COVER      = 0;
+      /**
+       * 保存文件策略,先读取旧的文件之后再覆盖旧的文件,如果旧的文件存在的话
+       */
       int SAVE_STRATEGY_RETURN_OLD = 1;
 
       @IntDef(value = {FileLoadSupport.SAVE_STRATEGY_COVER,
@@ -24,7 +30,7 @@ public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
       @interface SaveStrategyValue {}
 
       /**
-       * handle exception when Object run
+       * handle exception when {@link FileLoadSupport} run
        */
       interface ExceptionHandler<K, V> {
 

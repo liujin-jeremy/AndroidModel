@@ -1,23 +1,38 @@
 package tech.threekilogram.depository.net;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import tech.threekilogram.depository.ContainerLoader;
 import tech.threekilogram.depository.Loader;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-02
- * @time: 11:46
+ * 用于从网络获取缓存文件,需要一个辅助类{@link NetLoaderConverter}来帮助该类正常工作,同时也可以提供一个{@link
+ * ContainerLoader}保存网络数据到内存或者文件系统
+ *
+ * @param <K> key 类型
+ * @param <V> value 类型
+ *
+ * @author liujin
  */
+@SuppressWarnings("WeakerAccess")
 public class NetLoader<K, V> implements Loader<K, V> {
 
+      /**
+       * 用于辅助该类保存数据到本地
+       */
       protected ContainerLoader<K, V>    mLoader;
+      /**
+       * 辅助该类完成转换工作
+       */
       protected NetLoaderConverter<K, V> mNetLoaderConverter;
 
+      /**
+       * @param netLoaderConverter 不可以为null,该类需要它辅助工作
+       * @param loader 可以为null,不为null时,可以辅助保存数据
+       */
       public NetLoader (
           @NonNull NetLoaderConverter<K, V> netLoaderConverter,
-          ContainerLoader<K, V> loader) {
+          @Nullable ContainerLoader<K, V> loader) {
 
             mLoader = loader;
             mNetLoaderConverter = netLoaderConverter;
@@ -59,6 +74,8 @@ public class NetLoader<K, V> implements Loader<K, V> {
                         return load;
                   }
             }
+
+            /* if without value saved load from net */
 
             V v = mNetLoaderConverter.loadFromNet(key);
 

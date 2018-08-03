@@ -7,6 +7,9 @@ import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
 /**
+ * 该类用于{@link retrofit2.Retrofit#create(Class)}
+ * 适用于传入url,返回一个{@link java.io.InputStream}的情况
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-02

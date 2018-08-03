@@ -8,6 +8,8 @@ import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.global.GsonClient;
 
 /**
+ *
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-02

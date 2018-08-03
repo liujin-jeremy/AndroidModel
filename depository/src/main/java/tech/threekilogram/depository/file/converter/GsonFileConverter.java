@@ -10,14 +10,16 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import tech.threekilogram.depository.file.ValueFileConverter;
-import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.function.NameFunction;
 import tech.threekilogram.depository.global.GsonClient;
 
 /**
- * {@link ValueFileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
+ * {@link ValueFileConverter} 的一种实现,需要和
+ * {@link  tech.threekilogram.depository.file.FileLoadSupport}实现类配合使用;
  * 通过一个{@link String}key 从本地文件系统读取成{@link T}类型的实例
+ * <p>
+ * 该类用于从文件中保存json和解析json对象
  *
  * @param <T> 想要获取的类型
  *

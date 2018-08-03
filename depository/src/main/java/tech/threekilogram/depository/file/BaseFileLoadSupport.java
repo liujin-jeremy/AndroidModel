@@ -1,6 +1,8 @@
 package tech.threekilogram.depository.file;
 
 /**
+ * 辅助类,提供成员变量,及其设置方法
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-01
