@@ -24,18 +24,27 @@ public class NetLoader<K, V> implements Loader<K, V> {
       /**
        * 辅助该类完成转换工作
        */
-      protected NetLoaderConverter<K, V> mNetLoaderConverter;
+      protected NetLoaderConverter<K, V> mConverter;
 
       /**
-       * @param netLoaderConverter 不可以为null,该类需要它辅助工作
+       * @param converter 不可以为null,该类需要它辅助工作
+       */
+      public NetLoader (
+          @NonNull NetLoaderConverter<K, V> converter) {
+
+            this(converter, null);
+      }
+
+      /**
+       * @param converter 不可以为null,该类需要它辅助工作
        * @param loader 可以为null,不为null时,可以辅助保存数据
        */
       public NetLoader (
-          @NonNull NetLoaderConverter<K, V> netLoaderConverter,
+          @NonNull NetLoaderConverter<K, V> converter,
           @Nullable ContainerLoader<K, V> loader) {
 
             mLoader = loader;
-            mNetLoaderConverter = netLoaderConverter;
+            mConverter = converter;
       }
 
       @Override
@@ -77,7 +86,7 @@ public class NetLoader<K, V> implements Loader<K, V> {
 
             /* if without value saved load from net */
 
-            V v = mNetLoaderConverter.loadFromNet(key);
+            V v = mConverter.loadFromNet(key);
 
             if(v != null) {
                   save(key, v);

@@ -10,6 +10,9 @@ import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.global.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
+import tech.threekilogram.depository.net.NetLoader;
+import tech.threekilogram.depository.net.retrofit.RetrofitGsonConverter;
+import tech.threekilogram.depository.net.retrofit.RetrofitStringConverter;
 
 /**
  * test this lib
@@ -149,6 +152,26 @@ class Test {
 
       public static void main (String[] args) {
 
+            testNetLoaderGson();
+      }
+
+      private static void testNetLoaderGson () {
+
+            NetLoader<String, JsonBean> loader = new NetLoader<>(
+                new RetrofitGsonConverter<>(JsonBean.class));
+            final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
+            JsonBean jsonBean = loader.load(url);
+
+            System.out.println(jsonBean.getResults().size());
+      }
+
+      private static void testNetLoaderString () {
+
+            NetLoader<String, String> loader = new NetLoader<>(new RetrofitStringConverter());
+            final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
+            String load = loader.load(url);
+
+            System.out.println(load);
       }
 
       private static void testGsonLru () {
