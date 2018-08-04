@@ -26,7 +26,7 @@ public interface OnValuePreparedListener<V> {
       /**
        * load failed in all ways
        */
-      public static final int LOAD_NOTHING                     = 7;
+      public static final int LOAD_NOTHING                     = 211;
       /**
        * value is in file but cant convert to value
        */
@@ -40,7 +40,7 @@ public interface OnValuePreparedListener<V> {
        * @param result result code
        * @param value value load maybe null if load failed
        */
-      void onValuePrepared (@LoadResult int result, V value);
+      public void onValuePrepared (@LoadResult int result, V value);
 
       @IntDef({LOAD_FROM_MEMORY,
                LOAD_FROM_FILE,

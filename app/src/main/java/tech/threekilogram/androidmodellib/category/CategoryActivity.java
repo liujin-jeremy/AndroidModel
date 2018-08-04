@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import java.util.List;
+import tech.threekilogram.androidmodellib.GankCategoryBean.ResultsBean;
 import tech.threekilogram.androidmodellib.R;
 
 /**
@@ -13,7 +15,8 @@ import tech.threekilogram.androidmodellib.R;
  */
 public class CategoryActivity extends AppCompatActivity {
 
-      private RecyclerView mRecycler;
+      private RecyclerView            mRecycler;
+      private CategoryRecyclerAdapter mAdapter;
 
       public static void start (Context context) {
 
@@ -29,12 +32,19 @@ public class CategoryActivity extends AppCompatActivity {
             initView();
 
             CategoryManager.getInstance().bind(this);
+            CategoryManager.getInstance().load(1);
       }
 
       private void initView () {
 
             mRecycler = findViewById(R.id.recycler);
             mRecycler.setLayoutManager(new LinearLayoutManager(this));
-            mRecycler.setAdapter(new CategoryRecyclerAdapter());
+            mAdapter = new CategoryRecyclerAdapter();
+            mRecycler.setAdapter(mAdapter);
+      }
+
+      public void addCategory (List<ResultsBean> beans) {
+
+            mAdapter.addBeans(beans);
       }
 }

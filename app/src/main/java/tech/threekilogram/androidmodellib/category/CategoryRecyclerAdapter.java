@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.List;
 import tech.threekilogram.androidmodellib.GankCategoryBean.ResultsBean;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.category.CategoryRecyclerAdapter.TextHolder;
@@ -20,6 +22,8 @@ import tech.threekilogram.androidmodellib.category.CategoryRecyclerAdapter.TextH
 public class CategoryRecyclerAdapter extends Adapter<TextHolder> {
 
       private LayoutInflater mInflater;
+
+      private List<ResultsBean> mBeans = new ArrayList<>();
 
       @NonNull
       @Override
@@ -39,12 +43,20 @@ public class CategoryRecyclerAdapter extends Adapter<TextHolder> {
       public void onBindViewHolder (
           @NonNull TextHolder holder, int position) {
 
+            ResultsBean bean = mBeans.get(position);
+            holder.bind(position, bean);
       }
 
       @Override
       public int getItemCount () {
 
-            return 20;
+            return mBeans.size();
+      }
+
+      public void addBeans (List<ResultsBean> beans) {
+
+            mBeans.addAll(beans);
+            notifyDataSetChanged();
       }
 
       public static class TextHolder extends ViewHolder {

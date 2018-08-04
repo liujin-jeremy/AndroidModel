@@ -6,7 +6,7 @@ package tech.threekilogram.depository.client;
  * @date: 2018-08-01
  * @time: 8:24
  */
-public interface AsyncLoader<K, V> extends OnValuePreparedListener<V> {
+public interface AsyncLoader<K> {
 
       /**
        * to prepare a value by this key,may be asynchronous

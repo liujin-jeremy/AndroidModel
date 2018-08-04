@@ -4,6 +4,8 @@ import android.util.Log;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import tech.threekilogram.androidmodellib.GankCategoryBean;
+import tech.threekilogram.androidmodellib.gankurl.GankUrl;
+import tech.threekilogram.depository.client.OnValuePreparedListener;
 import tech.threekilogram.depository.client.impl.ObjectBusGsonLoader;
 
 /**
@@ -33,11 +35,35 @@ public class CategoryManager {
                   File gank = activity.getApplicationContext().getExternalFilesDir("gank");
                   Log.e(TAG, "bind : path : " + gank.getAbsolutePath());
                   mLoader = new ObjectBusGsonLoader<>(gank, GankCategoryBean.class);
+                  mLoader.setOnValuePreparedListener(new ValuePrepared());
             }
       }
+
+      public void load (int page) {
+
+            String androidPageUrl = GankUrl.getAndroidPageUrl(page);
+            mLoader.prepareValue(androidPageUrl);
+      }
+
+      // ========================= 内部类 =========================
 
       private static class SingletonHolder {
 
             private static final CategoryManager INSTANCE = new CategoryManager();
+      }
+
+      private class ValuePrepared implements OnValuePreparedListener<GankCategoryBean> {
+
+            @Override
+            public void onValuePrepared (int result, GankCategoryBean value) {
+
+                  Log.e(TAG, "onValuePrepared : " + result + " " + value.toString());
+                  if(result < 100) {
+                        CategoryActivity categoryActivity = mReference.get();
+                        if(categoryActivity != null) {
+                              categoryActivity.addCategory(value.getResults());
+                        }
+                  }
+            }
       }
 }

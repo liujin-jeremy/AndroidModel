@@ -1,5 +1,13 @@
 package tech.threekilogram.depository.client.impl;
 
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_FILE;
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_FILE_CONVERT_EXCEPTION;
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_MEMORY;
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_NET;
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_NET_CONVERT_EXCEPTION;
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_NET_CANT_CONNECT;
+import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_NOTHING;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArraySet;
@@ -11,6 +19,7 @@ import com.example.objectbus.message.OnMessageReceiveListener;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.client.AsyncLoader;
+import tech.threekilogram.depository.client.OnValuePreparedListener;
 import tech.threekilogram.depository.file.FileLoadSupport.ExceptionHandler;
 import tech.threekilogram.depository.file.converter.GsonFileConverter;
 import tech.threekilogram.depository.file.impl.FileLoader;
@@ -24,7 +33,7 @@ import tech.threekilogram.depository.net.retrofit.RetrofitGsonConverter;
  * @date: 2018-08-04
  * @time: 9:58
  */
-public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessageReceiveListener {
+public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
 
       /* init lib */
 
@@ -49,6 +58,14 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
        * 临时保存正在加载的key
        */
       private ArraySet<String>           mLoadingKeys;
+      /**
+       * 用户监听
+       */
+      private OnValuePreparedListener<V> mOnValuePreparedListener;
+      /**
+       * 线程调度
+       */
+      private OnMessageReceiveListener mOnMessageReceiveListener = new MessageReceiver();
 
       /**
        * 创建一个缓存客户端
@@ -83,6 +100,32 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
             mLoadingKeys = new ArraySet<>();
       }
 
+      public MemoryMapLoader<String, V> getMemoryLoader () {
+
+            return mMemoryLoader;
+      }
+
+      public FileLoader<String, V> getFileLoader () {
+
+            return mFileLoader;
+      }
+
+      public NetLoader<String, V> getNetLoader () {
+
+            return mNetLoader;
+      }
+
+      public OnValuePreparedListener<V> getOnValuePreparedListener () {
+
+            return mOnValuePreparedListener;
+      }
+
+      public void setOnValuePreparedListener (
+          OnValuePreparedListener<V> onValuePreparedListener) {
+
+            mOnValuePreparedListener = onValuePreparedListener;
+      }
+
       @Override
       public void prepareValue (final String key) {
 
@@ -96,12 +139,10 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
             /* from memory */
 
-            if(mMemoryLoader != null) {
-
-                  if(loadFromMemory(key)) {
-                        return;
-                  }
+            if(loadFromMemory(key)) {
+                  return;
             }
+
 
             /* back ground thread pool do this */
 
@@ -113,11 +154,8 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
                         /* from file */
 
-                        if(mFileLoader != null) {
-
-                              if(loadFromFile(key, objectBus)) {
-                                    return;
-                              }
+                        if(loadFromFile(key, objectBus)) {
+                              return;
                         }
 
                         /* from net */
@@ -129,9 +167,13 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
       private boolean loadFromMemory (String key) {
 
+            if(mMemoryLoader == null) {
+                  return false;
+            }
+
             V load = mMemoryLoader.load(key);
             if(load != null) {
-                  Messengers.send(LOAD_FROM_MEMORY, load, ObjectBusGsonLoader.this);
+                  Messengers.send(LOAD_FROM_MEMORY, load, mOnMessageReceiveListener);
                   mLoadingKeys.remove(key);
                   return true;
             }
@@ -140,12 +182,21 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
       private boolean loadFromFile (String key, ObjectBus objectBus) {
 
+            if(mFileLoader == null) {
+                  return false;
+            }
+
             V load = mFileLoader.load(key);
             if(load != null) {
 
                   /* get from file */
 
-                  Messengers.send(LOAD_FROM_FILE, load, ObjectBusGsonLoader.this);
+                  Messengers.send(LOAD_FROM_FILE, load, mOnMessageReceiveListener);
+
+                  if(mMemoryLoader != null) {
+                        mMemoryLoader.save(key, load);
+                  }
+
                   mLoadingKeys.remove(key);
                   ObjectBusStation.recycle(objectBus);
                   return true;
@@ -164,7 +215,7 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
                   Messengers.send(
                       LOAD_FROM_NET,
                       load,
-                      ObjectBusGsonLoader.this
+                      mOnMessageReceiveListener
                   );
 
                   /* save to container */
@@ -181,7 +232,7 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
                   /* load failed in all way */
 
-                  Messengers.send(LOAD_NOTHING, ObjectBusGsonLoader.this);
+                  Messengers.send(LOAD_NOTHING, mOnMessageReceiveListener);
             }
 
             /* remove recorder */
@@ -190,34 +241,79 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
             ObjectBusStation.recycle(bus);
       }
 
-      @Override
-      public void onValuePrepared (int result, V value) {
+      public void loadFromMemoryOnly (String key) {
 
+            if(mMemoryLoader == null) {
+                  return;
+            }
+
+            loadFromMemory(key);
       }
 
-      // ========================= get result from backThread there =========================
+      public void loadFromFileOnly (final String key) {
 
-      @SuppressWarnings("unchecked")
-      @Override
-      public void onReceive (int what, Object extra) {
+            if(mFileLoader == null) {
+                  return;
+            }
 
-            onValuePrepared(what, (V) extra);
+            final ObjectBus objectBus = ObjectBusStation.callNewBus();
+            objectBus.toUnder(new Runnable() {
+
+                  @Override
+                  public void run () {
+
+                        /* from file */
+                        loadFromFile(key, objectBus);
+                  }
+            }).run();
       }
 
-      @Override
-      public void onReceive (int what) {
+      public void loadFromNetOnly (final String key) {
 
-            onValuePrepared(what, null);
+            final ObjectBus objectBus = ObjectBusStation.callNewBus();
+            objectBus.toUnder(new Runnable() {
+
+                  @Override
+                  public void run () {
+
+                        /* from net */
+
+                        loadFromNet(key, objectBus);
+                  }
+            }).run();
+      }
+
+      private void onValuePrepared (int result, V value) {
+
+            if(mOnValuePreparedListener != null) {
+                  mOnValuePreparedListener.onValuePrepared(result, value);
+            }
       }
 
       // ========================= 内部类 =========================
+
+      private class MessageReceiver implements OnMessageReceiveListener {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onReceive (int what, Object extra) {
+
+                  onValuePrepared(what, (V) extra);
+            }
+
+            @Override
+            public void onReceive (int what) {
+
+                  onValuePrepared(what, null);
+            }
+      }
 
       private class FileExceptionHandler implements ExceptionHandler<String, V> {
 
             @Override
             public void onConvertToValue (Exception e, String key) {
 
-                  Messengers.send(LOAD_FROM_FILE_CONVERT_EXCEPTION, ObjectBusGsonLoader.this);
+                  Messengers.send(LOAD_FROM_FILE_CONVERT_EXCEPTION, mOnMessageReceiveListener);
             }
 
             @Override
@@ -237,14 +333,14 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
             protected void onConnectException (String key, String url, IOException e) {
 
                   super.onConnectException(key, url, e);
-                  Messengers.send(LOAD_NET_CANT_CONNECT, ObjectBusGsonLoader.this);
+                  Messengers.send(LOAD_NET_CANT_CONNECT, mOnMessageReceiveListener);
             }
 
             @Override
             protected void onConvertException (String key, String url, Exception e) {
 
                   super.onConvertException(key, url, e);
-                  Messengers.send(LOAD_FROM_NET_CONVERT_EXCEPTION, ObjectBusGsonLoader.this);
+                  Messengers.send(LOAD_FROM_NET_CONVERT_EXCEPTION, mOnMessageReceiveListener);
             }
       }
 }

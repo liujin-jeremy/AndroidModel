@@ -1,10 +1,5 @@
 package tech.threekilogram.androidmodellib.gankurl;
 
-import static tech.threekilogram.androidmodellib.GankUrl.ANDROID;
-import static tech.threekilogram.androidmodellib.GankUrl.BASE_CATEGORY;
-import static tech.threekilogram.androidmodellib.GankUrl.BEAUTY;
-import static tech.threekilogram.androidmodellib.GankUrl.DEFAULT_COUNT;
-
 /**
  * @author: Liujin
  * @version: V1.0
@@ -12,6 +7,15 @@ import static tech.threekilogram.androidmodellib.GankUrl.DEFAULT_COUNT;
  * @time: 17:38
  */
 public class GankUrl {
+
+      /* http://gank.io/api/data/数据类型/请求个数/第几页 */
+
+      public static final String BASE_CATEGORY = "http://gank.io/api/data/";
+
+      public static final String BEAUTY  = "福利/";
+      public static final String ANDROID = "Android/";
+
+      public static final int DEFAULT_COUNT = 10;
 
       private static final String BASE_BEAUTY_URL =
           BASE_CATEGORY

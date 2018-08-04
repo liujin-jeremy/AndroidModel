@@ -34,7 +34,7 @@ class Test {
             }
       }
 
-      public static final String JSON = "{\n"
+      static final String JSON = "{\n"
           + "    \"error\": false,\n"
           + "    \"results\": [\n"
           + "        {\n"
@@ -356,7 +356,7 @@ class Test {
             System.out.println("after remove value : " + value);
       }
 
-      public static class JsonBean {
+      static class JsonBean {
 
             private boolean           error;
             private List<ResultsBean> results;
