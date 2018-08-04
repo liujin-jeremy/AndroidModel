@@ -1,6 +1,5 @@
 package tech.threekilogram.androidmodellib.category;
 
-import android.util.Log;
 import java.lang.ref.WeakReference;
 import tech.threekilogram.androidmodellib.GankCategoryBean;
 import tech.threekilogram.androidmodellib.gankurl.GankUrl;
@@ -46,13 +45,8 @@ public class CategoryManager {
             @Override
             public void onValuePrepared (int result, GankCategoryBean value) {
 
-                  Log.e(TAG, "onValuePrepared : " + result + " " + value.toString());
-                  if(result > 0 && result < 400) {
-                        CategoryActivity categoryActivity = mReference.get();
-                        if(categoryActivity != null) {
+                  if(result > 0 && value != null) {
 
-                              categoryActivity.addCategory(value.getResults());
-                        }
                   }
             }
       }

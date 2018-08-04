@@ -39,16 +39,5 @@ public class BeautyActivity extends AppCompatActivity {
             mRecycler.setLayoutManager(new LinearLayoutManager(this));
             mAdapter = new BeautyRecyclerAdapter();
             mRecycler.setAdapter(mAdapter);
-
-            mRecycler.post(new Runnable() {
-
-                  @Override
-                  public void run () {
-
-                        int width = mRecycler.getWidth();
-                        BeautyManager.getInstance().setBitmapWidth(width);
-                        BeautyManager.getInstance().loadBitmap(1);
-                  }
-            });
       }
 }
