@@ -1,5 +1,7 @@
 package tech.threekilogram.depository.client.impl;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArraySet;
 import com.example.objectbus.ObjectBusConfig;
 import com.example.objectbus.bus.ObjectBus;
@@ -24,17 +26,46 @@ import tech.threekilogram.depository.net.retrofit.RetrofitGsonConverter;
  */
 public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessageReceiveListener {
 
-      static {
+      /* init lib */
 
-            /* init lib */
+      static {
 
             ObjectBusConfig.init();
       }
 
+      /**
+       * 内存缓存
+       */
       private MemoryMapLoader<String, V> mMemoryLoader;
+      /**
+       * 文件缓存
+       */
       private FileLoader<String, V>      mFileLoader;
+      /**
+       * 网络缓存
+       */
       private NetLoader<String, V>       mNetLoader;
+      /**
+       * 临时保存正在加载的key
+       */
       private ArraySet<String>           mLoadingKeys;
+
+      /**
+       * 创建一个缓存客户端
+       *
+       * @param memoryLoader 内存
+       * @param fileLoader 文件
+       * @param netLoader 网络
+       */
+      public ObjectBusGsonLoader (
+          @Nullable MemoryMapLoader<String, V> memoryLoader,
+          @Nullable FileLoader<String, V> fileLoader,
+          @NonNull NetLoader<String, V> netLoader) {
+
+            mMemoryLoader = memoryLoader;
+            mFileLoader = fileLoader;
+            mNetLoader = netLoader;
+      }
 
       /**
        * @param cacheDir 缓存文件夹
@@ -67,9 +98,7 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
             if(mMemoryLoader != null) {
 
-                  V load = mMemoryLoader.load(key);
-                  if(load != null) {
-                        onValuePrepared(LOAD_FROM_MEMORY, load);
+                  if(loadFromMemory(key)) {
                         return;
                   }
             }
@@ -86,54 +115,79 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String, V>, OnMessage
 
                         if(mFileLoader != null) {
 
-                              V load = mFileLoader.load(key);
-                              if(load != null) {
-
-                                    /* get from file */
-
-                                    Messengers.send(LOAD_FROM_FILE, load, ObjectBusGsonLoader.this);
-                                    ObjectBusStation.recycle(objectBus);
+                              if(loadFromFile(key, objectBus)) {
                                     return;
                               }
                         }
 
                         /* from net */
 
-                        V load = mNetLoader.load(key);
-
-                        if(load != null) {
-
-                              /* load success */
-
-                              Messengers.send(
-                                  LOAD_FROM_NET,
-                                  load,
-                                  ObjectBusGsonLoader.this
-                              );
-
-                              /* save to container */
-
-                              if(mMemoryLoader != null) {
-
-                                    mMemoryLoader.save(key, load);
-                              }
-                              if(mFileLoader != null) {
-
-                                    mFileLoader.save(key, load);
-                              }
-                        } else {
-
-                              /* load failed in all way */
-
-                              Messengers.send(LOAD_NON, ObjectBusGsonLoader.this);
-                        }
-
-                        /* remove recorder */
-
-                        mLoadingKeys.remove(key);
-                        ObjectBusStation.recycle(objectBus);
+                        loadFromNet(key, objectBus);
                   }
             }).run();
+      }
+
+      private boolean loadFromMemory (String key) {
+
+            V load = mMemoryLoader.load(key);
+            if(load != null) {
+                  Messengers.send(LOAD_FROM_MEMORY, load, ObjectBusGsonLoader.this);
+                  mLoadingKeys.remove(key);
+                  return true;
+            }
+            return false;
+      }
+
+      private boolean loadFromFile (String key, ObjectBus objectBus) {
+
+            V load = mFileLoader.load(key);
+            if(load != null) {
+
+                  /* get from file */
+
+                  Messengers.send(LOAD_FROM_FILE, load, ObjectBusGsonLoader.this);
+                  mLoadingKeys.remove(key);
+                  ObjectBusStation.recycle(objectBus);
+                  return true;
+            }
+            return false;
+      }
+
+      private void loadFromNet (String key, ObjectBus bus) {
+
+            V load = mNetLoader.load(key);
+
+            if(load != null) {
+
+                  /* load success */
+
+                  Messengers.send(
+                      LOAD_FROM_NET,
+                      load,
+                      ObjectBusGsonLoader.this
+                  );
+
+                  /* save to container */
+
+                  if(mMemoryLoader != null) {
+
+                        mMemoryLoader.save(key, load);
+                  }
+                  if(mFileLoader != null) {
+
+                        mFileLoader.save(key, load);
+                  }
+            } else {
+
+                  /* load failed in all way */
+
+                  Messengers.send(LOAD_NOTHING, ObjectBusGsonLoader.this);
+            }
+
+            /* remove recorder */
+
+            mLoadingKeys.remove(key);
+            ObjectBusStation.recycle(bus);
       }
 
       @Override
