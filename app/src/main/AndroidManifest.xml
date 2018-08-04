@@ -20,6 +20,8 @@
             </activity>
             <activity android:name=".beauty.BeautyActivity">
             </activity>
+            <activity android:name=".category.CategoryActivity">
+            </activity>
       </application>
 
 </manifest>

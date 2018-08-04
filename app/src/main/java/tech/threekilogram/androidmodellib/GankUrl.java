@@ -12,7 +12,8 @@ public class GankUrl {
 
       public static final String BASE_CATEGORY = "http://gank.io/api/data/";
 
-      public static final String 福利 = "福利/";
+      public static final String BEAUTY  = "福利/";
+      public static final String ANDROID = "Android/";
 
       public static final int DEFAULT_COUNT = 10;
 }

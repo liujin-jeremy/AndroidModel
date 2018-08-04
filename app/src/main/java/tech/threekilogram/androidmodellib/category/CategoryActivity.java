@@ -1,4 +1,4 @@
-package tech.threekilogram.androidmodellib.beauty;
+package tech.threekilogram.androidmodellib.category;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,14 +11,13 @@ import tech.threekilogram.androidmodellib.R;
 /**
  * @author liujin
  */
-public class BeautyActivity extends AppCompatActivity {
+public class CategoryActivity extends AppCompatActivity {
 
-      private static final String TAG = BeautyActivity.class.getSimpleName();
       private RecyclerView mRecycler;
 
       public static void start (Context context) {
 
-            Intent starter = new Intent(context, BeautyActivity.class);
+            Intent starter = new Intent(context, CategoryActivity.class);
             context.startActivity(starter);
       }
 
@@ -26,16 +25,16 @@ public class BeautyActivity extends AppCompatActivity {
       protected void onCreate (Bundle savedInstanceState) {
 
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_beauty);
+            setContentView(R.layout.activity_category);
             initView();
 
-            BeautyManager.getInstance().bind(this);
+            CategoryManager.getInstance().bind(this);
       }
 
       private void initView () {
 
             mRecycler = findViewById(R.id.recycler);
             mRecycler.setLayoutManager(new LinearLayoutManager(this));
-            mRecycler.setAdapter(new BeautyRecyclerAdapter());
+            mRecycler.setAdapter(new CategoryRecyclerAdapter());
       }
 }
