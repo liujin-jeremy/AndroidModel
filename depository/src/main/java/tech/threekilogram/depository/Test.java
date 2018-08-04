@@ -153,7 +153,6 @@ class Test {
 
       public static void main (String[] args) {
 
-            testNetLoaderDownload();
       }
 
       private static void testNetLoaderDownload () {

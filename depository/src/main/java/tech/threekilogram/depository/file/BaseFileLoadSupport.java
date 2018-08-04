@@ -40,4 +40,9 @@ public abstract class BaseFileLoadSupport<K, V> implements FileLoadSupport<K, V>
 
             mExceptionHandler = exceptionHandler;
       }
+
+      public ExceptionHandler<K, V> getExceptionHandler () {
+
+            return mExceptionHandler;
+      }
 }
