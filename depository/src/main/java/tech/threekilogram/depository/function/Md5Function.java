@@ -4,12 +4,14 @@ import android.support.annotation.NonNull;
 import java.security.MessageDigest;
 
 /**
+ * md5 string util
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-07-30
  * @time: 0:05
  */
-public class NameFunction {
+public class Md5Function {
 
       /**
        * 十六进制下数字到字符的映射数组
@@ -17,27 +19,6 @@ public class NameFunction {
       private final static String[] HEX_DIGITS = {"0", "1", "2", "3", "4", "5",
                                                   "6", "7", "8", "9", "a", "b",
                                                   "c", "d", "e", "f"};
-
-      /**
-       * 将一个字符串转为16位数字模式
-       *
-       * @param src 需要转换的字符串
-       *
-       * @return 转换后的字符串
-       */
-      public static String nameFrom (@NonNull String src) {
-
-            int length = src.length();
-            final StringBuilder builder = new StringBuilder(length);
-
-            for(int i = 0; i < length; i++) {
-                  int c = src.charAt(i);
-                  String s = Integer.toHexString(c);
-                  builder.append(s);
-            }
-
-            return builder.toString();
-      }
 
       /**
        * 使用md5 得到一段数字摘要字符串

@@ -17,7 +17,16 @@ import tech.threekilogram.depository.file.impl.FileLoader;
  *
  * @author liujin
  */
-public interface ValueFileConverter<K, V> extends FileNameConverter<K> {
+public interface ValueFileConverter<K, V> {
+
+      /**
+       * to get a file from key
+       *
+       * @param key key to map a file
+       *
+       * @return file name defined by this key, not a path
+       */
+      String fileName (K key);
 
       /**
        * convert a file to value

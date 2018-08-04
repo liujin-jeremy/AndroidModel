@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
+ * close io stream
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-01
@@ -20,7 +22,7 @@ public class CloseFunction {
                   } catch(IOException e) {
 
                         /* do nothing */
-
+                        e.printStackTrace();
                   }
             }
       }

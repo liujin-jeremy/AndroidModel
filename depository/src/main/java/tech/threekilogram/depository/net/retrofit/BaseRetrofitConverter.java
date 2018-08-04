@@ -66,6 +66,7 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
                               return onExecuteSuccess(responseBody);
                         } catch(Exception e) {
 
+                              e.printStackTrace();
                               /* 6. 转换异常 */
                               onConvertException(key, urlFromKey, e);
                         }
@@ -78,7 +79,7 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
             } catch(IOException e) {
 
                   /* 4. 没有连接到网络 */
-
+                  e.printStackTrace();
                   onConnectException(key, urlFromKey, e);
             }
 

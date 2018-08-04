@@ -97,8 +97,10 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
             OutputStream outputStream = null;
 
             try {
+
                   outputStream = editor.newOutputStream(0);
             } catch(IOException e) {
+
                   e.printStackTrace();
             }
 
@@ -125,8 +127,10 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
             }
 
             try {
+
                   mDiskLruCache.flush();
             } catch(IOException e) {
+
                   e.printStackTrace();
             }
 
@@ -141,6 +145,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
                         edit.abort();
                   }
             } catch(IOException e) {
+
                   e.printStackTrace();
             }
       }
@@ -159,8 +164,10 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
             }
 
             try {
+
                   mDiskLruCache.remove(fileName);
             } catch(IOException e) {
+
                   e.printStackTrace();
             }
             return result;
@@ -177,8 +184,10 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             Snapshot snapshot = null;
             try {
+
                   snapshot = mDiskLruCache.get(stringKey);
             } catch(IOException e) {
+
                   e.printStackTrace();
             }
 
@@ -214,6 +223,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
             String name = mConverter.fileName(key);
 
             try {
+
                   Snapshot snapshot = mDiskLruCache.get(name);
                   boolean result = snapshot != null;
                   if(result) {
@@ -221,6 +231,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   }
                   return result;
             } catch(IOException e) {
+
                   e.printStackTrace();
             }
             return false;

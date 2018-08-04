@@ -32,7 +32,7 @@ public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
       /**
        * handle exception when {@link FileLoadSupport} run
        */
-      interface ExceptionHandler<K, V> {
+      public interface ExceptionHandler<K, V> {
 
             /**
              * a exception occur at {@link ValueFileConverter#toValue(Object, InputStream)} will

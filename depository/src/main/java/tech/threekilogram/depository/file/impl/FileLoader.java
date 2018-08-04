@@ -44,6 +44,11 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
             return new File(mDir, name);
       }
 
+      public File getDir () {
+
+            return mDir;
+      }
+
       @Override
       public V save (K key, V value) {
 
@@ -66,6 +71,8 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
                         /* maybe can't convert */
 
+                        e.printStackTrace();
+
                         if(mExceptionHandler != null) {
                               mExceptionHandler.onConvertToValue(e, key);
                         }
@@ -81,6 +88,8 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
             } catch(IOException e) {
 
                   /* maybe can't save */
+
+                  e.printStackTrace();
 
                   if(mExceptionHandler != null) {
                         mExceptionHandler.onSaveValueToFile(e, key, value);
@@ -106,11 +115,14 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
                         /* should return old value,get old value */
 
                         try {
+
                               FileInputStream stream = new FileInputStream(file);
                               result = mConverter.toValue(key, stream);
                         } catch(Exception e) {
 
                               /* maybe can't convert */
+
+                              e.printStackTrace();
 
                               if(mExceptionHandler != null) {
                                     mExceptionHandler.onConvertToValue(e, key);
@@ -143,6 +155,8 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   } catch(Exception e) {
 
                         /* maybe can't convert */
+
+                        e.printStackTrace();
 
                         if(mExceptionHandler != null) {
                               mExceptionHandler.onConvertToValue(e, key);

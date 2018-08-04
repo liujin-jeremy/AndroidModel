@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import tech.threekilogram.depository.file.ValueFileConverter;
 import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.function.CloseFunction;
-import tech.threekilogram.depository.function.NameFunction;
+import tech.threekilogram.depository.function.Md5Function;
 
 /**
  * {@link ValueFileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
@@ -22,7 +22,7 @@ public class StringFileConverter implements ValueFileConverter<String, String> {
       @Override
       public String fileName (String key) {
 
-            return NameFunction.nameFromMd5(key);
+            return Md5Function.nameFromMd5(key);
       }
 
       @Override
