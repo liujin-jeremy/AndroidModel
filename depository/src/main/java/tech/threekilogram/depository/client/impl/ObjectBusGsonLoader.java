@@ -140,13 +140,15 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
 
                         /* from file */
 
-                        if(loadFromFile(key, objectBus)) {
+                        if(loadFromFile(key)) {
+                              ObjectBusStation.recycle(objectBus);
                               return;
                         }
 
                         /* from net */
 
-                        loadFromNet(key, objectBus);
+                        loadFromNet(key);
+                        ObjectBusStation.recycle(objectBus);
                   }
             }).run();
       }
@@ -165,7 +167,7 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
             return false;
       }
 
-      private boolean loadFromFile (String key, ObjectBus objectBus) {
+      private boolean loadFromFile (String key) {
 
             if(mFileLoader == null) {
                   return false;
@@ -181,14 +183,12 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
                   if(mMemoryLoader != null) {
                         mMemoryLoader.save(key, load);
                   }
-
-                  ObjectBusStation.recycle(objectBus);
                   return true;
             }
             return false;
       }
 
-      private void loadFromNet (String key, ObjectBus bus) {
+      private void loadFromNet (String key) {
 
             V load = mNetLoader.load(key);
 
@@ -218,10 +218,6 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
 
                   Messengers.send(LOAD_NOTHING, mOnMessageReceiveListener);
             }
-
-            /* remove recorder */
-
-            ObjectBusStation.recycle(bus);
       }
 
       public void loadFromMemoryOnly (String key) {
@@ -246,7 +242,8 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
                   public void run () {
 
                         /* from file */
-                        loadFromFile(key, objectBus);
+                        loadFromFile(key);
+                        ObjectBusStation.recycle(objectBus);
                   }
             }).run();
       }
@@ -261,7 +258,8 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
 
                         /* from net */
 
-                        loadFromNet(key, objectBus);
+                        loadFromNet(key);
+                        ObjectBusStation.recycle(objectBus);
                   }
             }).run();
       }
