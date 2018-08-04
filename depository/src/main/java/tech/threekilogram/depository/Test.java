@@ -11,6 +11,7 @@ import tech.threekilogram.depository.global.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 import tech.threekilogram.depository.net.NetLoader;
+import tech.threekilogram.depository.net.retrofit.RetrofitDownLoadConverter;
 import tech.threekilogram.depository.net.retrofit.RetrofitGsonConverter;
 import tech.threekilogram.depository.net.retrofit.RetrofitStringConverter;
 
@@ -152,7 +153,18 @@ class Test {
 
       public static void main (String[] args) {
 
-            testNetLoaderGson();
+            testNetLoaderDownload();
+      }
+
+      private static void testNetLoaderDownload () {
+
+            NetLoader<String, File> loader = new NetLoader<>(new RetrofitDownLoadConverter(TEMP));
+
+            final String url = "https://ww1.sinaimg.cn/large/0065oQSqgy1ftwcw4f4a5j30sg10j1g9.jpg";
+
+            File load = loader.load(url);
+
+            System.out.println(load);
       }
 
       private static void testNetLoaderGson () {

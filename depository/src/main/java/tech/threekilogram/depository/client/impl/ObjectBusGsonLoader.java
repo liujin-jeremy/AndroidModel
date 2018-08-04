@@ -10,7 +10,6 @@ import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.ArraySet;
 import com.example.objectbus.ObjectBusConfig;
 import com.example.objectbus.bus.ObjectBus;
 import com.example.objectbus.bus.ObjectBusStation;
@@ -54,10 +53,7 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
        * 网络缓存
        */
       private NetLoader<String, V>       mNetLoader;
-      /**
-       * 临时保存正在加载的key
-       */
-      private ArraySet<String>           mLoadingKeys;
+
       /**
        * 用户监听
        */
@@ -96,8 +92,6 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
             mFileLoader.setExceptionHandler(new FileExceptionHandler());
 
             mNetLoader = new NetLoader<>(new RetrofitGsonExceptionHandledConverter(valueType));
-
-            mLoadingKeys = new ArraySet<>();
       }
 
       public MemoryMapLoader<String, V> getMemoryLoader () {
@@ -128,14 +122,6 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
 
       @Override
       public void prepareValue (final String key) {
-
-            /* 防止重复加载请求 */
-
-            if(mLoadingKeys.contains(key)) {
-                  return;
-            }
-            /* record this key now is loading */
-            mLoadingKeys.add(key);
 
             /* from memory */
 
@@ -174,7 +160,6 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
             V load = mMemoryLoader.load(key);
             if(load != null) {
                   Messengers.send(LOAD_FROM_MEMORY, load, mOnMessageReceiveListener);
-                  mLoadingKeys.remove(key);
                   return true;
             }
             return false;
@@ -197,7 +182,6 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
                         mMemoryLoader.save(key, load);
                   }
 
-                  mLoadingKeys.remove(key);
                   ObjectBusStation.recycle(objectBus);
                   return true;
             }
@@ -237,7 +221,6 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
 
             /* remove recorder */
 
-            mLoadingKeys.remove(key);
             ObjectBusStation.recycle(bus);
       }
 

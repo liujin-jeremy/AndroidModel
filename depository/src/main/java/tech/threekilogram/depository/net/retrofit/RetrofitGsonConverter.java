@@ -41,7 +41,7 @@ public class RetrofitGsonConverter<V> extends BaseRetrofitConverter<String, V, S
       }
 
       @Override
-      protected V onExecuteSuccess (ResponseBody response) throws Exception {
+      protected V onExecuteSuccess (String key, ResponseBody response) throws Exception {
 
             InputStream inputStream = response.byteStream();
             Reader reader = new InputStreamReader(inputStream);

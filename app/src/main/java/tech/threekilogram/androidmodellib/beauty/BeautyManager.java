@@ -1,7 +1,6 @@
 package tech.threekilogram.androidmodellib.beauty;
 
 import java.lang.ref.WeakReference;
-import tech.threekilogram.androidmodellib.gankurl.GankUrl;
 
 /**
  * @author: Liujin
@@ -27,12 +26,6 @@ public class BeautyManager {
       void bind (BeautyActivity activity) {
 
             mBeautyActivityRef = new WeakReference<>(activity);
-      }
-
-      void loadTodayBeauty () {
-
-            final int todayIndex = 1;
-            String url = GankUrl.getBeautyPageUrl(1);
       }
 
       // ========================= 内部类 =========================

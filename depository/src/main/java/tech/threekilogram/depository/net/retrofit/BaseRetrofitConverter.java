@@ -63,7 +63,7 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
                         try {
 
                               /* 5. 转换数据 */
-                              return onExecuteSuccess(responseBody);
+                              return onExecuteSuccess(key, responseBody);
                         } catch(Exception e) {
 
                               e.printStackTrace();
@@ -74,7 +74,7 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
 
                         /* 4. 连接到网络,但是没有获取到数据 */
 
-                        onExecuteFailed(response.code(), response.errorBody());
+                        onExecuteFailed(key, response.code(), response.errorBody());
                   }
             } catch(IOException e) {
 
@@ -118,14 +118,6 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
       protected void onConnectException (K key, String url, IOException e) { }
 
       /**
-       * when cant get a correct response {@link Response#isSuccessful()} return failed
-       *
-       * @param httpCode http code
-       * @param errorBody error body
-       */
-      protected void onExecuteFailed (int httpCode, ResponseBody errorBody) { }
-
-      /**
        * get a success response then convert it to value
        *
        * @param response response
@@ -135,14 +127,22 @@ public abstract class BaseRetrofitConverter<K, V, S> implements NetLoaderConvert
        * @throws Exception when convert  {@link ResponseBody} to {@link V} may occur a exception
        *                   {@see #onConvertException(Object, String, Exception)}
        */
-      protected abstract V onExecuteSuccess (ResponseBody response) throws Exception;
+      protected abstract V onExecuteSuccess (K key, ResponseBody response) throws Exception;
 
       /**
-       * handle exception from {@link #onExecuteSuccess(ResponseBody)}
+       * handle exception from {@link #onExecuteSuccess(K, ResponseBody)}
        *
        * @param key key
        * @param url url
        * @param e exception
        */
       protected void onConvertException (K key, String url, Exception e) { }
+
+      /**
+       * when cant get a correct response {@link Response#isSuccessful()} return failed
+       *
+       * @param httpCode http code
+       * @param errorBody error body
+       */
+      protected void onExecuteFailed (K key, int httpCode, ResponseBody errorBody) { }
 }

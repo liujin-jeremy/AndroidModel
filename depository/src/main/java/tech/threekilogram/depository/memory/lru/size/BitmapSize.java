@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.memory.lru.size;
 
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 
 /**
@@ -12,10 +12,13 @@ import android.os.Build.VERSION_CODES;
  */
 public class BitmapSize<K> implements ValueSize<K, Bitmap> {
 
-      @TargetApi(VERSION_CODES.KITKAT)
       @Override
       public int sizeOf (K k, Bitmap bitmap) {
 
-            return bitmap.getAllocationByteCount();
+            if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                  return bitmap.getAllocationByteCount();
+            } else {
+                  return bitmap.getByteCount();
+            }
       }
 }

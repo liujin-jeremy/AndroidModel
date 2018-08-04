@@ -8,8 +8,6 @@ import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.global.GsonClient;
 
 /**
- *
- *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-02
@@ -39,7 +37,7 @@ public class RetrofitStringConverter extends BaseRetrofitConverter<String, Strin
       }
 
       @Override
-      protected String onExecuteSuccess (ResponseBody response) throws Exception {
+      protected String onExecuteSuccess (String key, ResponseBody response) throws Exception {
 
             InputStream inputStream = response.byteStream();
             int length = (int) response.contentLength();

@@ -14,7 +14,8 @@ import tech.threekilogram.androidmodellib.R;
 public class BeautyActivity extends AppCompatActivity {
 
       private static final String TAG = BeautyActivity.class.getSimpleName();
-      private RecyclerView mRecycler;
+      private RecyclerView          mRecycler;
+      private BeautyRecyclerAdapter mAdapter;
 
       public static void start (Context context) {
 
@@ -36,6 +37,7 @@ public class BeautyActivity extends AppCompatActivity {
 
             mRecycler = findViewById(R.id.recycler);
             mRecycler.setLayoutManager(new LinearLayoutManager(this));
-            mRecycler.setAdapter(new BeautyRecyclerAdapter());
+            mAdapter = new BeautyRecyclerAdapter();
+            mRecycler.setAdapter(mAdapter);
       }
 }
