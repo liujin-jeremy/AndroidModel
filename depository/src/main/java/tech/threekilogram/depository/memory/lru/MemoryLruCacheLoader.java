@@ -13,7 +13,7 @@ import tech.threekilogram.depository.memory.lru.size.ValueSize;
  * @date: 2018-07-30
  * @time: 8:26
  */
-public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K, V>, K, V> {
+public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<K, V> {
 
       /**
        * 容器
@@ -49,7 +49,6 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<LruCache<K,
             mContainer = new ConstructLruCache(maxSize, valueSize);
       }
 
-      @Override
       public LruCache<K, V> container () {
 
             return mContainer;

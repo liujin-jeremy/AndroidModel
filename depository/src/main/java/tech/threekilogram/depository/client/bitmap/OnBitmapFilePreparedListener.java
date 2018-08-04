@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.client.impl;
+package tech.threekilogram.depository.client.bitmap;
 
 import android.graphics.Bitmap;
 import java.io.File;

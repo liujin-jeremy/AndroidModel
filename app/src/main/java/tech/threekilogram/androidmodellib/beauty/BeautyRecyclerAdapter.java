@@ -1,6 +1,5 @@
 package tech.threekilogram.androidmodellib.beauty;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -8,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import java.util.ArrayList;
+import java.util.List;
+import tech.threekilogram.androidmodellib.GankCategoryBean.ResultsBean;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.beauty.BeautyRecyclerAdapter.ImageHolder;
 
@@ -21,10 +23,7 @@ public class BeautyRecyclerAdapter extends Adapter<ImageHolder> {
 
       private LayoutInflater mInflater;
 
-      private int[] colors = {
-          Color.LTGRAY,
-          Color.WHITE
-      };
+      private List<ResultsBean> mBeans = new ArrayList<>();
 
       @NonNull
       @Override
@@ -44,14 +43,14 @@ public class BeautyRecyclerAdapter extends Adapter<ImageHolder> {
       public void onBindViewHolder (
           @NonNull ImageHolder holder, int position) {
 
-            int index = position % colors.length;
-            holder.bind(position, colors[index]);
+            ResultsBean bean = mBeans.get(position);
+            holder.bind(position, bean);
       }
 
       @Override
       public int getItemCount () {
 
-            return 20;
+            return mBeans.size();
       }
 
       public static class ImageHolder extends ViewHolder {
@@ -69,9 +68,8 @@ public class BeautyRecyclerAdapter extends Adapter<ImageHolder> {
                   mImage = itemView.findViewById(R.id.image);
             }
 
-            void bind (int position, int color) {
+            void bind (int position, ResultsBean bean) {
 
-                  mImage.setBackgroundColor(color);
             }
       }
 }

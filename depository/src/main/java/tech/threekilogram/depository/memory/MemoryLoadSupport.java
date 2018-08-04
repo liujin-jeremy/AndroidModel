@@ -13,17 +13,7 @@ import tech.threekilogram.depository.ContainerLoader;
  *
  * @author liujin
  */
-public interface MemoryLoadSupport<C, K, V> extends ContainerLoader<K, V> {
-
-      /**
-       * 因为数据保存形式的多样性(可以是 list/map/set/lruCache),所以提供该方法用于获取容器,之后可以直接操作容器
-       * <p>
-       * use this container to save Value in memory could use this to get all operating, such as
-       * clear all Value in Memory
-       *
-       * @return container
-       */
-      C container ();
+public interface MemoryLoadSupport<K, V> extends ContainerLoader<K, V> {
 
       /**
        * 已经保存数据数量

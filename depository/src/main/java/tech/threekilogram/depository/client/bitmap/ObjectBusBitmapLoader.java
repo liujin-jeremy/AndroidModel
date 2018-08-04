@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.client.impl;
+package tech.threekilogram.depository.client.bitmap;
 
 import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_FILE;
 import static tech.threekilogram.depository.client.OnValuePreparedListener.LOAD_FROM_MEMORY;
@@ -89,6 +89,12 @@ public class ObjectBusBitmapLoader implements AsyncLoader<String> {
           OnBitmapFilePreparedListener<String> onBitmapFilePreparedListener) {
 
             mOnBitmapFilePreparedListener = onBitmapFilePreparedListener;
+      }
+
+      public void setOnValuePreparedListener (
+          OnValuePreparedListener<Bitmap> onValuePreparedListener) {
+
+            mOnValuePreparedListener = onValuePreparedListener;
       }
 
       @Override

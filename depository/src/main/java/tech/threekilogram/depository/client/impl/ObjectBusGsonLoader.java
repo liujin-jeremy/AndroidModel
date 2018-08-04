@@ -22,7 +22,8 @@ import tech.threekilogram.depository.client.OnValuePreparedListener;
 import tech.threekilogram.depository.file.FileLoadSupport.ExceptionHandler;
 import tech.threekilogram.depository.file.converter.GsonFileConverter;
 import tech.threekilogram.depository.file.impl.FileLoader;
-import tech.threekilogram.depository.memory.map.MemoryMapLoader;
+import tech.threekilogram.depository.memory.MemoryLoadSupport;
+import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.net.NetLoader;
 import tech.threekilogram.depository.net.retrofit.RetrofitGsonConverter;
 
@@ -44,15 +45,15 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
       /**
        * 内存缓存
        */
-      private MemoryMapLoader<String, V> mMemoryLoader;
+      private MemoryLoadSupport<String, V> mMemoryLoader;
       /**
        * 文件缓存
        */
-      private FileLoader<String, V>      mFileLoader;
+      private FileLoader<String, V>        mFileLoader;
       /**
        * 网络缓存
        */
-      private NetLoader<String, V>       mNetLoader;
+      private NetLoader<String, V>         mNetLoader;
 
       /**
        * 用户监听
@@ -71,12 +72,13 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
        * @param netLoader 网络
        */
       public ObjectBusGsonLoader (
-          @Nullable MemoryMapLoader<String, V> memoryLoader,
+          @Nullable MemoryLoadSupport<String, V> memoryLoader,
           @Nullable FileLoader<String, V> fileLoader,
           @NonNull NetLoader<String, V> netLoader) {
 
             mMemoryLoader = memoryLoader;
             mFileLoader = fileLoader;
+            mFileLoader.setExceptionHandler(new FileExceptionHandler());
             mNetLoader = netLoader;
       }
 
@@ -84,9 +86,9 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
        * @param cacheDir 缓存文件夹
        * @param valueType value 类型
        */
-      public ObjectBusGsonLoader (File cacheDir, Class<V> valueType) {
+      public ObjectBusGsonLoader (int memorySize, File cacheDir, Class<V> valueType) {
 
-            mMemoryLoader = new MemoryMapLoader<>();
+            mMemoryLoader = new MemoryLruCacheLoader<>(memorySize);
 
             mFileLoader = new FileLoader<>(cacheDir, new GsonFileConverter<>(valueType));
             mFileLoader.setExceptionHandler(new FileExceptionHandler());
@@ -94,7 +96,7 @@ public class ObjectBusGsonLoader<V> implements AsyncLoader<String> {
             mNetLoader = new NetLoader<>(new RetrofitGsonExceptionHandledConverter(valueType));
       }
 
-      public MemoryMapLoader<String, V> getMemoryLoader () {
+      public MemoryLoadSupport<String, V> getMemoryLoader () {
 
             return mMemoryLoader;
       }

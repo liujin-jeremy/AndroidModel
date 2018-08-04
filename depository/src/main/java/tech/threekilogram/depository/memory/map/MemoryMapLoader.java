@@ -13,7 +13,7 @@ import tech.threekilogram.depository.memory.MemoryLoadSupport;
  *
  * @author liujin
  */
-public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, K, V> {
+public class MemoryMapLoader<K, V> implements MemoryLoadSupport<K, V> {
 
       private ArrayMap<K, V> mContainer;
 
@@ -27,7 +27,6 @@ public class MemoryMapLoader<K, V> implements MemoryLoadSupport<ArrayMap<K, V>, 
             mContainer = new ArrayMap<>(size);
       }
 
-      @Override
       public ArrayMap<K, V> container () {
 
             return mContainer;
