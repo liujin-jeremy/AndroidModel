@@ -15,8 +15,7 @@ import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.global.GsonClient;
 
 /**
- * {@link FileConverter} 的一种实现,需要和
- * {@link  tech.threekilogram.depository.file.FileLoadSupport}实现类配合使用;
+ * {@link FileConverter} 的一种实现
  * 通过一个{@link String}key 从本地文件系统读取成{@link T}类型的实例
  * <p>
  * 该类用于从文件中保存json和解析json对象

@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import tech.threekilogram.depository.file.BaseFileLoadSupport;
+import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.file.FileLoadSupport;
 
 /**
  * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link File}转换为{@link V}
@@ -16,7 +15,7 @@ import tech.threekilogram.depository.file.FileLoadSupport;
  *
  * @author liujin
  */
-public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
+public class FileLoader<K, V> extends BaseFileLoader<K, V> {
 
       /**
        * 一个文件夹用于统一保存key对应的文件
@@ -57,7 +56,7 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             /* to decide how to write a value to file */
 
-            if(mSaveStrategy == FileLoadSupport.SAVE_STRATEGY_COVER) {
+            if(mSaveStrategy == SAVE_STRATEGY_COVER) {
 
                   result = load(key);
 
@@ -94,7 +93,7 @@ public class FileLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             V result = null;
 
-            if(mSaveStrategy == FileLoadSupport.SAVE_STRATEGY_COVER) {
+            if(mSaveStrategy == SAVE_STRATEGY_COVER) {
 
                   result = load(key);
             }

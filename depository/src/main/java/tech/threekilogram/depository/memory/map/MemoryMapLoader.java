@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.memory.map;
 
 import android.support.v4.util.ArrayMap;
-import tech.threekilogram.depository.memory.MemoryLoadSupport;
+import tech.threekilogram.depository.memory.MemoryLoader;
 
 /**
  * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap}
@@ -14,7 +14,7 @@ import tech.threekilogram.depository.memory.MemoryLoadSupport;
  * @author liujin
  */
 
-public class MemoryMapLoader<K, V> implements MemoryLoadSupport<K, V> {
+public class MemoryMapLoader<K, V> implements MemoryLoader<K, V> {
 
       private ArrayMap<K, V> mContainer;
 

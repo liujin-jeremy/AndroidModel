@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.memory.lru;
 
 import android.support.v4.util.LruCache;
-import tech.threekilogram.depository.memory.MemoryLoadSupport;
+import tech.threekilogram.depository.memory.MemoryLoader;
 import tech.threekilogram.depository.memory.lru.size.SimpleValueSize;
 import tech.threekilogram.depository.memory.lru.size.ValueSize;
 
@@ -14,7 +14,7 @@ import tech.threekilogram.depository.memory.lru.size.ValueSize;
  * @time: 8:26
  */
 @SuppressWarnings("WeakerAccess")
-public class MemoryLruCacheLoader<K, V> implements MemoryLoadSupport<K, V> {
+public class MemoryLruCacheLoader<K, V> implements MemoryLoader<K, V> {
 
       /**
        * 容器

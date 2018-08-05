@@ -12,7 +12,7 @@ import tech.threekilogram.depository.ContainerLoader;
  *
  * @author liujin
  */
-public interface MemoryLoadSupport<K, V> extends ContainerLoader<K, V> {
+public interface MemoryLoader<K, V> extends ContainerLoader<K, V> {
 
       /**
        * 已经保存数据数量

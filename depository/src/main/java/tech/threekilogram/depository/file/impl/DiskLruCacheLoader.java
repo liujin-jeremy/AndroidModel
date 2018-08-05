@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.depository.file.BaseFileLoadSupport;
+import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.CloseFunction;
 
@@ -19,7 +19,7 @@ import tech.threekilogram.depository.function.CloseFunction;
  *
  * @author liujin
  */
-public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
+public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
 
       /**
        * 保存数据
