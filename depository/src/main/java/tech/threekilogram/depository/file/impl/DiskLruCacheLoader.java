@@ -42,7 +42,6 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
           File folder,
           long maxSize,
           FileConverter<K, V> converter) throws IOException {
-
             /* create DiskLruCache */
 
             mDiskLruCache = DiskLruCache.open(folder, 1, 1, maxSize);

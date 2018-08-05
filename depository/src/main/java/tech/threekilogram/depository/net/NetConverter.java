@@ -10,16 +10,7 @@ import retrofit2.Response;
  * @date: 2018-08-05
  * @time: 12:36
  */
-public interface NetConverter<K, V, P> {
-
-      /**
-       * 从一个key返回一个Url
-       *
-       * @param key key
-       *
-       * @return url to get value
-       */
-      String urlFromKey (K key);
+public interface NetConverter<K, V, P> extends UrlConverter<K> {
 
       /**
        * get a success response then convert it to value

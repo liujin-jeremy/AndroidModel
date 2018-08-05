@@ -15,12 +15,12 @@ import tech.threekilogram.depository.net.retrofit.service.StreamService;
  * @time: 14:57
  */
 @SuppressWarnings("WeakerAccess")
-public class RetrofitStringLoadSupport extends
-                                       BaseRetrofitLoadSupport<String, String, StreamService> {
+public class RetrofitStringLoader extends
+                                  BaseRetrofitLoader<String, String, StreamService> {
 
       protected Gson mGson = GsonClient.INSTANCE;
 
-      public RetrofitStringLoadSupport () {
+      public RetrofitStringLoader () {
 
             super(StreamService.class);
       }

@@ -17,12 +17,12 @@ import tech.threekilogram.depository.net.retrofit.service.StreamService;
  * @time: 14:57
  */
 @SuppressWarnings("WeakerAccess")
-public class RetrofitGsonLoadSupport<V> extends BaseRetrofitLoadSupport<String, V, StreamService> {
+public class RetrofitGsonLoader<V> extends BaseRetrofitLoader<String, V, StreamService> {
 
       protected Gson mGson = GsonClient.INSTANCE;
       protected Class<V> mValueType;
 
-      public RetrofitGsonLoadSupport (Class<V> valueType) {
+      public RetrofitGsonLoader (Class<V> valueType) {
 
             super(StreamService.class);
             mValueType = valueType;
