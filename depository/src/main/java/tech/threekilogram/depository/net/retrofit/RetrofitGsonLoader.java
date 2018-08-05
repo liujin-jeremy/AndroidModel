@@ -23,8 +23,14 @@ public class RetrofitGsonLoader<K, V> extends BaseRetrofitLoader<K, V, StreamSer
 
       public RetrofitGsonLoader (UrlConverter<K> urlConverter, Class<V> valueType) {
 
-            mServiceType = StreamService.class;
             mNetConverter = new RetrofitGsonConverter<>(urlConverter, valueType);
+            mServiceType = StreamService.class;
+      }
+
+      public RetrofitGsonLoader (RetrofitGsonConverter<K, V> converter) {
+
+            mNetConverter = converter;
+            mServiceType = StreamService.class;
       }
 
       @Override

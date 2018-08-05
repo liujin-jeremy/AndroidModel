@@ -113,7 +113,7 @@ public class RetrofitDownLoader<K> extends
             /**
              * 提供Url
              */
-            private UrlConverter<K> mUrlConverter;
+            protected UrlConverter<K> mUrlConverter;
 
             public DownLoadConverter (File dir, UrlConverter<K> urlConverter) {
 
@@ -183,8 +183,8 @@ public class RetrofitDownLoader<K> extends
             /**
              * 提供Url
              */
-            private UrlConverter<K> mUrlConverter;
-            private DiskLruCache    mDiskLruCache;
+            protected UrlConverter<K> mUrlConverter;
+            protected DiskLruCache    mDiskLruCache;
 
             public DiskLruDownLoadConverter (File dir, UrlConverter<K> urlConverter, int maxSize) {
 

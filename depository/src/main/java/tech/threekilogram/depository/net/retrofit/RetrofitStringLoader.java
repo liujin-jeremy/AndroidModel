@@ -27,7 +27,7 @@ public class RetrofitStringLoader<K> extends BaseRetrofitLoader<K, String, Strea
             mServiceType = StreamService.class;
       }
 
-      public RetrofitStringLoader (NetConverter<K, String, ResponseBody> converter) {
+      public RetrofitStringLoader (RetrofitStringConverter<K> converter) {
 
             mNetConverter = converter;
             mServiceType = StreamService.class;
@@ -45,7 +45,7 @@ public class RetrofitStringLoader<K> extends BaseRetrofitLoader<K, String, Strea
       public static class RetrofitStringConverter<K> implements
                                                      NetConverter<K, String, ResponseBody> {
 
-            private UrlConverter<K> mUrlConverter;
+            protected UrlConverter<K> mUrlConverter;
 
             public RetrofitStringConverter (UrlConverter<K> urlConverter) {
 

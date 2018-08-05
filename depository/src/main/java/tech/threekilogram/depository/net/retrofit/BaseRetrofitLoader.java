@@ -22,13 +22,22 @@ import tech.threekilogram.depository.net.NetLoader;
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseRetrofitLoader<K, V, S> implements NetLoader<K, V> {
 
-      protected static Retrofit mRetrofit = RetrofitClient.INSTANCE;
+      /**
+       * retrofit 客户端
+       */
+      protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
 
       /**
-       * 完成
+       * 完成从 {@link K} 到 {@link V} 转换
        */
       protected NetConverter<K, V, ResponseBody> mNetConverter;
+      /**
+       * retrofit service 类型
+       */
       protected Class<S>                         mServiceType;
+      /**
+       * 异常处理助手
+       */
       protected NetExceptionHandler<K>           mExceptionHandler;
 
       /**
@@ -73,9 +82,9 @@ public abstract class BaseRetrofitLoader<K, V, S> implements NetLoader<K, V> {
 
             try {
                   Response<ResponseBody> response = call.execute();
-                  if(response.isSuccessful()) {
 
-                        /* 4. 如果成功获得数据 */
+                  /* 4. 如果成功获得数据 */
+                  if(response.isSuccessful()) {
 
                         ResponseBody responseBody = response.body();
 
