@@ -16,11 +16,11 @@ import tech.threekilogram.depository.memory.map.MemoryMapLoader;
  */
 public class Test {
 
-      public static final File FILE = new File("Temp");
+      private static final File TEMP = new File("Temp");
 
       public static void main (String[] args) {
 
-            testDiskLruFileLoader();
+
       }
 
       private static void testDiskLruFileLoader () {
@@ -28,7 +28,7 @@ public class Test {
             DiskLruCacheLoader<String, String> loader = null;
             try {
                   loader = new DiskLruCacheLoader<>(
-                      FILE, 1024 * 1024 * 50, new FileStringConverter());
+                      TEMP, 1024 * 1024 * 50, new FileStringConverter());
 
                   String key = "Hello";
 
@@ -49,7 +49,7 @@ public class Test {
 
       private static void testFileLoader () {
 
-            FileLoader<String, String> loader = new FileLoader<>(FILE, new FileStringConverter());
+            FileLoader<String, String> loader = new FileLoader<>(TEMP, new FileStringConverter());
 
             String key = "Hello";
 

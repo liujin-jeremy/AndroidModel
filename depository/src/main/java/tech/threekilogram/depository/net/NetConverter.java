@@ -16,6 +16,8 @@ import retrofit2.Response;
 public interface NetConverter<K, V, P> extends UrlConverter<K> {
 
       /**
+       * 当网络响应成功之后的回调,需要完成从响应到value的变换
+       * <p>
        * get a success response then convert it to value
        *
        * @param key key
@@ -29,6 +31,8 @@ public interface NetConverter<K, V, P> extends UrlConverter<K> {
       V onExecuteSuccess (K key, P response) throws Exception;
 
       /**
+       * 没有成功获取数据的回调
+       * <p>
        * when cant get a correct response {@link Response#isSuccessful()} return failed
        *
        * @param key key
@@ -38,10 +42,7 @@ public interface NetConverter<K, V, P> extends UrlConverter<K> {
       void onExecuteFailed (K key, int httpCode, P errorResponse);
 
       /**
-       * @author: Liujin
-       * @version: V1.0
-       * @date: 2018-08-05
-       * @time: 12:41
+       * 使用该类处理网络异常
        */
       interface NetExceptionHandler<K> {
 

@@ -40,6 +40,17 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        */
       protected NetExceptionHandler<K>           mExceptionHandler;
 
+      public BaseRetrofitLoader () {
+
+      }
+
+      public BaseRetrofitLoader (
+          Class<S> serviceType, NetConverter<K, V, ResponseBody> netConverter) {
+
+            mNetConverter = netConverter;
+            mServiceType = serviceType;
+      }
+
       /**
        * 设置一个新的 {@link Retrofit}
        *
