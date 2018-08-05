@@ -32,17 +32,35 @@ public class RetrofitDownLoader<K> extends
             mServiceType = StreamService.class;
       }
 
-      @Override
-      public File loadFromNet (K key) {
+      public RetrofitDownLoader (
+          UrlConverter<K> urlConverter, File dir, int maxSize) {
 
-//            DownLoadConverter<K> netConverter = (DownLoadConverter<K>) mNetConverter;
-//            File file = netConverter.getFile(key);
-//
-//            if(file.exists()) {
-//                  return file;
-//            }
+            mNetConverter = new DiskLruDownLoadConverter<>(dir, urlConverter, maxSize);
+            mServiceType = StreamService.class;
+      }
 
-            return super.loadFromNet(key);
+      public RetrofitDownLoader (AbstractNetDownLoadConverter<K> converter) {
+
+            mNetConverter = converter;
+            mServiceType = StreamService.class;
+      }
+
+      /**
+       * 根据一个 key 获取一个文件
+       *
+       * @param key key
+       *
+       * @return 该key对应的文件, 如果没有改文件返回null
+       */
+      public File getFile (K key) {
+
+            File file = ((AbstractNetDownLoadConverter<K>) mNetConverter).getFile(key);
+
+            if(file.exists()) {
+                  return file;
+            }
+
+            return null;
       }
 
       @Override
@@ -74,6 +92,15 @@ public class RetrofitDownLoader<K> extends
 
                   return mDir;
             }
+
+            /**
+             * get a file from this key
+             *
+             * @param key key
+             *
+             * @return file by this key, may be not exist
+             */
+            public abstract File getFile (K key);
       }
 
       /**
@@ -97,9 +124,7 @@ public class RetrofitDownLoader<K> extends
             @Override
             public File onExecuteSuccess (K key, ResponseBody response) throws Exception {
 
-                  String url = urlFromKey(key);
-                  String name = Md5Function.nameFromMd5(url);
-                  File file = new File(mDir, name);
+                  File file = getFile(key);
 
                   FileOutputStream outputStream = new FileOutputStream(file);
 
@@ -134,6 +159,14 @@ public class RetrofitDownLoader<K> extends
             public String urlFromKey (K key) {
 
                   return mUrlConverter.urlFromKey(key);
+            }
+
+            @Override
+            public File getFile (K key) {
+
+                  String url = urlFromKey(key);
+                  String name = Md5Function.nameFromMd5(url);
+                  return new File(mDir, name);
             }
 
             @Override
@@ -203,6 +236,7 @@ public class RetrofitDownLoader<K> extends
 
                         CloseFunction.close(outputStream);
                         editor.commit();
+                        return new File(mDir, name + ".0");
                   } catch(IOException e) {
                         e.printStackTrace();
                         abortEditor(editor);
@@ -236,6 +270,15 @@ public class RetrofitDownLoader<K> extends
             @Override
             public void onExecuteFailed (K key, int httpCode, ResponseBody errorResponse) {
 
+            }
+
+            @Override
+            public File getFile (K key) {
+
+                  String url = urlFromKey(key);
+                  String name = Md5Function.nameFromMd5(url);
+
+                  return new File(mDir, name + ".0");
             }
       }
 }

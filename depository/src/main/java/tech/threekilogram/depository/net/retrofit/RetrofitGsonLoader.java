@@ -8,6 +8,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.global.GsonClient;
+import tech.threekilogram.depository.net.NetConverter;
+import tech.threekilogram.depository.net.UrlConverter;
 import tech.threekilogram.depository.net.retrofit.service.StreamService;
 
 /**
@@ -17,41 +19,66 @@ import tech.threekilogram.depository.net.retrofit.service.StreamService;
  * @time: 14:57
  */
 @SuppressWarnings("WeakerAccess")
-public class RetrofitGsonLoader<V> extends BaseRetrofitLoader<String, V, StreamService> {
+public class RetrofitGsonLoader<K, V> extends BaseRetrofitLoader<K, V, StreamService> {
 
-      protected Gson mGson = GsonClient.INSTANCE;
-      protected Class<V> mValueType;
+      public RetrofitGsonLoader (UrlConverter<K> urlConverter, Class<V> valueType) {
 
-      public RetrofitGsonLoader (Class<V> valueType) {
-
-            super(StreamService.class);
-            mValueType = valueType;
-      }
-
-      @Override
-      protected String urlFromKey (String key) {
-
-            return key;
+            mServiceType = StreamService.class;
+            mNetConverter = new RetrofitGsonConverter<>(urlConverter, valueType);
       }
 
       @Override
       protected Call<ResponseBody> configService (
-          String key, String url, StreamService service) {
+          K key, String url, StreamService service) {
 
             return service.toGet(url);
       }
 
-      @Override
-      protected V onExecuteSuccess (String key, ResponseBody response) throws Exception {
+      // ========================= 内部类 =========================
 
-            InputStream inputStream = response.byteStream();
-            Reader reader = new InputStreamReader(inputStream);
+      public static class RetrofitGsonConverter<K, V> implements NetConverter<K, V, ResponseBody> {
 
-            V v = mGson.fromJson(reader, mValueType);
+            protected Gson mGson = GsonClient.INSTANCE;
+            protected Class<V>        mValueType;
+            protected UrlConverter<K> mUrlConverter;
 
-            CloseFunction.close(reader);
-            CloseFunction.close(inputStream);
+            public RetrofitGsonConverter (UrlConverter<K> urlConverter, Class<V> valueType) {
 
-            return v;
+                  mValueType = valueType;
+                  mUrlConverter = urlConverter;
+            }
+
+            @Override
+            public String urlFromKey (K key) {
+
+                  return mUrlConverter.urlFromKey(key);
+            }
+
+            @Override
+            public V onExecuteSuccess (
+                K key, ResponseBody response) throws Exception {
+
+                  InputStream inputStream = null;
+                  Reader reader = null;
+                  V v = null;
+
+                  try {
+                        inputStream = response.byteStream();
+                        reader = new InputStreamReader(inputStream);
+
+                        v = mGson.fromJson(reader, mValueType);
+                  } finally {
+
+                        CloseFunction.close(reader);
+                        CloseFunction.close(inputStream);
+                  }
+
+                  return v;
+            }
+
+            @Override
+            public void onExecuteFailed (K key, int httpCode, ResponseBody errorResponse) {
+
+            }
       }
 }

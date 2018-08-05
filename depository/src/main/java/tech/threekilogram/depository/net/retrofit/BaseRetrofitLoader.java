@@ -22,7 +22,11 @@ import tech.threekilogram.depository.net.NetLoader;
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseRetrofitLoader<K, V, S> implements NetLoader<K, V> {
 
-      protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
+      protected static Retrofit mRetrofit = RetrofitClient.INSTANCE;
+
+      /**
+       * 完成
+       */
       protected NetConverter<K, V, ResponseBody> mNetConverter;
       protected Class<S>                         mServiceType;
       protected NetExceptionHandler<K>           mExceptionHandler;

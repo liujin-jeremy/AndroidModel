@@ -6,6 +6,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.global.GsonClient;
+import tech.threekilogram.depository.net.NetConverter;
+import tech.threekilogram.depository.net.UrlConverter;
 import tech.threekilogram.depository.net.retrofit.service.StreamService;
 
 /**
@@ -15,40 +17,69 @@ import tech.threekilogram.depository.net.retrofit.service.StreamService;
  * @time: 14:57
  */
 @SuppressWarnings("WeakerAccess")
-public class RetrofitStringLoader extends
-                                  BaseRetrofitLoader<String, String, StreamService> {
+public class RetrofitStringLoader<K> extends BaseRetrofitLoader<K, String, StreamService> {
 
       protected Gson mGson = GsonClient.INSTANCE;
 
-      public RetrofitStringLoader () {
+      public RetrofitStringLoader (UrlConverter<K> urlConverter) {
 
-            super(StreamService.class);
+            mNetConverter = new RetrofitStringConverter<>(urlConverter);
+            mServiceType = StreamService.class;
       }
 
-      @Override
-      protected String urlFromKey (String key) {
+      public RetrofitStringLoader (NetConverter<K, String, ResponseBody> converter) {
 
-            return key;
+            mNetConverter = converter;
+            mServiceType = StreamService.class;
       }
 
       @Override
       protected Call<ResponseBody> configService (
-          String key, String url, StreamService service) {
+          K key, String url, StreamService service) {
 
             return service.toGet(url);
       }
 
-      @Override
-      protected String onExecuteSuccess (String key, ResponseBody response) throws Exception {
+      // ========================= 内部类 =========================
 
-            InputStream inputStream = response.byteStream();
-            int length = (int) response.contentLength();
+      public static class RetrofitStringConverter<K> implements
+                                                     NetConverter<K, String, ResponseBody> {
 
-            byte[] bytes = new byte[length];
-            int read = inputStream.read(bytes);
+            private UrlConverter<K> mUrlConverter;
 
-            CloseFunction.close(inputStream);
+            public RetrofitStringConverter (UrlConverter<K> urlConverter) {
 
-            return new String(bytes);
+                  mUrlConverter = urlConverter;
+            }
+
+            @Override
+            public String onExecuteSuccess (K key, ResponseBody response) throws Exception {
+
+                  InputStream inputStream = null;
+                  byte[] bytes;
+                  try {
+                        inputStream = response.byteStream();
+                        int length = (int) response.contentLength();
+
+                        bytes = new byte[length];
+                        int read = inputStream.read(bytes);
+                  } finally {
+
+                        CloseFunction.close(inputStream);
+                  }
+
+                  return new String(bytes);
+            }
+
+            @Override
+            public void onExecuteFailed (K key, int httpCode, ResponseBody errorResponse) {
+
+            }
+
+            @Override
+            public String urlFromKey (K key) {
+
+                  return mUrlConverter.urlFromKey(key);
+            }
       }
 }
