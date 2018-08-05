@@ -6,7 +6,7 @@ import tech.threekilogram.depository.ContainerLoader;
 import tech.threekilogram.depository.Loader;
 
 /**
- * 用于从网络获取缓存文件,需要一个辅助类{@link NetLoaderConverter}来帮助该类正常工作,同时也可以提供一个{@link
+ * 用于从网络获取缓存文件,需要一个辅助类{@link NetLoadSupport}来帮助该类正常工作,同时也可以提供一个{@link
  * ContainerLoader}保存网络数据到内存或者文件系统
  *
  * @param <K> key 类型
@@ -20,17 +20,17 @@ public class NetLoader<K, V> implements Loader<K, V> {
       /**
        * 用于辅助该类保存数据到本地
        */
-      protected ContainerLoader<K, V>    mLoader;
+      protected ContainerLoader<K, V> mLoader;
       /**
        * 辅助该类完成转换工作
        */
-      protected NetLoaderConverter<K, V> mConverter;
+      protected NetLoadSupport<K, V>  mConverter;
 
       /**
        * @param converter 不可以为null,该类需要它辅助工作
        */
       public NetLoader (
-          @NonNull NetLoaderConverter<K, V> converter) {
+          @NonNull NetLoadSupport<K, V> converter) {
 
             this(converter, null);
       }
@@ -40,7 +40,7 @@ public class NetLoader<K, V> implements Loader<K, V> {
        * @param loader 可以为null,不为null时,可以辅助保存数据
        */
       public NetLoader (
-          @NonNull NetLoaderConverter<K, V> converter,
+          @NonNull NetLoadSupport<K, V> converter,
           @Nullable ContainerLoader<K, V> loader) {
 
             mLoader = loader;

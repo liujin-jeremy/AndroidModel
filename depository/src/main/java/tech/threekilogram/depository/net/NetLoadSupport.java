@@ -1,14 +1,14 @@
 package tech.threekilogram.depository.net;
 
 /**
- * 该接口辅助{@link NetLoader}完成从key到value的变换
+ * 该接口辅助{@link NetLoader}完成根据key从网络下载value
  *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-02
  * @time: 11:42
  */
-public interface NetLoaderConverter<K, V> {
+public interface NetLoadSupport<K, V> {
 
       /**
        * load a value from net with this key

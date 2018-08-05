@@ -6,6 +6,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.global.GsonClient;
+import tech.threekilogram.depository.net.retrofit.service.StreamService;
 
 /**
  * @author: Liujin
@@ -14,11 +15,12 @@ import tech.threekilogram.depository.global.GsonClient;
  * @time: 14:57
  */
 @SuppressWarnings("WeakerAccess")
-public class RetrofitStringConverter extends BaseRetrofitConverter<String, String, StreamService> {
+public class RetrofitStringLoadSupport extends
+                                       BaseRetrofitLoadSupport<String, String, StreamService> {
 
       protected Gson mGson = GsonClient.INSTANCE;
 
-      public RetrofitStringConverter () {
+      public RetrofitStringLoadSupport () {
 
             super(StreamService.class);
       }
