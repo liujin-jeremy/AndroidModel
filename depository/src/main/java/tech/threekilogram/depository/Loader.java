@@ -14,25 +14,6 @@ package tech.threekilogram.depository;
 public interface Loader<K, V> {
 
       /**
-       * save a value to key,then could load value with this key
-       *
-       * @param key where to save
-       * @param value value to save
-       *
-       * @return if a value exist at key return it, if key to a null value return null
-       */
-      V save (K key, V value);
-
-      /**
-       * remove the value to this key
-       *
-       * @param key remove the value at key
-       *
-       * @return if key exist remove value at key , or null returned
-       */
-      V remove (K key);
-
-      /**
        * load a value by this key from memory / file / database / net
        *
        * @param key load a value with this key

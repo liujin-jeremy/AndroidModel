@@ -13,10 +13,12 @@ import tech.threekilogram.depository.memory.MemoryLoadSupport;
  *
  * @author liujin
  */
+
 public class MemoryMapLoader<K, V> implements MemoryLoadSupport<K, V> {
 
       private ArrayMap<K, V> mContainer;
 
+      @SuppressWarnings("WeakerAccess")
       public MemoryMapLoader () {
 
             mContainer = new ArrayMap<>();

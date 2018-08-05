@@ -5,13 +5,13 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import tech.threekilogram.depository.Loader;
 import tech.threekilogram.depository.global.RetrofitClient;
 import tech.threekilogram.depository.net.NetConverter;
 import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
-import tech.threekilogram.depository.net.NetLoader;
 
 /**
- * 该类是{@link NetLoader}的retrofit实现版本,用于和{@link tech.threekilogram.depository.net.NetLoader}配合
+ * 该类是{@link Loader}的retrofit实现版本,用于和{@link Loader}配合
  *
  * @param <K> key 类型
  * @param <V> value 类型
@@ -20,7 +20,7 @@ import tech.threekilogram.depository.net.NetLoader;
  * @author liujin
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseRetrofitLoader<K, V, S> implements NetLoader<K, V> {
+public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
 
       /**
        * retrofit 客户端
@@ -67,7 +67,7 @@ public abstract class BaseRetrofitLoader<K, V, S> implements NetLoader<K, V> {
       }
 
       @Override
-      public V loadFromNet (K key) {
+      public V load (K key) {
 
             /* 1. 获得url */
 
