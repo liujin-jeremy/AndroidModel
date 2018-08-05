@@ -18,9 +18,11 @@
                         <category android:name="android.intent.category.LAUNCHER"/>
                   </intent-filter>
             </activity>
-            <activity android:name=".beauty.BeautyActivity">
+            <activity android:name=".category.beauty.BeautyActivity">
             </activity>
             <activity android:name=".category.CategoryActivity">
+            </activity>
+            <activity android:name=".memory.TestMemoryActivity">
             </activity>
       </application>
 

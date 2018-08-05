@@ -1,4 +1,4 @@
-package tech.threekilogram.androidmodellib.gankurl;
+package tech.threekilogram.androidmodellib;
 
 /**
  * @author: Liujin
@@ -11,21 +11,21 @@ public class GankUrl {
       /* http://gank.io/api/data/数据类型/请求个数/第几页 */
 
       public static final String BASE_CATEGORY = "http://gank.io/api/data/";
-
-      public static final String BEAUTY  = "福利/";
-      public static final String ANDROID = "Android/";
-
-      public static final int DEFAULT_COUNT = 10;
+      public static final String BEAUTY        = "福利/";
+      public static final String ANDROID       = "Android/";
+      public static final int    DEFAULT_COUNT = 10;
 
       private static final String BASE_BEAUTY_URL =
           BASE_CATEGORY
               + BEAUTY
-              + DEFAULT_COUNT + "/";
+              + DEFAULT_COUNT
+              + "/";
 
       private static final String BASE_ANDROID_URL =
           BASE_CATEGORY
               + ANDROID
-              + DEFAULT_COUNT + "/";
+              + DEFAULT_COUNT
+              + "/";
 
       public static String getBeautyPageUrl (int page) {
 

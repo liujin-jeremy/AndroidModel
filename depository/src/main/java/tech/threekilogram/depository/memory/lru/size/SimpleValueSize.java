@@ -6,7 +6,7 @@ package tech.threekilogram.depository.memory.lru.size;
  * @date: 2018-07-30
  * @time: 8:35
  */
-public class DefaultValueSize<K, V> implements ValueSize<K, V> {
+public class SimpleValueSize<K, V> implements ValueSize<K, V> {
 
       @Override
       public int sizeOf (K key, V value) {

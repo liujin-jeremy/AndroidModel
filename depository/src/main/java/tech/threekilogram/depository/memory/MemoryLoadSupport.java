@@ -7,7 +7,6 @@ import tech.threekilogram.depository.ContainerLoader;
  * <p>
  * this make some Object could load from Memory
  *
- * @param <C> container type ,use this to save value in Memory
  * @param <V> value type to load
  * @param <K> identify to value, could use this to get value from container
  *
