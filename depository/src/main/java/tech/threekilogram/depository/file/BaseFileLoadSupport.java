@@ -35,6 +35,11 @@ public abstract class BaseFileLoadSupport<K, V> implements FileLoadSupport<K, V>
             mSaveStrategy = saveStrategy;
       }
 
+      public int getSaveStrategy () {
+
+            return mSaveStrategy;
+      }
+
       public void setExceptionHandler (
           ExceptionHandler<K, V> exceptionHandler) {
 

@@ -3,13 +3,13 @@ package tech.threekilogram.depository.file.converter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.depository.file.ValueFileConverter;
+import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.function.Md5Function;
 
 /**
- * {@link ValueFileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
+ * {@link FileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
  * 通过一个{@link String}key 从本地文件系统读取成{@link String}类型的实例
  *
  * @author: Liujin
@@ -17,7 +17,7 @@ import tech.threekilogram.depository.function.Md5Function;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class StringFileConverter implements ValueFileConverter<String, String> {
+public class StringFileConverter implements FileConverter<String, String> {
 
       @Override
       public String fileName (String key) {

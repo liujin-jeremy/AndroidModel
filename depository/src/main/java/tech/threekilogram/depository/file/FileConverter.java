@@ -17,7 +17,7 @@ import tech.threekilogram.depository.file.impl.FileLoader;
  *
  * @author liujin
  */
-public interface ValueFileConverter<K, V> {
+public interface FileConverter<K, V> {
 
       /**
        * to get a file from key

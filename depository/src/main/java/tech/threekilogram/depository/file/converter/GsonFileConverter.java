@@ -9,13 +9,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import tech.threekilogram.depository.file.ValueFileConverter;
+import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.global.GsonClient;
 
 /**
- * {@link ValueFileConverter} 的一种实现,需要和
+ * {@link FileConverter} 的一种实现,需要和
  * {@link  tech.threekilogram.depository.file.FileLoadSupport}实现类配合使用;
  * 通过一个{@link String}key 从本地文件系统读取成{@link T}类型的实例
  * <p>
@@ -25,7 +25,7 @@ import tech.threekilogram.depository.global.GsonClient;
  *
  * @author liujin
  */
-public class GsonFileConverter<T> implements ValueFileConverter<String, T> {
+public class GsonFileConverter<T> implements FileConverter<String, T> {
 
       /**
        * gson

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileLoadSupport;
-import tech.threekilogram.depository.file.ValueFileConverter;
+import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.CloseFunction;
 
 /**
@@ -29,27 +29,23 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       /**
        * 辅助该类完成stream到{@link V}的转换工作
        */
-      private ValueFileConverter<K, V> mConverter;
+      private FileConverter<K, V> mConverter;
 
       /**
        * @param folder which dir to save data
        * @param maxSize max data size
        * @param converter function to do
+       *
+       * @throws IOException 创建缓存文件异常
        */
       public DiskLruCacheLoader (
           File folder,
           long maxSize,
-          ValueFileConverter<K, V> converter) {
+          FileConverter<K, V> converter) throws IOException {
 
             /* create DiskLruCache */
 
-            try {
-                  mDiskLruCache = DiskLruCache.open(folder, 1, 1, maxSize);
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-
-            /* mDiskLruCache maybe null */
+            mDiskLruCache = DiskLruCache.open(folder, 1, 1, maxSize);
 
             mConverter = converter;
       }
@@ -61,12 +57,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             V result = null;
 
-            /* try to read old value at this key if have a value */
-
             if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
-
-                  /* config should return old value to this key , so read old */
-
                   result = load(key);
             }
 
@@ -76,61 +67,46 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
                   e.printStackTrace();
             }
 
-            /* try to get Editor */
-
             Editor editor = null;
 
             try {
-
                   editor = mDiskLruCache.edit(name);
             } catch(IOException e) {
-
                   e.printStackTrace();
             }
-
             if(editor == null) {
                   return null;
             }
 
-            /* try to get output stream */
-
             OutputStream outputStream = null;
 
             try {
-
                   outputStream = editor.newOutputStream(0);
             } catch(IOException e) {
-
                   e.printStackTrace();
             }
-
             if(outputStream == null) {
                   return null;
             }
-
-            /* try to save value */
-
             try {
 
                   mConverter.saveValue(key, outputStream, value);
                   CloseFunction.close(outputStream);
                   editor.commit();
             } catch(IOException e) {
-
-                  /* save failed abort operator */
-
                   e.printStackTrace();
                   abortEditor(editor);
+                  if(mExceptionHandler != null) {
+                        mExceptionHandler.onSaveValueToFile(e, key, value);
+                  }
             } finally {
 
                   CloseFunction.close(outputStream);
             }
 
             try {
-
                   mDiskLruCache.flush();
             } catch(IOException e) {
-
                   e.printStackTrace();
             }
 
@@ -141,7 +117,6 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
 
             try {
                   if(edit != null) {
-
                         edit.abort();
                   }
             } catch(IOException e) {
@@ -153,10 +128,6 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V remove (K key) {
 
-            /* disk lru cache will remove file auto , so didn't support this operator */
-
-            String fileName = mConverter.fileName(key);
-
             V result = null;
 
             if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
@@ -164,7 +135,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
             }
 
             try {
-
+                  String fileName = mConverter.fileName(key);
                   mDiskLruCache.remove(fileName);
             } catch(IOException e) {
 
@@ -176,13 +147,12 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoadSupport<K, V> {
       @Override
       public V load (K key) {
 
-            InputStream inputStream = null;
-
             String stringKey = mConverter.fileName(key);
 
             /* try to get snapShort */
 
             Snapshot snapshot = null;
+            InputStream inputStream = null;
             try {
 
                   snapshot = mDiskLruCache.get(stringKey);

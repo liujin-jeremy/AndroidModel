@@ -32,10 +32,10 @@ public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
       /**
        * handle exception when {@link FileLoadSupport} run
        */
-      public interface ExceptionHandler<K, V> {
+      interface ExceptionHandler<K, V> {
 
             /**
-             * a exception occur at {@link ValueFileConverter#toValue(Object, InputStream)} will
+             * a exception occur at {@link FileConverter#toValue(Object, InputStream)} will
              * call this
              *
              * @param e exception
@@ -44,7 +44,7 @@ public interface FileLoadSupport<K, V> extends ContainerLoader<K, V> {
             void onConvertToValue (Exception e, K key);
 
             /**
-             * a exception occur at {@link ValueFileConverter#saveValue(Object, OutputStream,
+             * a exception occur at {@link FileConverter#saveValue(Object, OutputStream,
              * Object)} will call
              * this
              *
