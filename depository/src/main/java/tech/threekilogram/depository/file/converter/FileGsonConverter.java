@@ -24,7 +24,7 @@ import tech.threekilogram.depository.global.GsonClient;
  *
  * @author liujin
  */
-public class GsonFileConverter<T> implements FileConverter<String, T> {
+public class FileGsonConverter<T> implements FileConverter<String, T> {
 
       /**
        * gson
@@ -40,7 +40,7 @@ public class GsonFileConverter<T> implements FileConverter<String, T> {
        *
        * @param valueType type of value
        */
-      public GsonFileConverter (Class<T> valueType) {
+      public FileGsonConverter (Class<T> valueType) {
 
             this.mValueType = valueType;
       }

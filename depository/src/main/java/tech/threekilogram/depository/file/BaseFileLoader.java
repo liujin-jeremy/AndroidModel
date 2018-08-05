@@ -19,10 +19,12 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
       /**
        * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话
        */
+      @SuppressWarnings("WeakerAccess")
       public static final int SAVE_STRATEGY_COVER      = 0;
       /**
        * 保存文件策略,先读取旧的文件之后再覆盖旧的文件,如果旧的文件存在的话
        */
+      @SuppressWarnings("WeakerAccess")
       public static final int SAVE_STRATEGY_RETURN_OLD = 1;
       /**
        * 该值会影响 {@link #save(Object, Object)} 和 {@link #remove(Object)}的返回值, 如果是{@link
@@ -49,6 +51,7 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
        */
       protected ExceptionHandler<K, V> mExceptionHandler;
 
+      @SuppressWarnings("WeakerAccess")
       @IntDef(value = {SAVE_STRATEGY_COVER,
                        SAVE_STRATEGY_RETURN_OLD})
       public static @interface SaveStrategyValue {}

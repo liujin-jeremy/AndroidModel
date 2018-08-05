@@ -17,7 +17,7 @@ import tech.threekilogram.depository.function.Md5Function;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class StringFileConverter implements FileConverter<String, String> {
+public class FileStringConverter implements FileConverter<String, String> {
 
       @Override
       public String fileName (String key) {

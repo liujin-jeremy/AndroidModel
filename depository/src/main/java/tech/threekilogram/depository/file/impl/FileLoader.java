@@ -36,17 +36,6 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
             mConverter = converter;
       }
 
-      public File getFile (K key) {
-
-            String name = mConverter.fileName(key);
-            return new File(mDir, name);
-      }
-
-      public File getDir () {
-
-            return mDir;
-      }
-
       @Override
       public V save (K key, V value) {
 
@@ -56,7 +45,7 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
 
             /* to decide how to write a value to file */
 
-            if(mSaveStrategy == SAVE_STRATEGY_COVER) {
+            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
 
                   result = load(key);
 
@@ -88,12 +77,28 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
             return result;
       }
 
+      public File getDir () {
+
+            return mDir;
+      }
+
+      /**
+       * @param key key
+       *
+       * @return file to this key, file may not exist
+       */
+      public File getFile (K key) {
+
+            String name = mConverter.fileName(key);
+            return new File(mDir, name);
+      }
+
       @Override
       public V remove (K key) {
 
             V result = null;
 
-            if(mSaveStrategy == SAVE_STRATEGY_COVER) {
+            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
 
                   result = load(key);
             }
