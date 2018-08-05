@@ -6,10 +6,12 @@ import tech.threekilogram.depository.net.NetConverter;
 import tech.threekilogram.depository.net.retrofit.service.StreamService;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-05
- * @time: 23:09
+ * 使用 retrofit 从网络获取文件
+ *
+ * @param <K> key type
+ * @param <V> value type
+ *
+ * @author liujin
  */
 public class RetrofitStreamLoader<K, V> extends BaseRetrofitLoader<K, V, StreamService> {
 

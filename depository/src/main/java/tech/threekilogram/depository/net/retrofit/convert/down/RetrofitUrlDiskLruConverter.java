@@ -1,12 +1,5 @@
 package tech.threekilogram.depository.net.retrofit.convert.down;
 
-/**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-05
- * @time: 23:13
- */
-
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.jakewharton.disklrucache.DiskLruCache.Editor;
 import java.io.File;

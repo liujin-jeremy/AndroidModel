@@ -11,7 +11,7 @@ import tech.threekilogram.depository.net.NetConverter;
 import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
 
 /**
- * 该类是{@link Loader}的retrofit实现版本,用于和{@link Loader}配合
+ * 该类是{@link Loader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
  *
  * @param <K> key 类型
  * @param <V> value 类型
@@ -44,6 +44,12 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
 
       }
 
+      /**
+       * 最少需要这两个才能正常工作
+       *
+       * @param serviceType 服务类型
+       * @param netConverter 转换器
+       */
       public BaseRetrofitLoader (
           Class<S> serviceType, NetConverter<K, V, ResponseBody> netConverter) {
 

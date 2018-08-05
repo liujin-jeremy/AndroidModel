@@ -1,12 +1,5 @@
 package tech.threekilogram.depository.net.retrofit.convert.down;
 
-/**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-05
- * @time: 23:12
- */
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;

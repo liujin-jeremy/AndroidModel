@@ -1,12 +1,5 @@
 package tech.threekilogram.depository.net.retrofit.convert.string;
 
-/**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-05
- * @time: 23:23
- */
-
 import java.io.InputStream;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.function.CloseFunction;
@@ -15,10 +8,13 @@ import tech.threekilogram.depository.net.UrlConverter;
 
 /**
  * 辅助完成转换工作
+ *
+ * @author liujin
  */
 public class RetrofitStringConverter<K> implements
                                         NetConverter<K, String, ResponseBody> {
 
+      @SuppressWarnings("WeakerAccess")
       protected UrlConverter<K> mUrlConverter;
 
       public RetrofitStringConverter (UrlConverter<K> urlConverter) {

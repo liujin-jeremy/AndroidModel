@@ -1,12 +1,5 @@
 package tech.threekilogram.depository.net.retrofit.convert.json;
 
-/**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-05
- * @time: 23:21
- */
-
 import com.google.gson.Gson;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,12 +12,17 @@ import tech.threekilogram.depository.net.UrlConverter;
 
 /**
  * 辅助完成转换工作,需要完成{@link K} 到 {@link String} url转换,网络响应{@link ResponseBody} 到{@link V}转换
+ *
+ * @author liujin
  */
 public class RetrofitGsonConverter<K, V> implements NetConverter<K, V, ResponseBody> {
 
+      @SuppressWarnings("WeakerAccess")
       protected Gson mGson = GsonClient.INSTANCE;
 
+      @SuppressWarnings("WeakerAccess")
       protected UrlConverter<K> mUrlConverter;
+      @SuppressWarnings("WeakerAccess")
       protected Class<V>        mValueType;
 
       public RetrofitGsonConverter (UrlConverter<K> urlConverter, Class<V> valueType) {

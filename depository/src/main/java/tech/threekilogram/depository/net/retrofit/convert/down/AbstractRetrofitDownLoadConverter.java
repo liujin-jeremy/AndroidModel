@@ -24,8 +24,10 @@ public abstract class AbstractRetrofitDownLoadConverter<K> implements
       /**
        * 下载文件夹
        */
+      @SuppressWarnings("WeakerAccess")
       protected File mDir;
 
+      @SuppressWarnings("WeakerAccess")
       public AbstractRetrofitDownLoadConverter (File dir) {
 
             mDir = dir;
