@@ -6,6 +6,7 @@ import java.util.List;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
 import tech.threekilogram.depository.file.impl.FileLoader;
+import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 import tech.threekilogram.depository.net.retrofit.RetrofitStreamLoader;
@@ -26,6 +27,7 @@ public class Test {
 
       public static void main (String[] args) {
 
+            testDiskLruFileLoader();
       }
 
       private static void testDiskRetrofit () {
@@ -149,16 +151,22 @@ public class Test {
 
                   String key = "Hello";
 
+                  String s = Md5Function.nameFromMd5( key );
+                  System.out.println( s );
+
                   loader.save(key, "World");
+                  File file = loader.getFile( key );
 
-                  String load = loader.load(key);
-                  System.out.println(load);
+                  System.out.println( file.exists() );
 
-                  String remove = loader.remove(key);
-                  System.out.println(remove);
-
-                  boolean containsOf = loader.containsOf(key);
-                  System.out.println(containsOf);
+//                  String load = loader.load(key);
+//                  System.out.println(load);
+//
+//                  String remove = loader.remove(key);
+//                  System.out.println(remove);
+//
+//                  boolean containsOf = loader.containsOf(key);
+//                  System.out.println(containsOf);
             } catch(IOException e) {
                   e.printStackTrace();
             }

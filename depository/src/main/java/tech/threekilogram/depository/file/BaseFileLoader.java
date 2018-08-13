@@ -1,6 +1,7 @@
 package tech.threekilogram.depository.file;
 
 import android.support.annotation.IntDef;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -97,4 +98,6 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
 
             return mExceptionHandler;
       }
+
+      public abstract File getFile ( K key );
 }

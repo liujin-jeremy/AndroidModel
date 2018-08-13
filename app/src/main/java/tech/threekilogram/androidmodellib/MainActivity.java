@@ -21,5 +21,8 @@ public class MainActivity extends AppCompatActivity {
             TestMemoryActivity.start( this );
       }
 
-      public void toTestFile ( View view ) {}
+      public void toTestFile ( View view ) {
+
+            TestFileActivity.start( this );
+      }
 }

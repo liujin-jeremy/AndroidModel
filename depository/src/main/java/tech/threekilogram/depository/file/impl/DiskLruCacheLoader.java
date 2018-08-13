@@ -31,6 +31,8 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
        */
       private FileConverter<K, V> mConverter;
 
+      private File mDir;
+
       /**
        * @param folder which dir to save data
        * @param maxSize max data size
@@ -41,27 +43,28 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       public DiskLruCacheLoader (
           File folder,
           long maxSize,
-          FileConverter<K, V> converter) throws IOException {
+          FileConverter<K, V> converter ) throws IOException {
             /* create DiskLruCache */
 
-            mDiskLruCache = DiskLruCache.open(folder, 1, 1, maxSize);
+            mDir = folder;
+            mDiskLruCache = DiskLruCache.open( folder, 1, 1, maxSize );
 
             mConverter = converter;
       }
 
       @Override
-      public V save (K key, V value) {
+      public V save ( K key, V value ) {
 
-            String name = mConverter.fileName(key);
+            String name = mConverter.fileName( key );
 
             V result = null;
 
-            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
-                  result = load(key);
+            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
+                  result = load( key );
             }
 
             try {
-                  mDiskLruCache.remove(name);
+                  mDiskLruCache.remove( name );
             } catch(IOException e) {
                   e.printStackTrace();
             }
@@ -69,38 +72,38 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
             Editor editor = null;
 
             try {
-                  editor = mDiskLruCache.edit(name);
+                  editor = mDiskLruCache.edit( name );
             } catch(IOException e) {
                   e.printStackTrace();
             }
-            if(editor == null) {
+            if( editor == null ) {
                   return null;
             }
 
             OutputStream outputStream = null;
 
             try {
-                  outputStream = editor.newOutputStream(0);
+                  outputStream = editor.newOutputStream( 0 );
             } catch(IOException e) {
                   e.printStackTrace();
             }
-            if(outputStream == null) {
+            if( outputStream == null ) {
                   return null;
             }
             try {
 
-                  mConverter.saveValue(key, outputStream, value);
-                  CloseFunction.close(outputStream);
+                  mConverter.saveValue( key, outputStream, value );
+                  CloseFunction.close( outputStream );
                   editor.commit();
             } catch(IOException e) {
                   e.printStackTrace();
-                  abortEditor(editor);
-                  if(mExceptionHandler != null) {
-                        mExceptionHandler.onSaveValueToFile(e, key, value);
+                  abortEditor( editor );
+                  if( mExceptionHandler != null ) {
+                        mExceptionHandler.onSaveValueToFile( e, key, value );
                   }
             } finally {
 
-                  CloseFunction.close(outputStream);
+                  CloseFunction.close( outputStream );
             }
 
             try {
@@ -112,10 +115,92 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
             return result;
       }
 
-      private void abortEditor (Editor edit) {
+      @Override
+      public V remove ( K key ) {
+
+            V result = null;
+
+            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
+                  result = load( key );
+            }
 
             try {
-                  if(edit != null) {
+                  String fileName = mConverter.fileName( key );
+                  mDiskLruCache.remove( fileName );
+            } catch(IOException e) {
+
+                  e.printStackTrace();
+            }
+            return result;
+      }
+
+      @Override
+      public boolean containsOf ( K key ) {
+
+            String name = mConverter.fileName( key );
+
+            try {
+
+                  Snapshot snapshot = mDiskLruCache.get( name );
+                  boolean result = snapshot != null;
+                  if( result ) {
+                        snapshot.close();
+                  }
+                  return result;
+            } catch(IOException e) {
+
+                  e.printStackTrace();
+            }
+            return false;
+      }
+
+      @Override
+      public V load ( K key ) {
+
+            String stringKey = mConverter.fileName( key );
+
+            /* try to get snapShort */
+
+            Snapshot snapshot = null;
+            InputStream inputStream = null;
+            try {
+
+                  snapshot = mDiskLruCache.get( stringKey );
+            } catch(IOException e) {
+
+                  e.printStackTrace();
+            }
+
+            /* try to load value from snapShot's stream */
+
+            if( snapshot != null ) {
+
+                  inputStream = snapshot.getInputStream( 0 );
+
+                  try {
+
+                        return mConverter.toValue( key, inputStream );
+                  } catch(Exception e) {
+
+                        e.printStackTrace();
+
+                        if( mExceptionHandler != null ) {
+                              mExceptionHandler.onConvertToValue( e, key );
+                        }
+                  } finally {
+
+                        CloseFunction.close( inputStream );
+                        CloseFunction.close( snapshot );
+                  }
+            }
+
+            return null;
+      }
+
+      private void abortEditor ( Editor edit ) {
+
+            try {
+                  if( edit != null ) {
                         edit.abort();
                   }
             } catch(IOException e) {
@@ -125,84 +210,9 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       }
 
       @Override
-      public V remove (K key) {
+      public File getFile ( K key ) {
 
-            V result = null;
-
-            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
-                  result = load(key);
-            }
-
-            try {
-                  String fileName = mConverter.fileName(key);
-                  mDiskLruCache.remove(fileName);
-            } catch(IOException e) {
-
-                  e.printStackTrace();
-            }
-            return result;
-      }
-
-      @Override
-      public V load (K key) {
-
-            String stringKey = mConverter.fileName(key);
-
-            /* try to get snapShort */
-
-            Snapshot snapshot = null;
-            InputStream inputStream = null;
-            try {
-
-                  snapshot = mDiskLruCache.get(stringKey);
-            } catch(IOException e) {
-
-                  e.printStackTrace();
-            }
-
-            /* try to load value from snapShot's stream */
-
-            if(snapshot != null) {
-
-                  inputStream = snapshot.getInputStream(0);
-
-                  try {
-
-                        return mConverter.toValue(key, inputStream);
-                  } catch(Exception e) {
-
-                        e.printStackTrace();
-
-                        if(mExceptionHandler != null) {
-                              mExceptionHandler.onConvertToValue(e, key);
-                        }
-                  } finally {
-
-                        CloseFunction.close(inputStream);
-                        CloseFunction.close(snapshot);
-                  }
-            }
-
-            return null;
-      }
-
-      @Override
-      public boolean containsOf (K key) {
-
-            String name = mConverter.fileName(key);
-
-            try {
-
-                  Snapshot snapshot = mDiskLruCache.get(name);
-                  boolean result = snapshot != null;
-                  if(result) {
-                        snapshot.close();
-                  }
-                  return result;
-            } catch(IOException e) {
-
-                  e.printStackTrace();
-            }
-            return false;
+            String fileName = mConverter.fileName( key );
+            return new File( mDir, fileName + ".0" );
       }
 }
