@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import tech.threekilogram.depository.memory.MemoryLoader;
+import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 
 /**
@@ -25,8 +26,12 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
       private Button   mContainsOf;
       private Button   mLoad;
       private TextView mMessageText;
+      private Button   mButton;
 
-      private MemoryLoader<String, String> mMemoryLoader;
+      private MemoryLoader<String, String>         mMemoryLoader;
+      private MemoryMapLoader<String, String>      mMapLoader;
+      private MemoryLruCacheLoader<String, String> mLruLoader;
+      private Button                               mSize;
 
       public static void start ( Context context ) {
 
@@ -41,7 +46,9 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
             setContentView( R.layout.activity_test_memory );
             initView();
 
-            mMemoryLoader = new MemoryMapLoader<>();
+            mMapLoader = new MemoryMapLoader<>();
+            mLruLoader = new MemoryLruCacheLoader<>( 3 );
+            mMemoryLoader = mMapLoader;
       }
 
       private void initView ( ) {
@@ -57,6 +64,10 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
             mMessageText = (TextView) findViewById( R.id.messageText );
             mLoad = (Button) findViewById( R.id.load );
             mLoad.setOnClickListener( this );
+            mButton = (Button) findViewById( R.id.change );
+            mButton.setOnClickListener( this );
+            mSize = (Button) findViewById( R.id.size );
+            mSize.setOnClickListener( this );
       }
 
       @Override
@@ -75,9 +86,32 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
                   case R.id.load:
                         load();
                         break;
+                  case R.id.change:
+                        change();
+                        break;
+                  case R.id.size:
+                        size();
+                        break;
                   default:
                         break;
             }
+      }
+
+      private void change ( ) {
+
+            if( mMemoryLoader instanceof MemoryMapLoader ) {
+
+                  mMemoryLoader = mLruLoader;
+            } else {
+
+                  mMemoryLoader = mMapLoader;
+            }
+      }
+
+      private void size ( ) {
+
+            int size = mMemoryLoader.size();
+            showMessage( String.valueOf( size ) );
       }
 
       private void save ( ) {

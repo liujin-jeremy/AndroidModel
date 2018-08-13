@@ -71,7 +71,7 @@
           android:id="@+id/messageText"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginTop="32dp"
+          android:layout_marginTop="8dp"
           android:layout_marginStart="8dp"
           android:layout_marginEnd="8dp"
           android:layout_marginLeft="8dp"
@@ -79,7 +79,7 @@
           android:text="TextView"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/delete"/>
+          app:layout_constraintTop_toBottomOf="@+id/change"/>
       <Button
           android:id="@+id/load"
           android:layout_width="wrap_content"
@@ -89,4 +89,24 @@
           android:text="load"
           app:layout_constraintStart_toEndOf="@+id/containsOf"
           app:layout_constraintTop_toTopOf="@+id/containsOf"/>
+      <Button
+          android:id="@+id/change"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="change"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/save"/>
+      <Button
+          android:id="@+id/size"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="size"
+          app:layout_constraintStart_toEndOf="@+id/change"
+          app:layout_constraintTop_toBottomOf="@+id/delete"/>
 </android.support.constraint.ConstraintLayout>
