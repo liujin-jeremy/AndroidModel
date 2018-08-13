@@ -1,16 +1,9 @@
 package tech.threekilogram.depository;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import tech.threekilogram.depository.file.converter.FileStreamConverter;
-import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
-import tech.threekilogram.depository.file.impl.FileLoader;
-import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
+import tech.threekilogram.depository.memory.map.MemoryListLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 
 /**
@@ -25,191 +18,116 @@ class Test {
 
       public static void main ( String[] args ) {
 
-            testDiskStreamConverter();
-      }
-
-      private static void testDiskStreamConverter ( ) {
-
-            DiskLruCacheLoader<String, InputStream> loader = null;
-            try {
-                  loader = new DiskLruCacheLoader<>(
-                      TEMP,
-                      1024 * 1024 * 50,
-                      new FileStreamConverter()
-                  );
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-
-            if( loader == null ) {
-                  return;
-            }
-
-            String key = "key";
-            InputStream stream = new ByteArrayInputStream( "HelloWorld".getBytes() );
-            loader.save( key, stream );
-            File file = loader.getFile( key );
-            System.out.println( file );
-
-            InputStream load = loader.load( key );
-            try {
-                  int available = load.available();
-                  System.out.println( available );
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-      }
-
-      private static void testFileStreamConverter ( ) {
-
-            FileLoader<String, InputStream> loader = new FileLoader<>(
-                TEMP,
-                new FileStreamConverter()
-            );
-
-            String key = "key";
-            InputStream stream = new ByteArrayInputStream( "HelloWorld".getBytes() );
-            loader.save( key, stream );
-            File file = loader.getFile( key );
-            System.out.println( file );
-
-            InputStream inputStream = loader.load( key );
-            try {
-                  int available = inputStream.available();
-                  byte[] bytes = new byte[ available ];
-                  int read = inputStream.read( bytes );
-
-                  String s = new String( bytes, 0, read );
-
-                  System.out.println( s );
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-      }
-
-      private static void testDiskLruFileLoader ( ) {
-
-            DiskLruCacheLoader<String, String> loader = null;
-            try {
-                  loader = new DiskLruCacheLoader<>(
-                      TEMP, 1024 * 1024 * 50, new FileStringConverter() );
-
-                  String key = "Hello";
-
-                  String s = Md5Function.nameFromMd5( key );
-                  System.out.println( s );
-
-                  loader.save( key, "World" );
-                  File file = loader.getFile( key );
-
-                  System.out.println( file.exists() );
-
-                  String load = loader.load( key );
-                  System.out.println( load );
-
-                  String remove = loader.remove( key );
-                  System.out.println( remove );
-
-                  boolean containsOf = loader.containsOf( key );
-                  System.out.println( containsOf );
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-      }
-
-      private static void testFileLoader ( ) {
-
-            FileLoader<String, String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
-
-            String key = "Hello";
-
-            loader.save( key, "World" );
-            File file = loader.getFile( key );
-            System.out.println( file.getAbsolutePath() );
-            String load = loader.load( key );
-            System.out.println( load );
-
-            String remove = loader.remove( key );
-            System.out.println( remove );
-            file = loader.getFile( key );
-            System.out.println( file.getAbsolutePath() );
-
-            boolean containsOf = loader.containsOf( key );
-            System.out.println( containsOf );
       }
 
       private static void testMemoryLru ( ) {
 
-            MemoryLruCacheLoader<String, String> loader = new MemoryLruCacheLoader<>();
+            /* MemoryListLoader 使用数字索引保存/读取数据 */
+            MemoryLruCacheLoader<String, String> loader = new MemoryLruCacheLoader<>( 3 );
 
-            String key0 = "key0";
+            String value = "HelloAndroidModel - 0";
+            String value1 = "HelloAndroidModel - 1";
+            String value2 = "HelloAndroidModel - 2";
+
+            String key = "key";
             String key1 = "key1";
             String key2 = "key2";
 
-            String value0 = "value0";
-            String value1 = "value1";
-            String value2 = "value2";
-
-            loader.save( key0, value0 );
+            loader.save( key, value );
             loader.save( key1, value1 );
             loader.save( key2, value2 );
 
             int size = loader.size();
-            System.out.println( size );
+            System.out.println( "size: " + size );
 
-            String load = loader.load( key0 );
-            System.out.println( load );
+            String valueLoad0 = loader.load( key );
+            System.out.println( "value at key: " + valueLoad0 );
 
-            String remove = loader.remove( key0 );
-            System.out.println( remove );
+            boolean containsOf = loader.containsOf( key2 );
+            System.out.println( "contains of key2: " + containsOf );
 
-            boolean b = loader.containsOf( key0 );
-            System.out.println( b );
-
-            loader.save( key0, value0 );
-            int size1 = loader.size();
-            System.out.println( size1 );
+            loader.remove( key2 );
+            containsOf = loader.containsOf( key2 );
+            System.out.println( "after remove contains of key2: " + containsOf );
 
             loader.clear();
-            int size2 = loader.size();
-            System.out.println( size2 );
+            size = loader.size();
+            System.out.println( "after clear size: " + size );
+
+            loader.save( key, value );
+            loader.save( key1, value1 );
+            loader.save( key2, value2 );
+            loader.save( "extra", "extra" );
+            size = loader.size();
+            System.out.println( "after add 4 item size: " + size );
+            String load = loader.load( key );
+            System.out.println( "value at key: " + load );
       }
 
       private static void testMemoryMap ( ) {
 
+            /* MemoryListLoader 使用数字索引保存/读取数据 */
             MemoryMapLoader<String, String> loader = new MemoryMapLoader<>();
 
-            String key0 = "key0";
+            String value = "HelloAndroidModel - 0";
+            String value1 = "HelloAndroidModel - 1";
+            String value2 = "HelloAndroidModel - 2";
+
+            String key = "key";
             String key1 = "key1";
             String key2 = "key2";
 
-            String value0 = "value0";
-            String value1 = "value1";
-            String value2 = "value2";
-
-            loader.save( key0, value0 );
+            loader.save( key, value );
             loader.save( key1, value1 );
             loader.save( key2, value2 );
 
             int size = loader.size();
-            System.out.println( size );
+            System.out.println( "size: " + size );
 
-            String load = loader.load( key0 );
-            System.out.println( load );
+            String valueLoad0 = loader.load( key );
+            System.out.println( "value at key: " + valueLoad0 );
 
-            String remove = loader.remove( key0 );
-            System.out.println( remove );
+            boolean containsOf = loader.containsOf( key2 );
+            System.out.println( "contains of key2: " + containsOf );
 
-            boolean b = loader.containsOf( key0 );
-            System.out.println( b );
-
-            loader.save( key0, value0 );
-            int size1 = loader.size();
-            System.out.println( size1 );
+            loader.remove( key2 );
+            containsOf = loader.containsOf( key2 );
+            System.out.println( "after remove contains of key2: " + containsOf );
 
             loader.clear();
-            int size2 = loader.size();
-            System.out.println( size2 );
+            size = loader.size();
+            System.out.println( "after clear size: " + size );
+      }
+
+      private static void testMemoryList ( ) {
+
+            /* MemoryListLoader 使用数字索引保存/读取数据 */
+            MemoryListLoader<String> loader = new MemoryListLoader<>();
+
+            String value = "HelloAndroidModel - 0";
+            String value1 = "HelloAndroidModel - 1";
+            String value2 = "HelloAndroidModel - 2";
+
+            loader.save( 0, value );
+            loader.save( 1, value1 );
+            loader.save( 2, value2 );
+
+            int size = loader.size();
+            System.out.println( "size: " + size );
+
+            String valueLoad0 = loader.load( 0 );
+            System.out.println( "value at 0: " + valueLoad0 );
+
+            boolean containsOf = loader.containsOf( 2 );
+            System.out.println( "contains of 2: " + containsOf );
+
+            loader.remove( 2 );
+            containsOf = loader.containsOf( 2 );
+            System.out.println( "after remove contains of 2: " + containsOf );
+
+            loader.clear();
+            size = loader.size();
+            System.out.println( "after clear size: " + size );
       }
 
       private static class Bean {

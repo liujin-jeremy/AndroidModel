@@ -3,7 +3,7 @@ package tech.threekilogram.depository.net.retrofit.stream.string;
 import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
 
 /**
- * 从网络读取json对象
+ * 从网络读取string对象
  *
  * @author: Liujin
  * @version: V1.0
