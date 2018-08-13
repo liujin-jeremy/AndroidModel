@@ -10,8 +10,8 @@ import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 import tech.threekilogram.depository.net.retrofit.RetrofitStreamLoader;
-import tech.threekilogram.depository.net.retrofit.convert.down.RetrofitUrlDiskLruConverter;
-import tech.threekilogram.depository.net.retrofit.convert.down.RetrofitUrlFileConverter;
+import tech.threekilogram.depository.net.retrofit.convert.down.RetrofitDiskLruConverter;
+import tech.threekilogram.depository.net.retrofit.convert.down.RetrofitFileConverter;
 import tech.threekilogram.depository.net.retrofit.convert.json.RetrofitUrlGsonConverter;
 import tech.threekilogram.depository.net.retrofit.convert.string.RetrofitUrlStringConverter;
 
@@ -33,7 +33,7 @@ public class Test {
       private static void testDiskRetrofit () {
 
             RetrofitStreamLoader<String, File> loader = new RetrofitStreamLoader<>(
-                new RetrofitUrlDiskLruConverter(TEMP, 1024 * 1024 * 50));
+                new RetrofitDiskLruConverter( TEMP, 1024 * 1024 * 50 ) );
 
             String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
 
@@ -45,7 +45,7 @@ public class Test {
       private static void testFileRetrofit () {
 
             RetrofitStreamLoader<String, File> loader = new RetrofitStreamLoader<>(
-                new RetrofitUrlFileConverter(TEMP));
+                new RetrofitFileConverter( TEMP ) );
 
             String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
 

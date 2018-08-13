@@ -12,8 +12,8 @@ import tech.threekilogram.depository.net.retrofit.service.RetrofitConverter;
 
 /**
  * base 接口,缓存下载文件到文件夹,该类适用于将一个网络响应缓存到文件夹,有实现类
- * {@link RetrofitDiskLruConverter},{@link RetrofitFileConverter},
- * {@link RetrofitUrlDiskLruConverter},{@link RetrofitUrlFileConverter}
+ * {@link BaseRetrofitDiskLruConverter},{@link BaseRetrofitFileConverter},
+ * {@link RetrofitDiskLruConverter},{@link RetrofitFileConverter}
  *
  * @author liujin
  */

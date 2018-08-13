@@ -24,6 +24,8 @@
             </activity>
             <activity android:name=".TestFileActivity">
             </activity>
+            <activity android:name=".TestNetActivity">
+            </activity>
       </application>
 
 </manifest>

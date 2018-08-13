@@ -7,7 +7,6 @@ import java.io.Reader;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.instance.GsonClient;
-import tech.threekilogram.depository.net.UrlConverter;
 import tech.threekilogram.depository.net.retrofit.service.RetrofitConverter;
 
 /**
