@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
+import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
@@ -16,14 +16,16 @@ import tech.threekilogram.depository.file.impl.FileLoader;
 /**
  * @author liujin
  */
-public class TestFileActivity extends AppCompatActivity implements OnClickListener {
+public class TestFileActivity extends AppCompatActivity {
 
       private final String key   = "HelloFile";
       private final String value = "Hello Android Model";
+
       private FileLoader<String, String>         mFileLoader;
       private DiskLruCacheLoader<String, String> mDiskLruCacheLoader;
       private BaseFileLoader<String, String>     mLoader;
-      private TextView                           mTextView;
+
+      private TextView mTextView;
 
       public static void start ( Context context ) {
 
@@ -60,13 +62,7 @@ public class TestFileActivity extends AppCompatActivity implements OnClickListen
       public void save ( View view ) {
 
             mLoader.save( key, value );
-            if( mLoader == mFileLoader ) {
-
-                  show( "save to : " + mFileLoader.getFile( key ) );
-            } else {
-
-                  show( " save finished " );
-            }
+            show( "save to : " + mLoader.getFile( key ) );
       }
 
       private void show ( String text ) {
@@ -74,30 +70,27 @@ public class TestFileActivity extends AppCompatActivity implements OnClickListen
             mTextView.setText( text );
       }
 
-      public void load ( View view ) {}
+      public void load ( View view ) {
 
-      public void delete ( View view ) {}
+            String load = mLoader.load( key );
+            show( "load : " + load );
+      }
 
-      public void change ( View view ) {}
+      public void delete ( View view ) {
 
-      @Override
-      public void onClick ( View v ) {
+            mLoader.remove( key );
+            File file = mLoader.getFile( key );
+            show( "remove : " + file + " exist : " + file.exists() );
+      }
 
-            switch( v.getId() ) {
-                  case R.id.save:
-                        // TODO 18/08/13
-                        break;
-                  case R.id.load:
-                        // TODO 18/08/13
-                        break;
-                  case R.id.delete:
-                        // TODO 18/08/13
-                        break;
-                  case R.id.change:
-                        // TODO 18/08/13
-                        break;
-                  default:
-                        break;
+      public void change ( View view ) {
+
+            if( mLoader == mFileLoader ) {
+
+                  mLoader = mDiskLruCacheLoader;
+            } else {
+
+                  mLoader = mFileLoader;
             }
       }
 }
