@@ -12,10 +12,6 @@ import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
-import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
-import tech.threekilogram.depository.net.retrofit.stream.down.RetrofitDownConverter;
-import tech.threekilogram.depository.net.retrofit.stream.json.RetrofitGsonConverter;
-import tech.threekilogram.depository.net.retrofit.stream.string.RetrofitStringConverter;
 
 /**
  * @author: Liujin
@@ -89,43 +85,6 @@ class Test {
             } catch(IOException e) {
                   e.printStackTrace();
             }
-      }
-
-      private static void testFileRetrofit ( ) {
-
-            RetrofitStreamLoader<String, File> loader = new RetrofitStreamLoader<>(
-                new RetrofitDownConverter( TEMP ) );
-
-            String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
-
-            File load = loader.load( url );
-
-            System.out.println( load.getAbsolutePath() );
-      }
-
-      private static void testJson ( ) {
-
-            String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
-
-            RetrofitStreamLoader<String, Bean> loader = new RetrofitStreamLoader<>(
-                new RetrofitGsonConverter<Bean>( Bean.class ) );
-
-            Bean load = loader.load( url );
-
-            System.out.println( load.getResults().size() );
-            System.out.println( load.getResults().get( 0 ).url );
-      }
-
-      private static void testRetrofitString ( ) {
-
-            RetrofitStreamLoader<String, String> loader = new RetrofitStreamLoader<>(
-                new RetrofitStringConverter() );
-
-            String url = "http://gank.io/api/today ";
-
-            String value = loader.load( url );
-
-            System.out.println( value );
       }
 
       private static void testDiskLruFileLoader ( ) {
