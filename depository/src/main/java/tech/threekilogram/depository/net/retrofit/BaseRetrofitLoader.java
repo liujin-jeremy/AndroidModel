@@ -13,14 +13,13 @@ import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
 /**
  * 该类是{@link Loader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
  *
- * @param <K> key 类型
  * @param <V> value 类型
  * @param <S> 用于{@link retrofit2.Retrofit#create(Class)}中的class类型,即:retrofit服务类型
  *
  * @author liujin
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
+public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
 
       /**
        * retrofit 客户端
@@ -28,17 +27,17 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
       protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
 
       /**
-       * 完成从key {@link K} 到value {@link V} 转换
+       * 完成从key {@link String} 到value {@link V} 转换
        */
-      protected NetConverter<K, V, ResponseBody> mNetConverter;
+      protected NetConverter<V, ResponseBody> mNetConverter;
       /**
        * retrofit service 类型
        */
-      protected Class<S>                         mServiceType;
+      protected Class<S>                      mServiceType;
       /**
        * 异常处理助手
        */
-      protected NetExceptionHandler<K>           mExceptionHandler;
+      protected NetExceptionHandler<String>   mExceptionHandler;
 
       public BaseRetrofitLoader ( ) { }
 
@@ -50,7 +49,7 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        */
       public BaseRetrofitLoader (
           Class<S> serviceType,
-          NetConverter<K, V, ResponseBody> netConverter ) {
+          NetConverter<V, ResponseBody> netConverter ) {
 
             mNetConverter = netConverter;
             mServiceType = serviceType;
@@ -71,23 +70,23 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
             mRetrofit = retrofit;
       }
 
-      public NetExceptionHandler<K> getExceptionHandler ( ) {
+      public NetExceptionHandler<String> getExceptionHandler ( ) {
 
             return mExceptionHandler;
       }
 
       public void setExceptionHandler (
-          NetExceptionHandler<K> exceptionHandler ) {
+          NetExceptionHandler<String> exceptionHandler ) {
 
             mExceptionHandler = exceptionHandler;
       }
 
       @Override
-      public V load ( K key ) {
+      public V load ( String key ) {
 
             /* 1. 获得url */
 
-            String urlFromKey = mNetConverter.urlFromKey( key );
+            java.lang.String urlFromKey = mNetConverter.urlFromKey( key );
             S service = mRetrofit.create( mServiceType );
 
             /* 2. 制造一个call对象 */
@@ -137,10 +136,11 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        * config retrofit service
        *
        * @param key key
-       * @param url url from key at {@link NetConverter#urlFromKey(Object)}}
+       * @param url url from key at {@link NetConverter#urlFromKey(String)}}
        * @param service service to config
        *
        * @return a call to execute
        */
-      protected abstract Call<ResponseBody> configService ( K key, String url, S service );
+      protected abstract Call<ResponseBody> configService (
+          String key, java.lang.String url, S service );
 }

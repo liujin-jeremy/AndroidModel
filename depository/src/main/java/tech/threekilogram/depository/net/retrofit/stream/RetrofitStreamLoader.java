@@ -12,7 +12,7 @@ import tech.threekilogram.depository.net.retrofit.BaseRetrofitLoader;
  *
  * @author liujin
  */
-public class RetrofitStreamLoader<V> extends BaseRetrofitLoader<String, V, StreamService> {
+public class RetrofitStreamLoader<V> extends BaseRetrofitLoader<V, StreamService> {
 
       public RetrofitStreamLoader ( BaseRetrofitConverter<V> netConverter ) {
 

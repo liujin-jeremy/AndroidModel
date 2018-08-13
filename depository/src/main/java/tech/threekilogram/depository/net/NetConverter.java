@@ -5,15 +5,14 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
- * 使用 {@link K} 类型向网络发送请求,收到 {@link P} 类型响应数据,转为 {@link V} 类型结果
+ * 使用 {@link String} 类型向网络发送请求,收到 {@link P} 类型响应数据,转为 {@link V} 类型结果
  *
- * @param <K> key 类型
  * @param <V> value 类型
  * @param <P> 网络响应类型
  *
  * @author liujin
  */
-public interface NetConverter<K, V, P> {
+public interface NetConverter<V, P> {
 
       /**
        * 从 key 中获取url
@@ -22,7 +21,7 @@ public interface NetConverter<K, V, P> {
        *
        * @return url
        */
-      String urlFromKey ( K key );
+      String urlFromKey ( String key );
 
       /**
        * 当网络响应成功之后的回调,需要完成从响应到value的变换
@@ -37,7 +36,7 @@ public interface NetConverter<K, V, P> {
        * @throws Exception when convert  {@link ResponseBody} to {@link V} may occur a exception
        *                   {@see #onConvertException(Object, String, Exception)}
        */
-      V onExecuteSuccess ( K key, P response ) throws Exception;
+      V onExecuteSuccess ( String key, P response ) throws Exception;
 
       /**
        * 没有成功获取数据的回调
@@ -48,7 +47,7 @@ public interface NetConverter<K, V, P> {
        * @param httpCode http code
        * @param errorResponse error body
        */
-      void onExecuteFailed ( K key, int httpCode, P errorResponse );
+      void onExecuteFailed ( String key, int httpCode, P errorResponse );
 
       /**
        * 使用该类处理网络异常
@@ -56,21 +55,21 @@ public interface NetConverter<K, V, P> {
       interface NetExceptionHandler<K> {
 
             /**
-             * 当从网络下载的文件转换时的异常{@link #onExecuteSuccess(Object, Object)}
+             * 当从网络下载的文件转换时的异常{@link #onExecuteSuccess(String, Object)}
              *
              * @param key key key
-             * @param url url url from {@link #urlFromKey(Object)}
+             * @param url url url from {@link #urlFromKey(String)}
              * @param e exception exception
              */
-            void onConvertException ( K key, String url, Exception e );
+            void onConvertException ( K key, java.lang.String url, Exception e );
 
             /**
              * 无法连接网络
              *
              * @param key key key
-             * @param url url url from {@link #urlFromKey(Object)}
+             * @param url url url from {@link #urlFromKey(String)}
              * @param e exception exception
              */
-            void onConnectException ( K key, String url, IOException e );
+            void onConnectException ( K key, java.lang.String url, IOException e );
       }
 }

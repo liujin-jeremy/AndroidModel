@@ -20,11 +20,11 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
       /**
        * 下载文件夹
        */
-      private File                                mDir;
+      private File                        mDir;
       /**
        * 保存文件
        */
-      private BaseFileLoader<String, InputStream> mFileLoader;
+      private BaseFileLoader<InputStream> mFileLoader;
 
       /**
        * @param dir 指定保存文件夹
