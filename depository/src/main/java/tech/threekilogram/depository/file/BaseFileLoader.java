@@ -37,6 +37,11 @@ public abstract class BaseFileLoader<V> implements ContainerLoader<String, V> {
        */
       protected           int mSaveStrategy            = SAVE_STRATEGY_COVER;
 
+      /**
+       * 读取保存策略
+       *
+       * @return 策略
+       */
       public int getSaveStrategy ( ) {
 
             return mSaveStrategy;
@@ -59,11 +64,19 @@ public abstract class BaseFileLoader<V> implements ContainerLoader<String, V> {
             mSaveStrategy = saveStrategy;
       }
 
+      /**
+       * @return 异常处理类, 或者null
+       */
       public ExceptionHandler<V> getExceptionHandler ( ) {
 
             return mExceptionHandler;
       }
 
+      /**
+       * 设置异常处理类
+       *
+       * @param exceptionHandler 异常处理类
+       */
       public void setExceptionHandler (
           ExceptionHandler<V> exceptionHandler ) {
 
@@ -79,6 +92,9 @@ public abstract class BaseFileLoader<V> implements ContainerLoader<String, V> {
        */
       public abstract File getFile ( String key );
 
+      /**
+       * 保存策略的值类型
+       */
       @Retention(RetentionPolicy.SOURCE)
       @SuppressWarnings("WeakerAccess")
       @IntDef(value = { SAVE_STRATEGY_COVER,

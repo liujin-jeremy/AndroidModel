@@ -48,8 +48,6 @@ public class FileGsonConverter<T> implements FileConverter<T> {
       @Override
       public String fileName ( String key ) {
 
-            /* 默认将该key md5 一下,防止有非法的字符 */
-
             return Md5Function.nameFromMd5( key );
       }
 

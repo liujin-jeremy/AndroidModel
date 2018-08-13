@@ -35,8 +35,10 @@ public class FileStreamConverter implements FileConverter<InputStream> {
           throws IOException {
 
             try {
+
                   byte[] bytes = new byte[ 128 ];
                   int len = 0;
+
                   while( ( len = value.read( bytes ) ) != -1 ) {
 
                         outputStream.write( bytes, 0, len );

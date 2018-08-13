@@ -20,6 +20,7 @@ import tech.threekilogram.depository.file.impl.FileLoader;
 public interface FileConverter<V> {
 
       /**
+       * 根据key返回文件名字,文件名字不能包含一些特殊字符,最好只包含数字字母
        * to get a file from key
        *
        * @param key key to map a file
@@ -29,10 +30,12 @@ public interface FileConverter<V> {
       String fileName ( String key );
 
       /**
+       * 将一个stream转换为指定类型的类实例
+       * <p>
        * convert a file to value
        *
        * @param key key
-       * @param stream stream
+       * @param stream stream from {@link java.io.File} get by {@link #fileName(String)}
        *
        * @return value
        *
@@ -41,10 +44,12 @@ public interface FileConverter<V> {
       V toValue ( String key, InputStream stream ) throws Exception;
 
       /**
+       * 将一个指定类型的类实例保存到输出流
+       * <p>
        * to save value
        *
        * @param key key
-       * @param outputStream stream
+       * @param outputStream stream from {@link java.io.File} get by {@link #fileName(String)}
        * @param value to saved value
        *
        * @throws IOException can,t save value to this file
