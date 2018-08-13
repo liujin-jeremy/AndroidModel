@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.service;
+package tech.threekilogram.depository.net.retrofit.stream;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

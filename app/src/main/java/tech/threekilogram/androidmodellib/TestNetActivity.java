@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import java.io.File;
-import tech.threekilogram.depository.net.retrofit.RetrofitStreamLoader;
+import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
 
 /**
  * @author liujin

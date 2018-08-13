@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import tech.threekilogram.depository.ContainerLoader;
 
 /**
@@ -35,16 +37,9 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
        */
       protected           int mSaveStrategy            = SAVE_STRATEGY_COVER;
 
-      /**
-       * 设置当保存文件时,如果文件已经存在怎么处理, 如果是{@link #SAVE_STRATEGY_COVER}那么 {@link
-       * #save(Object, Object)}直接返回null,不会去尝试解析file为value, 如果是{@link #SAVE_STRATEGY_RETURN_OLD}那么
-       * {@link #save(Object, Object)}会去尝试解析file为value,然后返回该值,同时保存新的value到该文件
-       *
-       * @param saveStrategy 策略
-       */
-      public void setSaveStrategy (@SaveStrategyValue int saveStrategy) {
+      public int getSaveStrategy ( ) {
 
-            mSaveStrategy = saveStrategy;
+            return mSaveStrategy;
       }
 
       /**
@@ -52,10 +47,43 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
        */
       protected ExceptionHandler<K, V> mExceptionHandler;
 
+      /**
+       * 设置当保存文件时,如果文件已经存在怎么处理, 如果是{@link #SAVE_STRATEGY_COVER}那么 {@link
+       * #save(Object, Object)}直接返回null,不会去尝试解析file为value, 如果是{@link #SAVE_STRATEGY_RETURN_OLD}那么
+       * {@link #save(Object, Object)}会去尝试解析file为value,然后返回该值,同时保存新的value到该文件
+       *
+       * @param saveStrategy 策略
+       */
+      public void setSaveStrategy ( @SaveStrategyValue int saveStrategy ) {
+
+            mSaveStrategy = saveStrategy;
+      }
+
+      public ExceptionHandler<K, V> getExceptionHandler ( ) {
+
+            return mExceptionHandler;
+      }
+
+      public void setExceptionHandler (
+          ExceptionHandler<K, V> exceptionHandler ) {
+
+            mExceptionHandler = exceptionHandler;
+      }
+
+      /**
+       * 根据key返回文件
+       *
+       * @param key key
+       *
+       * @return 文件
+       */
+      public abstract File getFile ( K key );
+
+      @Retention(RetentionPolicy.SOURCE)
       @SuppressWarnings("WeakerAccess")
-      @IntDef(value = {SAVE_STRATEGY_COVER,
-                       SAVE_STRATEGY_RETURN_OLD})
-      public static @interface SaveStrategyValue {}
+      @IntDef(value = { SAVE_STRATEGY_COVER,
+                        SAVE_STRATEGY_RETURN_OLD })
+      public static @interface SaveStrategyValue { }
 
       /**
        * handle exception
@@ -69,7 +97,7 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
              * @param e exception
              * @param key which key occur
              */
-            void onConvertToValue (Exception e, K key);
+            void onConvertToValue ( Exception e, K key );
 
             /**
              * a exception occur at {@link FileConverter#saveValue(Object, OutputStream, Object)}
@@ -80,24 +108,6 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
              * @param key key
              * @param value to save
              */
-            void onSaveValueToFile (IOException e, K key, V value);
+            void onSaveValueToFile ( IOException e, K key, V value );
       }
-
-      public int getSaveStrategy () {
-
-            return mSaveStrategy;
-      }
-
-      public void setExceptionHandler (
-          ExceptionHandler<K, V> exceptionHandler) {
-
-            mExceptionHandler = exceptionHandler;
-      }
-
-      public ExceptionHandler<K, V> getExceptionHandler () {
-
-            return mExceptionHandler;
-      }
-
-      public abstract File getFile ( K key );
 }

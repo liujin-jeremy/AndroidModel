@@ -1,9 +1,9 @@
-package tech.threekilogram.depository.net.retrofit;
+package tech.threekilogram.depository.net.retrofit.stream;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import tech.threekilogram.depository.net.retrofit.service.RetrofitConverter;
-import tech.threekilogram.depository.net.retrofit.service.StreamService;
+import tech.threekilogram.depository.net.retrofit.BaseRetrofitLoader;
+import tech.threekilogram.depository.net.retrofit.RetrofitConverter;
 
 /**
  * 使用 retrofit 从网络获取文件

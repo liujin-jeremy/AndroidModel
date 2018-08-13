@@ -40,9 +40,7 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        */
       protected NetExceptionHandler<K>           mExceptionHandler;
 
-      public BaseRetrofitLoader () {
-
-      }
+      public BaseRetrofitLoader ( ) { }
 
       /**
        * 最少需要这两个才能正常工作
@@ -51,10 +49,15 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        * @param netConverter 转换器
        */
       public BaseRetrofitLoader (
-          Class<S> serviceType, NetConverter<K, V, ResponseBody> netConverter) {
+          Class<S> serviceType, NetConverter<K, V, ResponseBody> netConverter ) {
 
             mNetConverter = netConverter;
             mServiceType = serviceType;
+      }
+
+      public Retrofit getRetrofit ( ) {
+
+            return mRetrofit;
       }
 
       /**
@@ -62,38 +65,33 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        *
        * @param retrofit 新的{@link Retrofit}
        */
-      public void setRetrofit (Retrofit retrofit) {
+      public void setRetrofit ( Retrofit retrofit ) {
 
             mRetrofit = retrofit;
       }
 
-      public Retrofit getRetrofit () {
-
-            return mRetrofit;
-      }
-
-      public NetExceptionHandler<K> getExceptionHandler () {
+      public NetExceptionHandler<K> getExceptionHandler ( ) {
 
             return mExceptionHandler;
       }
 
       public void setExceptionHandler (
-          NetExceptionHandler<K> exceptionHandler) {
+          NetExceptionHandler<K> exceptionHandler ) {
 
             mExceptionHandler = exceptionHandler;
       }
 
       @Override
-      public V load (K key) {
+      public V load ( K key ) {
 
             /* 1. 获得url */
 
-            String urlFromKey = mNetConverter.urlFromKey(key);
-            S service = mRetrofit.create(mServiceType);
+            String urlFromKey = mNetConverter.urlFromKey( key );
+            S service = mRetrofit.create( mServiceType );
 
             /* 2. 制造一个call对象 */
 
-            Call<ResponseBody> call = configService(key, urlFromKey, service);
+            Call<ResponseBody> call = configService( key, urlFromKey, service );
 
             /* 3. 执行call */
 
@@ -101,33 +99,33 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
                   Response<ResponseBody> response = call.execute();
 
                   /* 4. 如果成功获得数据 */
-                  if(response.isSuccessful()) {
+                  if( response.isSuccessful() ) {
 
                         ResponseBody responseBody = response.body();
 
                         try {
 
                               /* 5. 转换数据 */
-                              return mNetConverter.onExecuteSuccess(key, responseBody);
+                              return mNetConverter.onExecuteSuccess( key, responseBody );
                         } catch(Exception e) {
 
                               e.printStackTrace();
                               /* 6. 转换异常 */
-                              if(mExceptionHandler != null) {
-                                    mExceptionHandler.onConvertException(key, urlFromKey, e);
+                              if( mExceptionHandler != null ) {
+                                    mExceptionHandler.onConvertException( key, urlFromKey, e );
                               }
                         }
                   } else {
 
                         /* 4. 连接到网络,但是没有获取到数据 */
-                        mNetConverter.onExecuteFailed(key, response.code(), response.errorBody());
+                        mNetConverter.onExecuteFailed( key, response.code(), response.errorBody() );
                   }
             } catch(IOException e) {
 
                   /* 4. 没有连接到网络 */
                   e.printStackTrace();
-                  if(mExceptionHandler != null) {
-                        mExceptionHandler.onConnectException(key, urlFromKey, e);
+                  if( mExceptionHandler != null ) {
+                        mExceptionHandler.onConnectException( key, urlFromKey, e );
                   }
             }
 
@@ -143,5 +141,5 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        *
        * @return a call to execute
        */
-      protected abstract Call<ResponseBody> configService (K key, String url, S service);
+      protected abstract Call<ResponseBody> configService ( K key, String url, S service );
 }
