@@ -12,10 +12,10 @@ import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.function.Md5Function;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
-import tech.threekilogram.depository.net.retrofit.convert.json.RetrofitGsonConverter;
-import tech.threekilogram.depository.net.retrofit.convert.string.RetrofitUrlStringConverter;
 import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
 import tech.threekilogram.depository.net.retrofit.stream.down.RetrofitDownConverter;
+import tech.threekilogram.depository.net.retrofit.stream.json.RetrofitGsonConverter;
+import tech.threekilogram.depository.net.retrofit.stream.string.RetrofitUrlStringConverter;
 
 /**
  * @author: Liujin

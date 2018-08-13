@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.convert.string;
+package tech.threekilogram.depository.net.retrofit.stream.string;
 
 import java.io.InputStream;
 import okhttp3.ResponseBody;
@@ -6,15 +6,20 @@ import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.net.retrofit.RetrofitConverter;
 
 /**
- * 辅助完成转换工作
+ * 辅助完成转换工作,适用于使用一个Url作为key的情况
  *
  * @author liujin
  */
-public abstract class BaseRetrofitStringConverter<K> implements
-                                        RetrofitConverter<K, String> {
+public class RetrofitUrlStringConverter implements RetrofitConverter<String, String> {
 
       @Override
-      public String onExecuteSuccess ( K key, ResponseBody response ) throws Exception {
+      public String urlFromKey ( String key ) {
+
+            return key;
+      }
+
+      @Override
+      public String onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
             InputStream inputStream = null;
             byte[] bytes;
@@ -32,9 +37,7 @@ public abstract class BaseRetrofitStringConverter<K> implements
       }
 
       @Override
-      public void onExecuteFailed ( K key, int httpCode, ResponseBody errorResponse ) {
+      public void onExecuteFailed ( String key, int httpCode, ResponseBody errorResponse ) {
 
       }
 }
-
-

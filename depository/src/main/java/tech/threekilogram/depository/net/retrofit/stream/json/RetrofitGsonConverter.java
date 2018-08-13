@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.convert.json;
+package tech.threekilogram.depository.net.retrofit.stream.json;
 
 import com.google.gson.Gson;
 import java.io.InputStream;
@@ -10,11 +10,11 @@ import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.net.retrofit.RetrofitConverter;
 
 /**
- * 辅助完成转换工作,需要完成{@link K} 到 {@link String} url转换,网络响应{@link ResponseBody} 到{@link V}转换
+ * 辅助类,适用于使用一个Url作为key的情况
  *
  * @author liujin
  */
-public abstract class BaseRetrofitGsonConverter<K, V> implements RetrofitConverter<K, V> {
+public class RetrofitGsonConverter<V> implements RetrofitConverter<String, V> {
 
       @SuppressWarnings("WeakerAccess")
       protected Gson mGson = GsonClient.INSTANCE;
@@ -22,16 +22,19 @@ public abstract class BaseRetrofitGsonConverter<K, V> implements RetrofitConvert
       @SuppressWarnings("WeakerAccess")
       protected Class<V> mValueType;
 
-      public BaseRetrofitGsonConverter ( Class<V> valueType ) {
+      public RetrofitGsonConverter ( Class<V> valueType ) {
 
             mValueType = valueType;
       }
 
+      @Override
+      public String urlFromKey ( String key ) {
 
+            return key;
+      }
 
       @Override
-      public V onExecuteSuccess (
-          K key, ResponseBody response ) throws Exception {
+      public V onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
             InputStream inputStream = null;
             Reader reader = null;
@@ -52,9 +55,7 @@ public abstract class BaseRetrofitGsonConverter<K, V> implements RetrofitConvert
       }
 
       @Override
-      public void onExecuteFailed ( K key, int httpCode, ResponseBody errorResponse ) {
+      public void onExecuteFailed ( String key, int httpCode, ResponseBody errorResponse ) {
 
       }
 }
-
-
