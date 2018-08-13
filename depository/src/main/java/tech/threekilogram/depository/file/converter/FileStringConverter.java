@@ -17,43 +17,43 @@ import tech.threekilogram.depository.function.Md5Function;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class FileStringConverter implements FileConverter<String, String> {
+public class FileStringConverter implements FileConverter<String> {
 
       @Override
-      public String fileName (String key) {
+      public String fileName ( String key ) {
 
-            return Md5Function.nameFromMd5(key);
+            return Md5Function.nameFromMd5( key );
       }
 
       @Override
-      public String toValue (String key, InputStream stream) throws Exception {
+      public String toValue ( String key, InputStream stream ) throws Exception {
 
             int length = stream.available();
-            byte[] bytes = new byte[length];
+            byte[] bytes = new byte[ length ];
 
             try {
-                  int read = stream.read(bytes);
-                  return new String(bytes);
+                  int read = stream.read( bytes );
+                  return new String( bytes );
             } catch(IOException e) {
 
                   e.printStackTrace();
             } finally {
 
-                  CloseFunction.close(stream);
+                  CloseFunction.close( stream );
             }
 
             return null;
       }
 
       @Override
-      public void saveValue (String key, OutputStream outputStream, String value)
+      public void saveValue ( String key, OutputStream outputStream, String value )
           throws IOException {
 
             try {
-                  outputStream.write(value.getBytes());
+                  outputStream.write( value.getBytes() );
             } finally {
 
-                  CloseFunction.close(outputStream);
+                  CloseFunction.close( outputStream );
             }
       }
 }

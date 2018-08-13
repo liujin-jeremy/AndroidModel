@@ -24,7 +24,7 @@ import tech.threekilogram.depository.instance.GsonClient;
  *
  * @author liujin
  */
-public class FileGsonConverter<T> implements FileConverter<String, T> {
+public class FileGsonConverter<T> implements FileConverter<T> {
 
       /**
        * gson
@@ -40,51 +40,51 @@ public class FileGsonConverter<T> implements FileConverter<String, T> {
        *
        * @param valueType type of value
        */
-      public FileGsonConverter (Class<T> valueType) {
+      public FileGsonConverter ( Class<T> valueType ) {
 
             this.mValueType = valueType;
       }
 
       @Override
-      public String fileName (String key) {
+      public String fileName ( String key ) {
 
             /* 默认将该key md5 一下,防止有非法的字符 */
 
-            return Md5Function.nameFromMd5(key);
+            return Md5Function.nameFromMd5( key );
       }
 
       @Override
-      public T toValue (String key, InputStream stream) throws Exception {
+      public T toValue ( String key, InputStream stream ) throws Exception {
 
             Reader reader = null;
             try {
 
-                  reader = new InputStreamReader(stream);
-                  return sGson.fromJson(reader, mValueType);
+                  reader = new InputStreamReader( stream );
+                  return sGson.fromJson( reader, mValueType );
             } finally {
 
-                  CloseFunction.close(reader);
-                  CloseFunction.close(stream);
+                  CloseFunction.close( reader );
+                  CloseFunction.close( stream );
             }
       }
 
       @Override
-      public void saveValue (String key, OutputStream stream, T value) throws IOException {
+      public void saveValue ( String key, OutputStream stream, T value ) throws IOException {
 
             Writer writer = null;
             JsonWriter jsonWriter = null;
 
             try {
 
-                  writer = new OutputStreamWriter(stream);
-                  jsonWriter = new JsonWriter(writer);
+                  writer = new OutputStreamWriter( stream );
+                  jsonWriter = new JsonWriter( writer );
 
-                  sGson.toJson(value, mValueType, jsonWriter);
+                  sGson.toJson( value, mValueType, jsonWriter );
             } finally {
 
-                  CloseFunction.close(jsonWriter);
-                  CloseFunction.close(writer);
-                  CloseFunction.close(stream);
+                  CloseFunction.close( jsonWriter );
+                  CloseFunction.close( writer );
+                  CloseFunction.close( stream );
             }
       }
 }

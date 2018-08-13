@@ -17,7 +17,7 @@ import tech.threekilogram.depository.ContainerLoader;
  * @date: 2018-08-01
  * @time: 12:01
  */
-public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
+public abstract class BaseFileLoader<V> implements ContainerLoader<String, V> {
 
       /**
        * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话
@@ -45,7 +45,7 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
       /**
        * 处理发生的异常
        */
-      protected ExceptionHandler<K, V> mExceptionHandler;
+      protected ExceptionHandler<V> mExceptionHandler;
 
       /**
        * 设置当保存文件时,如果文件已经存在怎么处理, 如果是{@link #SAVE_STRATEGY_COVER}那么 {@link
@@ -59,13 +59,13 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
             mSaveStrategy = saveStrategy;
       }
 
-      public ExceptionHandler<K, V> getExceptionHandler ( ) {
+      public ExceptionHandler<V> getExceptionHandler ( ) {
 
             return mExceptionHandler;
       }
 
       public void setExceptionHandler (
-          ExceptionHandler<K, V> exceptionHandler ) {
+          ExceptionHandler<V> exceptionHandler ) {
 
             mExceptionHandler = exceptionHandler;
       }
@@ -77,7 +77,7 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
        *
        * @return 文件
        */
-      public abstract File getFile ( K key );
+      public abstract File getFile ( String key );
 
       @Retention(RetentionPolicy.SOURCE)
       @SuppressWarnings("WeakerAccess")
@@ -88,19 +88,19 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
       /**
        * handle exception
        */
-      public interface ExceptionHandler<K, V> {
+      public interface ExceptionHandler<V> {
 
             /**
-             * a exception occur at {@link FileConverter#toValue(Object, InputStream)} will
+             * a exception occur at {@link FileConverter#toValue(String, InputStream)} will
              * call this
              *
              * @param e exception
              * @param key which key occur
              */
-            void onConvertToValue ( Exception e, K key );
+            void onConvertToValue ( Exception e, String key );
 
             /**
-             * a exception occur at {@link FileConverter#saveValue(Object, OutputStream, Object)}
+             * a exception occur at {@link FileConverter#saveValue(String, OutputStream, Object)}
              * will call
              * this
              *
@@ -108,6 +108,6 @@ public abstract class BaseFileLoader<K, V> implements ContainerLoader<K, V> {
              * @param key key
              * @param value to save
              */
-            void onSaveValueToFile ( IOException e, K key, V value );
+            void onSaveValueToFile ( IOException e, String key, V value );
       }
 }

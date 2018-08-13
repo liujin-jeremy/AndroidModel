@@ -10,34 +10,33 @@ import tech.threekilogram.depository.file.FileConverter;
 /**
  * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link File}转换为{@link V}
  *
- * @param <K> key 的类型
  * @param <V> value 的类型
  *
  * @author liujin
  */
-public class FileLoader<K, V> extends BaseFileLoader<K, V> {
+public class FileLoader<V> extends BaseFileLoader<V> {
 
       /**
        * 一个文件夹用于统一保存key对应的文件
        */
-      private File                mDir;
+      private File             mDir;
       /**
        * 辅助loader正常工作
        */
-      private FileConverter<K, V> mConverter;
+      private FileConverter<V> mConverter;
 
       /**
        * @param dir 保存文件的文件夹
        * @param converter 用于转换{@link File}为{@link V}类型的实例
        */
-      public FileLoader (File dir, FileConverter<K, V> converter) {
+      public FileLoader ( File dir, FileConverter<V> converter ) {
 
             mDir = dir;
             mConverter = converter;
       }
 
       @Override
-      public V save (K key, V value) {
+      public V save ( String key, V value ) {
 
             /* get file to this key */
 
@@ -45,12 +44,12 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
 
             /* to decide how to write a value to file */
 
-            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
+            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
 
-                  result = load(key);
+                  result = load( key );
 
-                  if(result != null) {
-                        boolean delete = getFile(key).delete();
+                  if( result != null ) {
+                        boolean delete = getFile( key ).delete();
                   }
             }
 
@@ -58,17 +57,17 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
 
             try {
 
-                  File file = getFile(key);
-                  FileOutputStream stream = new FileOutputStream(file);
-                  mConverter.saveValue(key, stream, value);
+                  File file = getFile( key );
+                  FileOutputStream stream = new FileOutputStream( file );
+                  mConverter.saveValue( key, stream, value );
             } catch(IOException e) {
 
                   /* maybe can't save */
 
                   e.printStackTrace();
 
-                  if(mExceptionHandler != null) {
-                        mExceptionHandler.onSaveValueToFile(e, key, value);
+                  if( mExceptionHandler != null ) {
+                        mExceptionHandler.onSaveValueToFile( e, key, value );
                   }
             }
 
@@ -77,9 +76,52 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
             return result;
       }
 
-      public File getDir () {
+      @Override
+      public V remove ( String key ) {
 
-            return mDir;
+            V result = null;
+
+            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
+
+                  result = load( key );
+            }
+
+            boolean delete = getFile( key ).delete();
+            return result;
+      }
+
+      @Override
+      public boolean containsOf ( String key ) {
+
+            return getFile( key ).exists();
+      }
+
+      @Override
+      public V load ( String key ) {
+
+            File file = getFile( key );
+            V result = null;
+
+            if( file.exists() ) {
+
+                  try {
+                        /* convert the file to value */
+
+                        FileInputStream stream = new FileInputStream( file );
+                        result = mConverter.toValue( key, stream );
+                  } catch(Exception e) {
+
+                        /* maybe can't convert */
+
+                        e.printStackTrace();
+
+                        if( mExceptionHandler != null ) {
+                              mExceptionHandler.onConvertToValue( e, key );
+                        }
+                  }
+            }
+
+            return result;
       }
 
       /**
@@ -88,57 +130,14 @@ public class FileLoader<K, V> extends BaseFileLoader<K, V> {
        * @return file to this key, file may not exist
        */
       @Override
-      public File getFile ( K key ) {
+      public File getFile ( String key ) {
 
-            String name = mConverter.fileName(key);
-            return new File(mDir, name);
+            String name = mConverter.fileName( key );
+            return new File( mDir, name );
       }
 
-      @Override
-      public V remove (K key) {
+      public File getDir ( ) {
 
-            V result = null;
-
-            if(mSaveStrategy == SAVE_STRATEGY_RETURN_OLD) {
-
-                  result = load(key);
-            }
-
-            boolean delete = getFile(key).delete();
-            return result;
-      }
-
-      @Override
-      public V load (K key) {
-
-            File file = getFile(key);
-            V result = null;
-
-            if(file.exists()) {
-
-                  try {
-                        /* convert the file to value */
-
-                        FileInputStream stream = new FileInputStream(file);
-                        result = mConverter.toValue(key, stream);
-                  } catch(Exception e) {
-
-                        /* maybe can't convert */
-
-                        e.printStackTrace();
-
-                        if(mExceptionHandler != null) {
-                              mExceptionHandler.onConvertToValue(e, key);
-                        }
-                  }
-            }
-
-            return result;
-      }
-
-      @Override
-      public boolean containsOf (K key) {
-
-            return getFile(key).exists();
+            return mDir;
       }
 }

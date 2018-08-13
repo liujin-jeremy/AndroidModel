@@ -14,12 +14,11 @@ import tech.threekilogram.depository.function.CloseFunction;
 /**
  * 底层使用{@link DiskLruCache}缓存数据到文件夹
  *
- * @param <K> kye 类型
  * @param <V> value 类型
  *
  * @author liujin
  */
-public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
+public class DiskLruCacheLoader<V> extends BaseFileLoader<V> {
 
       /**
        * 保存数据
@@ -29,7 +28,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       /**
        * 辅助该类完成stream到{@link V}的转换工作
        */
-      private FileConverter<K, V> mConverter;
+      private FileConverter<V> mConverter;
 
       private File mDir;
 
@@ -43,7 +42,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       public DiskLruCacheLoader (
           File folder,
           long maxSize,
-          FileConverter<K, V> converter ) throws IOException {
+          FileConverter<V> converter ) throws IOException {
             /* create DiskLruCache */
 
             mDir = folder;
@@ -53,9 +52,9 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       }
 
       @Override
-      public V save ( K key, V value ) {
+      public V save ( String key, V value ) {
 
-            String name = mConverter.fileName( key );
+            java.lang.String name = mConverter.fileName( key );
 
             V result = null;
 
@@ -116,7 +115,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       }
 
       @Override
-      public V remove ( K key ) {
+      public V remove ( String key ) {
 
             V result = null;
 
@@ -125,7 +124,7 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
             }
 
             try {
-                  String fileName = mConverter.fileName( key );
+                  java.lang.String fileName = mConverter.fileName( key );
                   mDiskLruCache.remove( fileName );
             } catch(IOException e) {
 
@@ -135,9 +134,9 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       }
 
       @Override
-      public boolean containsOf ( K key ) {
+      public boolean containsOf ( String key ) {
 
-            String name = mConverter.fileName( key );
+            java.lang.String name = mConverter.fileName( key );
 
             try {
 
@@ -155,9 +154,9 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       }
 
       @Override
-      public V load ( K key ) {
+      public V load ( String key ) {
 
-            String stringKey = mConverter.fileName( key );
+            java.lang.String stringKey = mConverter.fileName( key );
 
             /* try to get snapShort */
 
@@ -210,9 +209,9 @@ public class DiskLruCacheLoader<K, V> extends BaseFileLoader<K, V> {
       }
 
       @Override
-      public File getFile ( K key ) {
+      public File getFile ( String key ) {
 
-            String fileName = mConverter.fileName( key );
+            java.lang.String fileName = mConverter.fileName( key );
             return new File( mDir, fileName + ".0" );
       }
 }
