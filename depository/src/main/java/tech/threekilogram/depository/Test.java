@@ -15,7 +15,7 @@ import tech.threekilogram.depository.memory.map.MemoryMapLoader;
 import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
 import tech.threekilogram.depository.net.retrofit.stream.down.RetrofitDownConverter;
 import tech.threekilogram.depository.net.retrofit.stream.json.RetrofitGsonConverter;
-import tech.threekilogram.depository.net.retrofit.stream.string.RetrofitUrlStringConverter;
+import tech.threekilogram.depository.net.retrofit.stream.string.RetrofitStringConverter;
 
 /**
  * @author: Liujin
@@ -119,7 +119,7 @@ class Test {
       private static void testRetrofitString ( ) {
 
             RetrofitStreamLoader<String, String> loader = new RetrofitStreamLoader<>(
-                new RetrofitUrlStringConverter() );
+                new RetrofitStringConverter() );
 
             String url = "http://gank.io/api/today ";
 

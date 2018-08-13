@@ -9,7 +9,7 @@ import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
  *
  * @author liujin
  */
-public class RetrofitDownLoader extends RetrofitStreamLoader<String, File> {
+public class RetrofitDownLoader extends RetrofitStreamLoader<File> {
 
       /**
        * @param dir 保存文件夹
@@ -30,6 +30,11 @@ public class RetrofitDownLoader extends RetrofitStreamLoader<String, File> {
             super( new RetrofitDownConverter( dir, maxSize ) );
       }
 
+      private RetrofitDownConverter getConverter ( ) {
+
+            return (RetrofitDownConverter) mNetConverter;
+      }
+
       /**
        * @param url 获取保存的文件
        *
@@ -38,11 +43,6 @@ public class RetrofitDownLoader extends RetrofitStreamLoader<String, File> {
       public File getFile ( String url ) {
 
             return getConverter().getFile( url );
-      }
-
-      private RetrofitDownConverter getConverter ( ) {
-
-            return (RetrofitDownConverter) mNetConverter;
       }
 
       /**

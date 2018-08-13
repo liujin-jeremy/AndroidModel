@@ -7,14 +7,14 @@ import java.io.Reader;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.instance.GsonClient;
-import tech.threekilogram.depository.net.retrofit.RetrofitConverter;
+import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
 /**
  * 辅助类,适用于使用一个Url作为key的情况
  *
  * @author liujin
  */
-public class RetrofitGsonConverter<V> implements RetrofitConverter<String, V> {
+public class RetrofitGsonConverter<V> extends BaseRetrofitConverter<V> {
 
       @SuppressWarnings("WeakerAccess")
       protected Gson mGson = GsonClient.INSTANCE;
@@ -25,12 +25,6 @@ public class RetrofitGsonConverter<V> implements RetrofitConverter<String, V> {
       public RetrofitGsonConverter ( Class<V> valueType ) {
 
             mValueType = valueType;
-      }
-
-      @Override
-      public String urlFromKey ( String key ) {
-
-            return key;
       }
 
       @Override

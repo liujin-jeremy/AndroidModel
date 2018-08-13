@@ -8,14 +8,14 @@ import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.converter.FileStreamConverter;
 import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
 import tech.threekilogram.depository.file.impl.FileLoader;
-import tech.threekilogram.depository.net.retrofit.RetrofitConverter;
+import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
 /**
  * 辅助{@link RetrofitDownLoader}将一个响应流保存到文件系统
  *
  * @author liujin
  */
-public class RetrofitDownConverter implements RetrofitConverter<String, File> {
+public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
 
       /**
        * 下载文件夹
@@ -43,12 +43,6 @@ public class RetrofitDownConverter implements RetrofitConverter<String, File> {
 
             mDir = dir;
             mFileLoader = new DiskLruCacheLoader<>( dir, maxSize, new FileStreamConverter() );
-      }
-
-      @Override
-      public String urlFromKey ( String key ) {
-
-            return key;
       }
 
       @Override

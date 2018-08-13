@@ -28,7 +28,7 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
       protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
 
       /**
-       * 完成从 {@link K} 到 {@link V} 转换
+       * 完成从key {@link K} 到value {@link V} 转换
        */
       protected NetConverter<K, V, ResponseBody> mNetConverter;
       /**
@@ -49,7 +49,8 @@ public abstract class BaseRetrofitLoader<K, V, S> implements Loader<K, V> {
        * @param netConverter 转换器
        */
       public BaseRetrofitLoader (
-          Class<S> serviceType, NetConverter<K, V, ResponseBody> netConverter ) {
+          Class<S> serviceType,
+          NetConverter<K, V, ResponseBody> netConverter ) {
 
             mNetConverter = netConverter;
             mServiceType = serviceType;
