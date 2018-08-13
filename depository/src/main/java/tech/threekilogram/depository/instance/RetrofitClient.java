@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.global;
+package tech.threekilogram.depository.instance;
 
 import retrofit2.Retrofit;
 

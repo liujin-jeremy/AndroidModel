@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.Loader;
-import tech.threekilogram.depository.global.RetrofitClient;
+import tech.threekilogram.depository.instance.RetrofitClient;
 import tech.threekilogram.depository.net.NetConverter;
 import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
 

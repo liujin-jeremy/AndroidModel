@@ -12,7 +12,7 @@ import java.io.Writer;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.CloseFunction;
 import tech.threekilogram.depository.function.Md5Function;
-import tech.threekilogram.depository.global.GsonClient;
+import tech.threekilogram.depository.instance.GsonClient;
 
 /**
  * {@link FileConverter} 的一种实现

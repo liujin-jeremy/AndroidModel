@@ -2,7 +2,7 @@ package tech.threekilogram.depository.net.retrofit;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import tech.threekilogram.depository.net.NetConverter;
+import tech.threekilogram.depository.net.retrofit.service.RetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.service.StreamService;
 
 /**
@@ -15,15 +15,15 @@ import tech.threekilogram.depository.net.retrofit.service.StreamService;
  */
 public class RetrofitStreamLoader<K, V> extends BaseRetrofitLoader<K, V, StreamService> {
 
-      public RetrofitStreamLoader (NetConverter<K, V, ResponseBody> netConverter) {
+      public RetrofitStreamLoader ( RetrofitConverter<K, V> netConverter ) {
 
-            super(StreamService.class, netConverter);
+            super( StreamService.class, netConverter );
       }
 
       @Override
       protected Call<ResponseBody> configService (
-          K key, String url, StreamService service) {
+          K key, String url, StreamService service ) {
 
-            return service.toGet(url);
+            return service.toGet( url );
       }
 }

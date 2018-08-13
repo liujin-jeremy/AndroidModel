@@ -6,16 +6,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.function.CloseFunction;
-import tech.threekilogram.depository.global.GsonClient;
-import tech.threekilogram.depository.net.NetConverter;
+import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.net.UrlConverter;
+import tech.threekilogram.depository.net.retrofit.service.RetrofitConverter;
 
 /**
  * 辅助完成转换工作,需要完成{@link K} 到 {@link String} url转换,网络响应{@link ResponseBody} 到{@link V}转换
  *
  * @author liujin
  */
-public class RetrofitGsonConverter<K, V> implements NetConverter<K, V, ResponseBody> {
+public class RetrofitGsonConverter<K, V> implements RetrofitConverter<K, V> {
 
       @SuppressWarnings("WeakerAccess")
       protected Gson mGson = GsonClient.INSTANCE;
@@ -25,21 +25,20 @@ public class RetrofitGsonConverter<K, V> implements NetConverter<K, V, ResponseB
       @SuppressWarnings("WeakerAccess")
       protected Class<V>        mValueType;
 
-      public RetrofitGsonConverter (UrlConverter<K> urlConverter, Class<V> valueType) {
+      public RetrofitGsonConverter ( Class<V> valueType ) {
 
             mValueType = valueType;
-            mUrlConverter = urlConverter;
       }
 
       @Override
-      public String urlFromKey (K key) {
+      public String urlFromKey ( K key ) {
 
-            return mUrlConverter.urlFromKey(key);
+            return mUrlConverter.urlFromKey( key );
       }
 
       @Override
       public V onExecuteSuccess (
-          K key, ResponseBody response) throws Exception {
+          K key, ResponseBody response ) throws Exception {
 
             InputStream inputStream = null;
             Reader reader = null;
@@ -47,20 +46,20 @@ public class RetrofitGsonConverter<K, V> implements NetConverter<K, V, ResponseB
 
             try {
                   inputStream = response.byteStream();
-                  reader = new InputStreamReader(inputStream);
+                  reader = new InputStreamReader( inputStream );
 
-                  v = mGson.fromJson(reader, mValueType);
+                  v = mGson.fromJson( reader, mValueType );
             } finally {
 
-                  CloseFunction.close(reader);
-                  CloseFunction.close(inputStream);
+                  CloseFunction.close( reader );
+                  CloseFunction.close( inputStream );
             }
 
             return v;
       }
 
       @Override
-      public void onExecuteFailed (K key, int httpCode, ResponseBody errorResponse) {
+      public void onExecuteFailed ( K key, int httpCode, ResponseBody errorResponse ) {
 
       }
 }

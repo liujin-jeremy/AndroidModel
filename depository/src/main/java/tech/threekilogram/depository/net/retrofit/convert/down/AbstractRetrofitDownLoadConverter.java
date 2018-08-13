@@ -8,8 +8,7 @@ package tech.threekilogram.depository.net.retrofit.convert.down;
  */
 
 import java.io.File;
-import okhttp3.ResponseBody;
-import tech.threekilogram.depository.net.NetConverter;
+import tech.threekilogram.depository.net.retrofit.service.RetrofitConverter;
 
 /**
  * base 接口,缓存下载文件到文件夹,该类适用于将一个网络响应缓存到文件夹,有实现类
@@ -19,7 +18,7 @@ import tech.threekilogram.depository.net.NetConverter;
  * @author liujin
  */
 public abstract class AbstractRetrofitDownLoadConverter<K> implements
-                                                           NetConverter<K, File, ResponseBody> {
+                                                           RetrofitConverter<K, File> {
 
       /**
        * 下载文件夹
@@ -28,12 +27,12 @@ public abstract class AbstractRetrofitDownLoadConverter<K> implements
       protected File mDir;
 
       @SuppressWarnings("WeakerAccess")
-      public AbstractRetrofitDownLoadConverter (File dir) {
+      public AbstractRetrofitDownLoadConverter ( File dir ) {
 
             mDir = dir;
       }
 
-      public File getDir () {
+      public File getDir ( ) {
 
             return mDir;
       }
@@ -45,5 +44,5 @@ public abstract class AbstractRetrofitDownLoadConverter<K> implements
        *
        * @return file by this key, may be not exist
        */
-      public abstract File getFile (K key);
+      public abstract File getFile ( K key );
 }
