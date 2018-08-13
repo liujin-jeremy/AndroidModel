@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorOrange"
                 android:onClick="toTestMemory"
-                android:text="toBeauty"/>
+                android:text="toTestMemory"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_margin="4dp"
                 android:background="@color/colorOrange"
                 android:onClick="toTestFile"
-                android:text="toCategory"/>
+                android:text="toTestFile"/>
 
       </LinearLayout>
 

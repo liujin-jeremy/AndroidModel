@@ -10,13 +10,16 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
       @Override
-      protected void onCreate (Bundle savedInstanceState) {
+      protected void onCreate ( Bundle savedInstanceState ) {
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+            super.onCreate( savedInstanceState );
+            setContentView( R.layout.activity_main );
       }
 
-      public void toTestMemory (View view) {}
+      public void toTestMemory ( View view ) {
 
-      public void toTestFile (View view) {}
+            TestMemoryActivity.start( this );
+      }
+
+      public void toTestFile ( View view ) {}
 }
