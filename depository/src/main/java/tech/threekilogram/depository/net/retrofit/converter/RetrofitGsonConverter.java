@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.stream.json;
+package tech.threekilogram.depository.net.retrofit.converter;
 
 import com.google.gson.Gson;
 import java.io.InputStream;

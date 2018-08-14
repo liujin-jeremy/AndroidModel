@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.stream.string;
+package tech.threekilogram.depository.net.retrofit.converter;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

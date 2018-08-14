@@ -136,3 +136,75 @@ System.out.println( "value at key: " + load ); // null
 
 ### 使用文件缓存
 
+* FileLoader<T> : 可以保存到本地文件
+* DiskLruLoader<T> : 底层使用DiskLruCache保存文件
+
+> 以上两个都需要 FileConverter<T> 辅助将一个数据流转换为对应的对象
+
+#### 示例
+
+* string
+
+```
+// FileStringConverter 会将文件流转为string对象
+FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
+
+String key = "key";
+String value = "曾经沧海难为水";
+// 保存
+loader.save( key, value );
+// 读取
+String load = loader.load( key );
+// 获取文件
+File file = loader.getFile( key );
+// 删除文件
+String remove = loader.remove( key );
+// 测试是否有该文件
+boolean containsOf = loader.containsOf( key );
+```
+
+```
+// 使用 DiskLruLoader 读取保存string对象
+DiskLruLoader<String> loader = new DiskLruLoader<>(
+    TEMP,
+    MAX_SIZE,
+    new FileStringConverter() 
+);
+```
+
+* Json对象
+
+```
+// FileGsonConverter 会将文件流转为指定bean对象,底层使用Gson
+FileLoader<Bean> loader = new FileLoader<>(
+    TEMP,
+    new FileGsonConverter<Bean>( Bean.class )
+);
+
+String key = "json";
+// 创建一个value用于保存
+Gson gson = GsonClient.INSTANCE;
+Bean bean = gson.fromJson( JSON, Bean.class );
+// 保存
+loader.save( key, bean );
+// 读取
+Bean load = loader.load( key );
+// 获取文件
+File file = loader.getFile( key );
+// 删除
+loader.remove( key );
+// 测试是否包含改文件
+boolean containsOf = loader.containsOf( key );
+```
+
+```
+// 使用 DiskLruLoader 读取保存json对象
+DiskLruLoader<Bean> loader = new DiskLruLoader<>(
+    TEMP,
+    MAX_SIZE,
+    new FileGsonConverter<Bean>( Bean.class )
+);
+```
+
+> 目前框架只实现了 FileStringConverter 和 FileGsonConverter, 其他类型数据需要自己实现FileConverter<T>接口,完成转换工作
+

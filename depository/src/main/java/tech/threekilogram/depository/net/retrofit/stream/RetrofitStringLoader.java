@@ -1,6 +1,6 @@
-package tech.threekilogram.depository.net.retrofit.stream.string;
+package tech.threekilogram.depository.net.retrofit.stream;
 
-import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
 
 /**
  * 从网络读取string对象

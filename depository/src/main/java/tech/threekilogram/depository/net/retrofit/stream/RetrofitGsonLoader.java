@@ -1,6 +1,6 @@
-package tech.threekilogram.depository.net.retrofit.stream.json;
+package tech.threekilogram.depository.net.retrofit.stream;
 
-import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitGsonConverter;
 
 /**
  * 从网络读取json对象
@@ -15,5 +15,10 @@ public class RetrofitGsonLoader<V> extends RetrofitStreamLoader<V> {
       public RetrofitGsonLoader ( Class<V> valueType ) {
 
             super( new RetrofitGsonConverter<V>( valueType ) );
+      }
+
+      public RetrofitGsonLoader ( RetrofitGsonConverter<V> netConverter ) {
+
+            super( netConverter );
       }
 }

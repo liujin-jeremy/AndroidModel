@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.stream.down;
+package tech.threekilogram.depository.net.retrofit.converter;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import tech.threekilogram.depository.file.converter.FileStreamConverter;
 import tech.threekilogram.depository.file.impl.DiskLruLoader;
 import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
+import tech.threekilogram.depository.net.retrofit.stream.RetrofitDownLoader;
 
 /**
  * 辅助{@link RetrofitDownLoader}将一个响应流保存到文件系统

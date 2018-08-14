@@ -1,8 +1,8 @@
-package tech.threekilogram.depository.net.retrofit.stream.down;
+package tech.threekilogram.depository.net.retrofit.stream;
 
 import java.io.File;
 import java.io.IOException;
-import tech.threekilogram.depository.net.retrofit.stream.RetrofitStreamLoader;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter;
 
 /**
  * 使用 retrofit 从网络下载文件,保存到指定文件夹
@@ -30,6 +30,11 @@ public class RetrofitDownLoader extends RetrofitStreamLoader<File> {
             super( new RetrofitDownConverter( dir, maxSize ) );
       }
 
+      public RetrofitDownLoader ( RetrofitDownConverter netConverter ) {
+
+            super( netConverter );
+      }
+
       private RetrofitDownConverter getConverter ( ) {
 
             return (RetrofitDownConverter) mNetConverter;
@@ -53,6 +58,13 @@ public class RetrofitDownLoader extends RetrofitStreamLoader<File> {
             return getConverter().getDir();
       }
 
+      /**
+       * 加载文件如果本地文件存在将返回本地,否则返回从网络下载
+       *
+       * @param key key
+       *
+       * @return file
+       */
       @Override
       public File load ( String key ) {
 

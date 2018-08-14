@@ -21,9 +21,9 @@ import tech.threekilogram.depository.memory.map.MemoryMapLoader;
  */
 class Test {
 
-      private static final File   TEMP    = new File( "Temp" );
-      private static final int    maxSize = 1024 * 1024 * 20;
-      private static final String Json    = "{\n"
+      private static final File   TEMP     = new File( "Temp" );
+      private static final int    MAX_SIZE = 1024 * 1024 * 20;
+      private static final String JSON     = "{\n"
           + "    \"error\": false,\n"
           + "    \"results\": [\n"
           + "        {\n"
@@ -46,18 +46,17 @@ class Test {
 
       private static void testDiskJson ( ) {
 
-            DiskLruLoader<Bean> loader = null;
             try {
-                  loader = new DiskLruLoader<>(
+                  DiskLruLoader<Bean> loader = new DiskLruLoader<>(
                       TEMP,
-                      maxSize,
+                      MAX_SIZE,
                       new FileGsonConverter<Bean>( Bean.class )
                   );
 
                   String key = "json";
 
                   Gson gson = GsonClient.INSTANCE;
-                  Bean bean = gson.fromJson( Json, Bean.class );
+                  Bean bean = gson.fromJson( JSON, Bean.class );
                   System.out.println( bean.getResults().get( 0 ).url );
 
                   loader.save( key, bean );
@@ -86,7 +85,7 @@ class Test {
             String key = "json";
 
             Gson gson = GsonClient.INSTANCE;
-            Bean bean = gson.fromJson( Json, Bean.class );
+            Bean bean = gson.fromJson( JSON, Bean.class );
             System.out.println( bean.getResults().get( 0 ).url );
 
             loader.save( key, bean );
@@ -104,9 +103,12 @@ class Test {
 
       private static void testDiskString ( ) {
 
-            DiskLruLoader<String> loader = null;
             try {
-                  loader = new DiskLruLoader<>( TEMP, maxSize, new FileStringConverter() );
+                  DiskLruLoader<String> loader = new DiskLruLoader<>(
+                      TEMP,
+                      MAX_SIZE,
+                      new FileStringConverter()
+                  );
 
                   String key = "key";
                   String value = "曾经沧海难为水";
@@ -125,6 +127,25 @@ class Test {
             } catch(IOException e) {
                   e.printStackTrace();
             }
+      }
+
+      private static void testFileString ( ) {
+
+            FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
+            String key = "key";
+            String value = "曾经沧海难为水";
+
+            loader.save( key, value );
+
+            String load = loader.load( key );
+            System.out.println( "save value: " + key + " " + load );
+
+            File file = loader.getFile( key );
+            System.out.println( key + " path: " + file );
+
+            String remove = loader.remove( key );
+            boolean containsOf = loader.containsOf( key );
+            System.out.println( "after remove value exist: " + containsOf );
       }
 
       private static void testMemoryLru ( ) {
@@ -235,25 +256,6 @@ class Test {
             loader.clear();
             size = loader.size();
             System.out.println( "after clear size: " + size );
-      }
-
-      private static void testFileString ( ) {
-
-            FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
-            String key = "key";
-            String value = "曾经沧海难为水";
-
-            loader.save( key, value );
-
-            String load = loader.load( key );
-            System.out.println( "save value: " + key + " " + load );
-
-            File file = loader.getFile( key );
-            System.out.println( key + " path: " + file );
-
-            String remove = loader.remove( key );
-            boolean containsOf = loader.containsOf( key );
-            System.out.println( "after remove value exist: " + containsOf );
       }
 
       private static class Bean {
