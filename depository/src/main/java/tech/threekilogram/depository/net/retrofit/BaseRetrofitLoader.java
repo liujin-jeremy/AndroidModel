@@ -7,8 +7,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.Loader;
 import tech.threekilogram.depository.instance.RetrofitClient;
-import tech.threekilogram.depository.net.base;
-import tech.threekilogram.depository.net.base.NetExceptionHandler;
+import tech.threekilogram.depository.net.NetConverter;
+import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
 
 /**
  * 该类是{@link Loader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
@@ -133,7 +133,7 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
        * config retrofit service
        *
        * @param key key
-       * @param url url from key at {@link base#urlFromKey(String)}}
+       * @param url url from key at {@link NetConverter#urlFromKey(String)}}
        * @param service service to config
        *
        * @return a call to execute
