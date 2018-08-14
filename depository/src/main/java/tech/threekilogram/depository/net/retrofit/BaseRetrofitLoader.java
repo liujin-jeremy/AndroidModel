@@ -34,6 +34,10 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
        */
       protected Class<S>                    mServiceType;
       /**
+       * 创建的service
+       */
+      protected S                           mService;
+      /**
        * 异常处理助手
        */
       protected NetExceptionHandler<String> mExceptionHandler;
@@ -82,16 +86,16 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
       public V load ( String key ) {
 
             /* 1. 获得url */
-
             java.lang.String urlFromKey = mNetConverter.urlFromKey( key );
-            S service = mRetrofit.create( mServiceType );
 
             /* 2. 制造一个call对象 */
+            if( mService == null ) {
 
-            Call<ResponseBody> call = configService( key, urlFromKey, service );
+                  mService = mRetrofit.create( mServiceType );
+            }
+            Call<ResponseBody> call = configService( key, urlFromKey, mService );
 
             /* 3. 执行call */
-
             try {
                   Response<ResponseBody> response = call.execute();
 

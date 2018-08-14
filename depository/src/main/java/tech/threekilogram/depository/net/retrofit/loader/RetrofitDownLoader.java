@@ -61,21 +61,21 @@ public class RetrofitDownLoader extends RetrofitStreamLoader<File> {
       /**
        * 加载文件如果本地文件存在将返回本地,否则返回从网络下载
        *
-       * @param key key
+       * @param url key
        *
        * @return file
        */
       @Override
-      public File load ( String key ) {
+      public File load ( String url ) {
 
             RetrofitDownConverter converter = getConverter();
-            File file = converter.getFile( key );
+            File file = converter.getFile( url );
 
             if( file != null && file.exists() ) {
 
                   return file;
             }
 
-            return super.load( key );
+            return super.load( url );
       }
 }

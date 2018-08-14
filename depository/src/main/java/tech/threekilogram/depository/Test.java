@@ -12,6 +12,7 @@ import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryListLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
+import tech.threekilogram.depository.net.retrofit.loader.RetrofitDownLoader;
 
 /**
  * @author: Liujin
@@ -42,6 +43,17 @@ class Test {
 
       public static void main ( String[] args ) {
 
+            RetrofitDownLoader loader = new RetrofitDownLoader( TEMP );
+            final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
+            File file = loader.load( url00 );
+            System.out.println( file );
+
+            File load = loader.load( url00 );
+            System.out.println( load );
+
+            final String url01 = "https://ww1.sinaimg.cn/large/0065oQSqgy1fu39hosiwoj30j60qyq96.jpg";
+            File load1 = loader.load( url01 );
+            System.out.println( load1 );
       }
 
       private static void testDiskJson ( ) {
