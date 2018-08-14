@@ -12,7 +12,7 @@ import retrofit2.Response;
  *
  * @author liujin
  */
-public interface NetConverter<V, P> {
+public interface base<V, P> {
 
       /**
        * 从 key 中获取url

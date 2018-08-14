@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.stream;
+package tech.threekilogram.depository.net.retrofit.loader;
 
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
 
@@ -15,5 +15,10 @@ public class RetrofitStringLoader extends RetrofitStreamLoader<String> {
       public RetrofitStringLoader ( ) {
 
             super( new RetrofitStringConverter() );
+      }
+
+      public RetrofitStringLoader ( RetrofitStringConverter netConverter ) {
+
+            super( netConverter );
       }
 }

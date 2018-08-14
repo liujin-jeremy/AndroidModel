@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.stream;
+package tech.threekilogram.depository.net.retrofit.loader;
 
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitGsonConverter;
 

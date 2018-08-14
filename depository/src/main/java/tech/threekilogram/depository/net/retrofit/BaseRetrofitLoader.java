@@ -7,8 +7,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.Loader;
 import tech.threekilogram.depository.instance.RetrofitClient;
-import tech.threekilogram.depository.net.NetConverter;
-import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
+import tech.threekilogram.depository.net.base;
+import tech.threekilogram.depository.net.base.NetExceptionHandler;
 
 /**
  * 该类是{@link Loader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
@@ -25,21 +25,18 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
        * retrofit 客户端
        */
       protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
-
       /**
-       * 完成从key {@link String} 到value {@link V} 转换
+       * 完成从{@link ResponseBody} 到value {@link V} 转换
        */
-      protected NetConverter<V, ResponseBody> mNetConverter;
+      protected BaseRetrofitConverter<V>    mNetConverter;
       /**
        * retrofit service 类型
        */
-      protected Class<S>                      mServiceType;
+      protected Class<S>                    mServiceType;
       /**
        * 异常处理助手
        */
-      protected NetExceptionHandler<String>   mExceptionHandler;
-
-      public BaseRetrofitLoader ( ) { }
+      protected NetExceptionHandler<String> mExceptionHandler;
 
       /**
        * 最少需要这两个才能正常工作
@@ -47,9 +44,9 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
        * @param serviceType 服务类型
        * @param netConverter 转换器
        */
-      public BaseRetrofitLoader (
+      protected BaseRetrofitLoader (
           Class<S> serviceType,
-          NetConverter<V, ResponseBody> netConverter ) {
+          BaseRetrofitConverter<V> netConverter ) {
 
             mNetConverter = netConverter;
             mServiceType = serviceType;
@@ -136,11 +133,13 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
        * config retrofit service
        *
        * @param key key
-       * @param url url from key at {@link NetConverter#urlFromKey(String)}}
+       * @param url url from key at {@link base#urlFromKey(String)}}
        * @param service service to config
        *
        * @return a call to execute
        */
       protected abstract Call<ResponseBody> configService (
-          String key, java.lang.String url, S service );
+          String key,
+          String url,
+          S service );
 }

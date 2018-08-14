@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.stream;
+package tech.threekilogram.depository.net.retrofit.loader;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -21,7 +21,9 @@ public class RetrofitStreamLoader<V> extends BaseRetrofitLoader<V, StreamService
 
       @Override
       protected Call<ResponseBody> configService (
-          String key, String url, StreamService service ) {
+          String key,
+          String url,
+          StreamService service ) {
 
             return service.toGet( url );
       }
