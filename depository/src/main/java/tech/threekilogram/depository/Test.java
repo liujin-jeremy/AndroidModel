@@ -12,7 +12,10 @@ import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryListLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDownLoader;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitGsonConverter;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
+import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
+import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
  * @author: Liujin
@@ -43,7 +46,34 @@ class Test {
 
       public static void main ( String[] args ) {
 
-            RetrofitDownLoader loader = new RetrofitDownLoader( TEMP );
+            testRetrofitJson();
+      }
+
+      private static void testRetrofitJson ( ) {
+
+            RetrofitLoader<Bean> loader = new RetrofitLoader<>(
+                new RetrofitGsonConverter<Bean>( Bean.class ) );
+
+            final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
+
+            Bean bean = loader.load( url );
+            System.out.println( bean.getResults().size() );
+            System.out.println( bean.getResults().get( 0 ).url );
+      }
+
+      private static void testRetrofitString ( ) {
+
+            RetrofitLoader<String> loader = new RetrofitLoader<>( new RetrofitStringConverter() );
+
+            final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
+
+            String load = loader.load( url );
+            System.out.println( load );
+      }
+
+      private static void testNetDownloader ( ) {
+
+            RetrofitDowner loader = new RetrofitDowner( TEMP );
             final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
             File file = loader.load( url00 );
             System.out.println( file );

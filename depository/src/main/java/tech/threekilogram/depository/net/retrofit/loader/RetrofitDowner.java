@@ -9,12 +9,12 @@ import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverte
  *
  * @author liujin
  */
-public class RetrofitDownLoader extends RetrofitStreamLoader<File> {
+public class RetrofitDowner extends RetrofitLoader<File> {
 
       /**
        * @param dir 保存文件夹
        */
-      public RetrofitDownLoader ( File dir ) {
+      public RetrofitDowner ( File dir ) {
 
             super( new RetrofitDownConverter( dir ) );
       }
@@ -25,12 +25,12 @@ public class RetrofitDownLoader extends RetrofitStreamLoader<File> {
        *
        * @throws IOException 创建文件夹失败
        */
-      public RetrofitDownLoader ( File dir, int maxSize ) throws IOException {
+      public RetrofitDowner ( File dir, int maxSize ) throws IOException {
 
             super( new RetrofitDownConverter( dir, maxSize ) );
       }
 
-      public RetrofitDownLoader ( RetrofitDownConverter netConverter ) {
+      public RetrofitDowner ( RetrofitDownConverter netConverter ) {
 
             super( netConverter );
       }

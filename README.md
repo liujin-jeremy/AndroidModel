@@ -208,3 +208,34 @@ DiskLruLoader<Bean> loader = new DiskLruLoader<>(
 
 > 目前框架只实现了 FileStringConverter 和 FileGsonConverter, 其他类型数据需要自己实现FileConverter<T>接口,完成转换工作
 
+### 使用网络
+
+* 下载
+
+```
+// 配置文件夹
+RetrofitDowner loader = new RetrofitDowner( TEMP );
+// url
+final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
+// 从网络下载
+File file = loader.load( url00 );
+```
+
+* string
+
+```
+// 配置
+RetrofitLoader<String> loader = new RetrofitLoader<>( new RetrofitStringConverter() );
+final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
+String load = loader.load( url );
+```
+
+* json
+
+```
+// json
+RetrofitLoader<Bean> loader = new RetrofitLoader<>( new RetrofitGsonConverter<Bean>(Bean.class) );
+// url
+final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
+Bean bean = loader.load( url );
+```
