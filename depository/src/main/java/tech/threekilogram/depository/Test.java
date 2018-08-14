@@ -1,7 +1,14 @@
 package tech.threekilogram.depository;
 
+import com.google.gson.Gson;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import tech.threekilogram.depository.file.converter.FileGsonConverter;
+import tech.threekilogram.depository.file.converter.FileStringConverter;
+import tech.threekilogram.depository.file.impl.DiskLruLoader;
+import tech.threekilogram.depository.file.impl.FileLoader;
+import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryListLoader;
 import tech.threekilogram.depository.memory.map.MemoryMapLoader;
@@ -14,10 +21,110 @@ import tech.threekilogram.depository.memory.map.MemoryMapLoader;
  */
 class Test {
 
-      private static final File TEMP = new File( "Temp" );
+      private static final File   TEMP    = new File( "Temp" );
+      private static final int    maxSize = 1024 * 1024 * 20;
+      private static final String Json    = "{\n"
+          + "    \"error\": false,\n"
+          + "    \"results\": [\n"
+          + "        {\n"
+          + "            \"_id\": \"5b7102749d2122341d563844\",\n"
+          + "            \"createdAt\": \"2018-08-13T12:00:52.458Z\",\n"
+          + "            \"desc\": \"2018-08-13\",\n"
+          + "            \"publishedAt\": \"2018-08-13T00:00:00.0Z\",\n"
+          + "            \"source\": \"api\",\n"
+          + "            \"type\": \"福利\",\n"
+          + "            \"url\": \"https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg\",\n"
+          + "            \"used\": true,\n"
+          + "            \"who\": \"lijinshan\"\n"
+          + "        }\n"
+          + "    ]\n"
+          + "}";
 
       public static void main ( String[] args ) {
 
+      }
+
+      private static void testDiskJson ( ) {
+
+            DiskLruLoader<Bean> loader = null;
+            try {
+                  loader = new DiskLruLoader<>(
+                      TEMP,
+                      maxSize,
+                      new FileGsonConverter<Bean>( Bean.class )
+                  );
+
+                  String key = "json";
+
+                  Gson gson = GsonClient.INSTANCE;
+                  Bean bean = gson.fromJson( Json, Bean.class );
+                  System.out.println( bean.getResults().get( 0 ).url );
+
+                  loader.save( key, bean );
+
+                  Bean load = loader.load( key );
+                  System.out.println( load.getResults().get( 0 ).url );
+
+                  File file = loader.getFile( key );
+                  System.out.println( "file: " + file );
+
+                  loader.remove( key );
+                  boolean containsOf = loader.containsOf( key );
+                  System.out.println( "after remove value exist: " + containsOf );
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+      }
+
+      private static void testFileJson ( ) {
+
+            FileLoader<Bean> loader = new FileLoader<>(
+                TEMP,
+                new FileGsonConverter<Bean>( Bean.class )
+            );
+
+            String key = "json";
+
+            Gson gson = GsonClient.INSTANCE;
+            Bean bean = gson.fromJson( Json, Bean.class );
+            System.out.println( bean.getResults().get( 0 ).url );
+
+            loader.save( key, bean );
+
+            Bean load = loader.load( key );
+            System.out.println( load.getResults().get( 0 ).url );
+
+            File file = loader.getFile( key );
+            System.out.println( "file: " + file );
+
+            loader.remove( key );
+            boolean containsOf = loader.containsOf( key );
+            System.out.println( "after remove value exist: " + containsOf );
+      }
+
+      private static void testDiskString ( ) {
+
+            DiskLruLoader<String> loader = null;
+            try {
+                  loader = new DiskLruLoader<>( TEMP, maxSize, new FileStringConverter() );
+
+                  String key = "key";
+                  String value = "曾经沧海难为水";
+
+                  loader.save( key, value );
+
+                  String load = loader.load( key );
+                  System.out.println( "save value: " + key + " " + load );
+
+                  File file = loader.getFile( key );
+                  System.out.println( key + " path: " + file );
+
+                  String remove = loader.remove( key );
+                  boolean containsOf = loader.containsOf( key );
+                  System.out.println( "after remove value exist: " + containsOf );
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
       }
 
       private static void testMemoryLru ( ) {
@@ -128,6 +235,25 @@ class Test {
             loader.clear();
             size = loader.size();
             System.out.println( "after clear size: " + size );
+      }
+
+      private static void testFileString ( ) {
+
+            FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
+            String key = "key";
+            String value = "曾经沧海难为水";
+
+            loader.save( key, value );
+
+            String load = loader.load( key );
+            System.out.println( "save value: " + key + " " + load );
+
+            File file = loader.getFile( key );
+            System.out.println( key + " path: " + file );
+
+            String remove = loader.remove( key );
+            boolean containsOf = loader.containsOf( key );
+            System.out.println( "after remove value exist: " + containsOf );
       }
 
       private static class Bean {

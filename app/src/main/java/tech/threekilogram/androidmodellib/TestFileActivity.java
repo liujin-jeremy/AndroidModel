@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
+import tech.threekilogram.depository.file.impl.DiskLruLoader;
 import tech.threekilogram.depository.file.impl.FileLoader;
 
 /**
@@ -21,9 +21,9 @@ public class TestFileActivity extends AppCompatActivity {
       private final String key   = "HelloFile";
       private final String value = "Hello Android Model";
 
-      private FileLoader<String, String>         mFileLoader;
-      private DiskLruCacheLoader<String, String> mDiskLruCacheLoader;
-      private BaseFileLoader<String, String>     mLoader;
+      private FileLoader<String>     mFileLoader;
+      private DiskLruLoader<String>  mDiskLruLoader;
+      private BaseFileLoader<String> mLoader;
 
       private TextView mTextView;
 
@@ -42,7 +42,7 @@ public class TestFileActivity extends AppCompatActivity {
 
             mFileLoader = new FileLoader<>( getExternalCacheDir(), new FileStringConverter() );
             try {
-                  mDiskLruCacheLoader = new DiskLruCacheLoader<>(
+                  mDiskLruLoader = new DiskLruLoader<>(
                       getCacheDir(),
                       1024 * 1024 * 5,
                       new FileStringConverter()
@@ -87,7 +87,7 @@ public class TestFileActivity extends AppCompatActivity {
 
             if( mLoader == mFileLoader ) {
 
-                  mLoader = mDiskLruCacheLoader;
+                  mLoader = mDiskLruLoader;
             } else {
 
                   mLoader = mFileLoader;

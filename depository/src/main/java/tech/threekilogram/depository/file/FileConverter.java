@@ -3,11 +3,11 @@ package tech.threekilogram.depository.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
+import tech.threekilogram.depository.file.impl.DiskLruLoader;
 import tech.threekilogram.depository.file.impl.FileLoader;
 
 /**
- * 该接口用于辅助{@link FileLoader} 和{@link DiskLruCacheLoader}
+ * 该接口用于辅助{@link FileLoader} 和{@link DiskLruLoader}
  * 正常工作,
  * 用于将一个键转为{@link V}类型的值
  * <p>

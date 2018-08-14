@@ -18,7 +18,7 @@ import tech.threekilogram.depository.function.CloseFunction;
  *
  * @author liujin
  */
-public class DiskLruCacheLoader<V> extends BaseFileLoader<V> {
+public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
       /**
        * 保存数据
@@ -39,7 +39,7 @@ public class DiskLruCacheLoader<V> extends BaseFileLoader<V> {
        *
        * @throws IOException 创建缓存文件异常
        */
-      public DiskLruCacheLoader (
+      public DiskLruLoader (
           File folder,
           long maxSize,
           FileConverter<V> converter ) throws IOException {

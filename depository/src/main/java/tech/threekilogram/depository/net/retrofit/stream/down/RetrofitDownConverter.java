@@ -6,7 +6,7 @@ import java.io.InputStream;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.converter.FileStreamConverter;
-import tech.threekilogram.depository.file.impl.DiskLruCacheLoader;
+import tech.threekilogram.depository.file.impl.DiskLruLoader;
 import tech.threekilogram.depository.file.impl.FileLoader;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
@@ -42,7 +42,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
       public RetrofitDownConverter ( File dir, int maxSize ) throws IOException {
 
             mDir = dir;
-            mFileLoader = new DiskLruCacheLoader<>( dir, maxSize, new FileStreamConverter() );
+            mFileLoader = new DiskLruLoader<>( dir, maxSize, new FileStreamConverter() );
       }
 
       @Override
