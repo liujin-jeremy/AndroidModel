@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.file.impl;
+package tech.threekilogram.depository.file.loader;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.jakewharton.disklrucache.DiskLruCache.Editor;

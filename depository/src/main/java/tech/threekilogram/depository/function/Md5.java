@@ -11,7 +11,7 @@ import java.security.MessageDigest;
  * @date: 2018-07-30
  * @time: 0:05
  */
-public class Md5Function {
+public class Md5 {
 
       /**
        * 十六进制下数字到字符的映射数组
@@ -27,7 +27,7 @@ public class Md5Function {
        *
        * @return md5 后的字符串
        */
-      public static String nameFromMd5 (@NonNull String src) {
+      public static String md5 ( @NonNull String src ) {
 
             return encodeByMD5(src);
       }

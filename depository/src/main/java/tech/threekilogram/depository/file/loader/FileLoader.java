@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.file.impl;
+package tech.threekilogram.depository.file.loader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
+import tech.threekilogram.depository.function.CloseFunction;
 
 /**
  * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link File}转换为{@link V}
@@ -55,10 +56,12 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
             /* save value to file */
 
+            FileOutputStream stream = null;
+
             try {
 
                   File file = getFile( key );
-                  FileOutputStream stream = new FileOutputStream( file );
+                  stream = new FileOutputStream( file );
                   mConverter.saveValue( key, stream, value );
             } catch(IOException e) {
 
@@ -69,6 +72,9 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                   if( mExceptionHandler != null ) {
                         mExceptionHandler.onSaveValueToFile( e, key, value );
                   }
+            } finally {
+
+                  CloseFunction.close( stream );
             }
 
             /* return old value if should return */
@@ -104,10 +110,12 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
             if( file.exists() ) {
 
+                  FileInputStream stream = null;
+
                   try {
                         /* convert the file to value */
 
-                        FileInputStream stream = new FileInputStream( file );
+                        stream = new FileInputStream( file );
                         result = mConverter.toValue( key, stream );
                   } catch(Exception e) {
 
@@ -118,6 +126,9 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         if( mExceptionHandler != null ) {
                               mExceptionHandler.onConvertToValue( e, key );
                         }
+                  } finally {
+
+                        CloseFunction.close( stream );
                   }
             }
 

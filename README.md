@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	        implementation 'com.github.threekilogram:object-cache:1.1'
+	         implementation 'com.github.threekilogram:AndroidCache:1.2'
 	}
 ```
 

@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.file.impl.FileLoader;
+import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.function.CloseFunction;
-import tech.threekilogram.depository.function.Md5Function;
+import tech.threekilogram.depository.function.Md5;
 
 /**
  * {@link FileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
@@ -21,7 +21,7 @@ public class FileStreamConverter implements FileConverter<InputStream> {
       @Override
       public String fileName ( String key ) {
 
-            return Md5Function.nameFromMd5( key );
+            return Md5.md5( key );
       }
 
       @Override

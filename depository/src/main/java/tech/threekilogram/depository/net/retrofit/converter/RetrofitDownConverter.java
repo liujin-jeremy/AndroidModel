@@ -6,8 +6,8 @@ import java.io.InputStream;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.converter.FileStreamConverter;
-import tech.threekilogram.depository.file.impl.DiskLruLoader;
-import tech.threekilogram.depository.file.impl.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
+import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 

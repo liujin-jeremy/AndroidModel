@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.impl.DiskLruLoader;
-import tech.threekilogram.depository.file.impl.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
+import tech.threekilogram.depository.file.loader.FileLoader;
 
 /**
  * @author liujin

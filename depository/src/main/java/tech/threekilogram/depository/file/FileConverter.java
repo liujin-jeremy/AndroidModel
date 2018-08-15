@@ -3,8 +3,8 @@ package tech.threekilogram.depository.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.depository.file.impl.DiskLruLoader;
-import tech.threekilogram.depository.file.impl.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
+import tech.threekilogram.depository.file.loader.FileLoader;
 
 /**
  * 该接口用于辅助{@link FileLoader} 和{@link DiskLruLoader}
