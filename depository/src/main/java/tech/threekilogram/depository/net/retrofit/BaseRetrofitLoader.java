@@ -86,7 +86,7 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
       public V load ( String key ) {
 
             /* 1. 获得url */
-            java.lang.String urlFromKey = mNetConverter.urlFromKey( key );
+            String urlFromKey = mNetConverter.urlFromKey( key );
 
             /* 2. 制造一个call对象 */
             if( mService == null ) {

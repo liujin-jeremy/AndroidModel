@@ -26,6 +26,8 @@
             </activity>
             <activity android:name=".TestNetActivity">
             </activity>
+            <activity android:name=".TestBitmapActivity">
+            </activity>
       </application>
 
 </manifest>

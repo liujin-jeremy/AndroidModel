@@ -1,6 +1,7 @@
 package tech.threekilogram.depository.net.retrofit.converter;
 
 import android.graphics.Bitmap;
+import java.io.File;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
@@ -12,18 +13,22 @@ import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
  */
 public class RetrofitBitmapConverter extends BaseRetrofitConverter<Bitmap> {
 
-      private BitmapConverter mBitmapConverter;
+      private static final String TAG = RetrofitBitmapConverter.class.getSimpleName();
+      private RetrofitDownConverter mDownConverter;
+      private BitmapConverter       mBitmapConverter;
 
       public RetrofitBitmapConverter (
-          BitmapConverter bitmapConverter ) {
+          BitmapConverter bitmapConverter, File file ) {
 
             mBitmapConverter = bitmapConverter;
+            mDownConverter = new RetrofitDownConverter( file );
       }
 
       @Override
       public Bitmap onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
-            return mBitmapConverter.read( response.byteStream() );
+            File file = mDownConverter.onExecuteSuccess( key, response );
+            return mBitmapConverter.read( file );
       }
 
       @Override

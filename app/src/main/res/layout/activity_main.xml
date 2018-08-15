@@ -13,9 +13,9 @@
           android:orientation="vertical">
 
             <Button
-                android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:background="@color/colorOrange"
                 android:onClick="toTestMemory"
                 android:text="toTestMemory"/>
@@ -27,6 +27,14 @@
                 android:background="@color/colorOrange"
                 android:onClick="toTestFile"
                 android:text="toTestFile"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@color/colorOrange"
+                android:onClick="toTestBitmap"
+                android:text="toTestBitmap"/>
 
       </LinearLayout>
 

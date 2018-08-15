@@ -25,4 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
             TestFileActivity.start( this );
       }
+
+      public void toTestBitmap ( View view ) {
+
+            TestBitmapActivity.start( this );
+      }
 }

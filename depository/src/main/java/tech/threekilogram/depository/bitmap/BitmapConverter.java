@@ -5,6 +5,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.support.annotation.IntDef;
 import com.example.bitmapreader.BitmapReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Retention;
@@ -112,6 +113,34 @@ public class BitmapConverter {
             }
 
             return BitmapReader.decodeBitmapToMatchSize( stream, mWidth, mHeight );
+      }
+
+      public Bitmap read ( File file ) {
+
+            /* size is 0 */
+
+            if( mWidth == 0 || mHeight == 0 || mMode == 0 ) {
+
+                  return BitmapFactory.decodeFile( file.getAbsolutePath() );
+            }
+
+            if( mMode == SAMPLE ) {
+                  return BitmapReader.decodeSampledBitmap( file, mWidth, mHeight );
+            }
+
+            if( mMode == SAMPLE_MAX ) {
+                  return BitmapReader.decodeMaxSampledBitmap( file, mWidth, mHeight );
+            }
+
+            if( mMode == MATCH_WIDTH ) {
+                  return BitmapReader.decodeBitmapToMatchWidth( file, mWidth );
+            }
+
+            if( mMode == MATCH_HEIGHT ) {
+                  return BitmapReader.decodeBitmapToMatchHeight( file, mHeight );
+            }
+
+            return BitmapReader.decodeBitmapToMatchSize( file, mWidth, mHeight );
       }
 
       public void write ( OutputStream stream, Bitmap value ) {
