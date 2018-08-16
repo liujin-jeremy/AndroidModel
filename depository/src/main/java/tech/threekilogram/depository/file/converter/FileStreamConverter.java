@@ -3,10 +3,10 @@ package tech.threekilogram.depository.file.converter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.function.Md5;
 
 /**
  * {@link FileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
@@ -16,12 +16,12 @@ import tech.threekilogram.depository.function.Md5;
  * @date: 2018-07-30
  * @time: 17:17
  */
-public class FileStreamConverter implements FileConverter<InputStream> {
+public class FileStreamConverter extends BaseFileConverter<InputStream> {
 
       @Override
       public String fileName ( String key ) {
 
-            return Md5.md5( key );
+            return mKeyNameConverter.encodeToName( key );
       }
 
       @Override

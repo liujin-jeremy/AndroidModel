@@ -25,7 +25,7 @@ public interface FileConverter<V> {
        *
        * @param key key to map a file
        *
-       * @return file name defined by this key, not a path
+       * @return file encodeToName defined by this key, not a path
        */
       String fileName ( String key );
 

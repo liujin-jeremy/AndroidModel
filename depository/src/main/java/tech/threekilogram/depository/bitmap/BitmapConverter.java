@@ -86,6 +86,13 @@ public class BitmapConverter {
             mMode = mode;
       }
 
+      /**
+       * read a bitmap
+       *
+       * @param file file bitmap
+       *
+       * @return bitmap
+       */
       public Bitmap read ( File file ) {
 
             /* size is 0 */
@@ -114,6 +121,12 @@ public class BitmapConverter {
             return BitmapReader.decodeBitmapToMatchSize( file, mWidth, mHeight );
       }
 
+      /**
+       * save bitmap to outputStream
+       *
+       * @param stream outputStream
+       * @param value bitmap
+       */
       public void write ( OutputStream stream, Bitmap value ) {
 
             value.compress( CompressFormat.PNG, 100, stream );

@@ -6,16 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
-import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.Md5;
+import tech.threekilogram.depository.file.BaseFileConverter;
 
 /**
+ * 用于{@link File}和{@link Bitmap}相互转换
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-15
  * @time: 18:22
  */
-public class FileBitmapConverter implements FileConverter<Bitmap> {
+public class FileBitmapConverter extends BaseFileConverter<Bitmap> {
 
       private BitmapConverter mBitmapConverter;
       private File            mDir;
@@ -29,7 +30,7 @@ public class FileBitmapConverter implements FileConverter<Bitmap> {
       @Override
       public String fileName ( String key ) {
 
-            return Md5.md5( key );
+            return mKeyNameConverter.encodeToName( key );
       }
 
       @Override

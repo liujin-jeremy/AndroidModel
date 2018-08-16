@@ -8,6 +8,8 @@ import tech.threekilogram.depository.file.converter.FileGsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.function.Md5;
+import tech.threekilogram.depository.function.StringHash;
 import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
 import tech.threekilogram.depository.memory.map.MemoryListLoader;
@@ -46,7 +48,16 @@ class Test {
 
       public static void main ( String[] args ) {
 
-            testRetrofitJson();
+            final String url = "https://gank.io/api/data/Android/10/%d";
+
+            for( int i = 0; i < 10; i++ ) {
+
+                  String s = String.format( url, i );
+                  String md5 = Md5.md5( s );
+                  String hash = StringHash.hash( s );
+                  System.out.println( md5 );
+                  System.out.println( hash );
+            }
       }
 
       private static void testRetrofitJson ( ) {

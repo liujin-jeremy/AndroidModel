@@ -9,9 +9,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.function.Md5;
 import tech.threekilogram.depository.instance.GsonClient;
 
 /**
@@ -24,7 +24,7 @@ import tech.threekilogram.depository.instance.GsonClient;
  *
  * @author liujin
  */
-public class FileGsonConverter<T> implements FileConverter<T> {
+public class FileGsonConverter<T> extends BaseFileConverter<T> {
 
       /**
        * gson
@@ -48,7 +48,7 @@ public class FileGsonConverter<T> implements FileConverter<T> {
       @Override
       public String fileName ( String key ) {
 
-            return Md5.md5( key );
+            return mKeyNameConverter.encodeToName( key );
       }
 
       @Override
