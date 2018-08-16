@@ -10,7 +10,7 @@ package tech.threekilogram.depository;
  * @date: 2018-08-01
  * @time: 9:33
  */
-public interface ContainerLoader<K, V> extends Loader<K, V> {
+public interface Container<K, V> extends Loader<K, V> {
 
       /**
        * save a value to key,then could load value with this key

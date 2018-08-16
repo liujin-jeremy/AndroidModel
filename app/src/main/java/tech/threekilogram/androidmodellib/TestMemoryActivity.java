@@ -10,9 +10,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import tech.threekilogram.depository.memory.MemoryLoader;
-import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
-import tech.threekilogram.depository.memory.map.MemoryMapLoader;
+import tech.threekilogram.depository.memory.Memory;
+import tech.threekilogram.depository.memory.lru.MemoryLruCache;
+import tech.threekilogram.depository.memory.map.MemoryMap;
 
 /**
  * @author liujin
@@ -28,10 +28,10 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
       private TextView mMessageText;
       private Button   mButton;
 
-      private MemoryLoader<String, String>         mMemoryLoader;
-      private MemoryMapLoader<String, String>      mMapLoader;
-      private MemoryLruCacheLoader<String, String> mLruLoader;
-      private Button                               mSize;
+      private Memory<String, String>         mMemoryLoader;
+      private MemoryMap<String, String>      mMapLoader;
+      private MemoryLruCache<String, String> mLruLoader;
+      private Button                         mSize;
 
       public static void start ( Context context ) {
 
@@ -46,8 +46,8 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
             setContentView( R.layout.activity_test_memory );
             initView();
 
-            mMapLoader = new MemoryMapLoader<>();
-            mLruLoader = new MemoryLruCacheLoader<>( 3 );
+            mMapLoader = new MemoryMap<>();
+            mLruLoader = new MemoryLruCache<>( 3 );
             mMemoryLoader = mMapLoader;
       }
 
@@ -99,7 +99,7 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
 
       private void change ( ) {
 
-            if( mMemoryLoader instanceof MemoryMapLoader ) {
+            if( mMemoryLoader instanceof MemoryMap ) {
 
                   mMemoryLoader = mLruLoader;
             } else {

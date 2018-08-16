@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.memory.lru;
 
 import android.support.v4.util.LruCache;
-import tech.threekilogram.depository.memory.MemoryLoader;
+import tech.threekilogram.depository.memory.Memory;
 import tech.threekilogram.depository.memory.lru.size.SimpleValueSize;
 import tech.threekilogram.depository.memory.lru.size.ValueSize;
 
@@ -14,7 +14,7 @@ import tech.threekilogram.depository.memory.lru.size.ValueSize;
  * @time: 8:26
  */
 @SuppressWarnings("WeakerAccess")
-public class MemoryLruCacheLoader<K, V> implements MemoryLoader<K, V> {
+public class MemoryLruCache<K, V> implements Memory<K, V> {
 
       /**
        * 容器
@@ -24,7 +24,7 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoader<K, V> {
       /**
        * 创建一个默认50条数据的缓存
        */
-      public MemoryLruCacheLoader () {
+      public MemoryLruCache () {
 
             this(50, new SimpleValueSize<K, V>());
       }
@@ -32,7 +32,7 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoader<K, V> {
       /**
        * 创建一个指定最大数量的缓存
        */
-      public MemoryLruCacheLoader (int maxSize) {
+      public MemoryLruCache ( int maxSize) {
 
             this(maxSize, new SimpleValueSize<K, V>());
       }
@@ -43,7 +43,7 @@ public class MemoryLruCacheLoader<K, V> implements MemoryLoader<K, V> {
        * @param maxSize 最大容量
        * @param valueSize 每个数据大小计算
        */
-      public MemoryLruCacheLoader (
+      public MemoryLruCache (
           int maxSize,
           ValueSize<K, V> valueSize) {
 

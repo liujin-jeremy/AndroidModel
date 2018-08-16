@@ -1,26 +1,25 @@
 package tech.threekilogram.depository.file.loader;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.BaseFile;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
 
 /**
- * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link File}转换为{@link V}
+ * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link java.io.File}转换为{@link V}
  *
  * @param <V> value 的类型
  *
  * @author liujin
  */
-public class FileLoader<V> extends BaseFileLoader<V> {
+public class File<V> extends BaseFile<V> {
 
       /**
        * 一个文件夹用于统一保存key对应的文件
        */
-      private File             mDir;
+      private java.io.File     mDir;
       /**
        * 辅助loader正常工作
        */
@@ -28,9 +27,9 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
       /**
        * @param dir 保存文件的文件夹
-       * @param converter 用于转换{@link File}为{@link V}类型的实例
+       * @param converter 用于转换{@link java.io.File}为{@link V}类型的实例
        */
-      public FileLoader ( File dir, FileConverter<V> converter ) {
+      public File ( java.io.File dir, FileConverter<V> converter ) {
 
             mDir = dir;
             mConverter = converter;
@@ -60,7 +59,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
             try {
 
-                  File file = getFile( key );
+                  java.io.File file = getFile( key );
                   stream = new FileOutputStream( file );
                   mConverter.saveValue( key, stream, value );
             } catch(IOException e) {
@@ -105,7 +104,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       @Override
       public V load ( String key ) {
 
-            File file = getFile( key );
+            java.io.File file = getFile( key );
             V result = null;
 
             if( file.exists() ) {
@@ -141,13 +140,13 @@ public class FileLoader<V> extends BaseFileLoader<V> {
        * @return file to this key, file may not exist
        */
       @Override
-      public File getFile ( String key ) {
+      public java.io.File getFile ( String key ) {
 
             String name = mConverter.fileName( key );
-            return new File( mDir, name );
+            return new java.io.File( mDir, name );
       }
 
-      public File getDir ( ) {
+      public java.io.File getDir ( ) {
 
             return mDir;
       }

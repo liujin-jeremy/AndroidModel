@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import tech.threekilogram.depository.ContainerLoader;
+import tech.threekilogram.depository.Container;
 
 /**
  * 辅助类,提供成员变量,及其设置方法
@@ -17,7 +17,7 @@ import tech.threekilogram.depository.ContainerLoader;
  * @date: 2018-08-01
  * @time: 12:01
  */
-public abstract class BaseFileLoader<V> implements ContainerLoader<String, V> {
+public abstract class BaseFile<V> implements Container<String, V> {
 
       /**
        * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话

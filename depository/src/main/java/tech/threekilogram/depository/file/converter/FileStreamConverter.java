@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.File;
 import tech.threekilogram.depository.function.Close;
 
 /**
- * {@link FileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
+ * {@link FileConverter} 的一种实现,需要和{@link File}配合使用;
  *
  * @author: Liujin
  * @version: V1.0

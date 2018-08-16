@@ -9,9 +9,9 @@ import tech.threekilogram.depository.memory.lru.size.BitmapSize;
  * @date: 2018-08-15
  * @time: 18:13
  */
-public class MemoryBitmapLoader<K> extends MemoryLruCacheLoader<K, Bitmap> {
+public class MemoryBitmap<K> extends MemoryLruCache<K, Bitmap> {
 
-      public MemoryBitmapLoader ( int maxSize ) {
+      public MemoryBitmap ( int maxSize ) {
 
             super( maxSize, new BitmapSize<K>() );
       }

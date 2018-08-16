@@ -9,4 +9,4 @@ package tech.threekilogram.depository.memory.map;
  *
  * @author liujin
  */
-public class MemoryListLoader<V> extends MemoryMapLoader<Integer, V> { }
+public class MemoryList<V> extends MemoryMap<Integer, V> { }

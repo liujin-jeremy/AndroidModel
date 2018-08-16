@@ -3,7 +3,7 @@ package tech.threekilogram.depository.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import java.util.Set;
-import tech.threekilogram.depository.ContainerLoader;
+import tech.threekilogram.depository.Container;
 
 /**
  * 使用{@link SharedPreferences}保存数据
@@ -13,11 +13,11 @@ import tech.threekilogram.depository.ContainerLoader;
  * @date: 2018-08-13
  * @time: 13:35
  */
-public class PreferenceLoader implements ContainerLoader<String, String> {
+public class Preference implements Container<String, String> {
 
       private SharedPreferences mPreferences;
 
-      public PreferenceLoader ( Context context, String name ) {
+      public Preference ( Context context, String name ) {
 
             mPreferences = context.getSharedPreferences( name, Context.MODE_PRIVATE );
       }

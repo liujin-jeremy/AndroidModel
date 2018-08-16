@@ -1,19 +1,18 @@
 package tech.threekilogram.depository;
 
 import com.google.gson.Gson;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import tech.threekilogram.depository.file.converter.FileGsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLru;
+import tech.threekilogram.depository.file.loader.File;
 import tech.threekilogram.depository.function.Md5;
 import tech.threekilogram.depository.function.StringHash;
 import tech.threekilogram.depository.instance.GsonClient;
-import tech.threekilogram.depository.memory.lru.MemoryLruCacheLoader;
-import tech.threekilogram.depository.memory.map.MemoryListLoader;
-import tech.threekilogram.depository.memory.map.MemoryMapLoader;
+import tech.threekilogram.depository.memory.lru.MemoryLruCache;
+import tech.threekilogram.depository.memory.map.MemoryList;
+import tech.threekilogram.depository.memory.map.MemoryMap;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitGsonConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
@@ -27,9 +26,9 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
  */
 class Test {
 
-      private static final File   TEMP     = new File( "Temp" );
-      private static final int    MAX_SIZE = 1024 * 1024 * 20;
-      private static final String JSON     = "{\n"
+      private static final java.io.File TEMP     = new java.io.File( "Temp" );
+      private static final int          MAX_SIZE = 1024 * 1024 * 20;
+      private static final String       JSON     = "{\n"
           + "    \"error\": false,\n"
           + "    \"results\": [\n"
           + "        {\n"
@@ -86,21 +85,21 @@ class Test {
 
             RetrofitDowner loader = new RetrofitDowner( TEMP );
             final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
-            File file = loader.load( url00 );
+            java.io.File file = loader.load( url00 );
             System.out.println( file );
 
-            File load = loader.load( url00 );
+            java.io.File load = loader.load( url00 );
             System.out.println( load );
 
             final String url01 = "https://ww1.sinaimg.cn/large/0065oQSqgy1fu39hosiwoj30j60qyq96.jpg";
-            File load1 = loader.load( url01 );
+            java.io.File load1 = loader.load( url01 );
             System.out.println( load1 );
       }
 
       private static void testDiskJson ( ) {
 
             try {
-                  DiskLruLoader<Bean> loader = new DiskLruLoader<>(
+                  DiskLru<Bean> loader = new DiskLru<>(
                       TEMP,
                       MAX_SIZE,
                       new FileGsonConverter<Bean>( Bean.class )
@@ -117,7 +116,7 @@ class Test {
                   Bean load = loader.load( key );
                   System.out.println( load.getResults().get( 0 ).url );
 
-                  File file = loader.getFile( key );
+                  java.io.File file = loader.getFile( key );
                   System.out.println( "file: " + file );
 
                   loader.remove( key );
@@ -130,7 +129,7 @@ class Test {
 
       private static void testFileJson ( ) {
 
-            FileLoader<Bean> loader = new FileLoader<>(
+            File<Bean> loader = new File<>(
                 TEMP,
                 new FileGsonConverter<Bean>( Bean.class )
             );
@@ -146,7 +145,7 @@ class Test {
             Bean load = loader.load( key );
             System.out.println( load.getResults().get( 0 ).url );
 
-            File file = loader.getFile( key );
+            java.io.File file = loader.getFile( key );
             System.out.println( "file: " + file );
 
             loader.remove( key );
@@ -157,7 +156,7 @@ class Test {
       private static void testDiskString ( ) {
 
             try {
-                  DiskLruLoader<String> loader = new DiskLruLoader<>(
+                  DiskLru<String> loader = new DiskLru<>(
                       TEMP,
                       MAX_SIZE,
                       new FileStringConverter()
@@ -171,7 +170,7 @@ class Test {
                   String load = loader.load( key );
                   System.out.println( "save value: " + key + " " + load );
 
-                  File file = loader.getFile( key );
+                  java.io.File file = loader.getFile( key );
                   System.out.println( key + " path: " + file );
 
                   String remove = loader.remove( key );
@@ -184,7 +183,7 @@ class Test {
 
       private static void testFileString ( ) {
 
-            FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
+            File<String> loader = new File<>( TEMP, new FileStringConverter() );
             String key = "key";
             String value = "曾经沧海难为水";
 
@@ -193,7 +192,7 @@ class Test {
             String load = loader.load( key );
             System.out.println( "save value: " + key + " " + load );
 
-            File file = loader.getFile( key );
+            java.io.File file = loader.getFile( key );
             System.out.println( key + " path: " + file );
 
             String remove = loader.remove( key );
@@ -203,8 +202,8 @@ class Test {
 
       private static void testMemoryLru ( ) {
 
-            /* MemoryListLoader 使用数字索引保存/读取数据 */
-            MemoryLruCacheLoader<String, String> loader = new MemoryLruCacheLoader<>( 3 );
+            /* MemoryList 使用数字索引保存/读取数据 */
+            MemoryLruCache<String, String> loader = new MemoryLruCache<>( 3 );
 
             String value = "HelloAndroidModel - 0";
             String value1 = "HelloAndroidModel - 1";
@@ -247,8 +246,8 @@ class Test {
 
       private static void testMemoryMap ( ) {
 
-            /* MemoryListLoader 使用数字索引保存/读取数据 */
-            MemoryMapLoader<String, String> loader = new MemoryMapLoader<>();
+            /* MemoryList 使用数字索引保存/读取数据 */
+            MemoryMap<String, String> loader = new MemoryMap<>();
 
             String value = "HelloAndroidModel - 0";
             String value1 = "HelloAndroidModel - 1";
@@ -282,8 +281,8 @@ class Test {
 
       private static void testMemoryList ( ) {
 
-            /* MemoryListLoader 使用数字索引保存/读取数据 */
-            MemoryListLoader<String> loader = new MemoryListLoader<>();
+            /* MemoryList 使用数字索引保存/读取数据 */
+            MemoryList<String> loader = new MemoryList<>();
 
             String value = "HelloAndroidModel - 0";
             String value1 = "HelloAndroidModel - 1";

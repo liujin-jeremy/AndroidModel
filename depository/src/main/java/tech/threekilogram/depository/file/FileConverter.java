@@ -3,15 +3,15 @@ package tech.threekilogram.depository.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLru;
+import tech.threekilogram.depository.file.loader.File;
 
 /**
- * 该接口用于辅助{@link FileLoader} 和{@link DiskLruLoader}
+ * 该接口用于辅助{@link File} 和{@link DiskLru}
  * 正常工作,
  * 用于将一个键转为{@link V}类型的值
  * <p>
- * this interface is implemented by user to make {@link FileLoader} work fine
+ * this interface is implemented by user to make {@link File} work fine
  *
  * @param <V> type of value
  *

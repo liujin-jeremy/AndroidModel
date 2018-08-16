@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import java.io.File;
 import java.io.IOException;
-import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.BaseFile;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLru;
+import tech.threekilogram.depository.file.loader.File;
 
 /**
  * @author liujin
@@ -21,9 +20,9 @@ public class TestFileActivity extends AppCompatActivity {
       private final String key   = "HelloFile";
       private final String value = "Hello Android Model";
 
-      private FileLoader<String>     mFileLoader;
-      private DiskLruLoader<String>  mDiskLruLoader;
-      private BaseFileLoader<String> mLoader;
+      private File<String>     mFileLoader;
+      private DiskLru<String>  mDiskLruLoader;
+      private BaseFile<String> mLoader;
 
       private TextView mTextView;
 
@@ -40,9 +39,9 @@ public class TestFileActivity extends AppCompatActivity {
             setContentView( R.layout.activity_test_file );
             initView();
 
-            mFileLoader = new FileLoader<>( getExternalCacheDir(), new FileStringConverter() );
+            mFileLoader = new File<>( getExternalCacheDir(), new FileStringConverter() );
             try {
-                  mDiskLruLoader = new DiskLruLoader<>(
+                  mDiskLruLoader = new DiskLru<>(
                       getCacheDir(),
                       1024 * 1024 * 5,
                       new FileStringConverter()
@@ -79,7 +78,7 @@ public class TestFileActivity extends AppCompatActivity {
       public void delete ( View view ) {
 
             mLoader.remove( key );
-            File file = mLoader.getFile( key );
+            java.io.File file = mLoader.getFile( key );
             show( "remove : " + file + " exist : " + file.exists() );
       }
 

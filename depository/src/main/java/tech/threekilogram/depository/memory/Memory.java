@@ -1,6 +1,6 @@
 package tech.threekilogram.depository.memory;
 
-import tech.threekilogram.depository.ContainerLoader;
+import tech.threekilogram.depository.Container;
 
 /**
  * 这是内存缓存的总接口,所有内存缓存均实现了该接口,
@@ -12,7 +12,7 @@ import tech.threekilogram.depository.ContainerLoader;
  *
  * @author liujin
  */
-public interface MemoryLoader<K, V> extends ContainerLoader<K, V> {
+public interface Memory<K, V> extends Container<K, V> {
 
       /**
        * 已经保存数据数量

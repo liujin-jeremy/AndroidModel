@@ -1,13 +1,12 @@
 package tech.threekilogram.depository.net.retrofit.converter;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.BaseFile;
 import tech.threekilogram.depository.file.converter.FileStreamConverter;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLru;
+import tech.threekilogram.depository.file.loader.File;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 
@@ -16,38 +15,38 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
  *
  * @author liujin
  */
-public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
+public class RetrofitDownConverter extends BaseRetrofitConverter<java.io.File> {
 
       /**
        * 下载文件夹
        */
-      private File                        mDir;
+      private java.io.File          mDir;
       /**
        * 保存文件
        */
-      private BaseFileLoader<InputStream> mFileLoader;
+      private BaseFile<InputStream> mFileLoader;
 
       /**
        * @param dir 指定保存文件夹
        */
-      public RetrofitDownConverter ( File dir ) {
+      public RetrofitDownConverter ( java.io.File dir ) {
 
             mDir = dir;
-            mFileLoader = new FileLoader<>( dir, new FileStreamConverter() );
+            mFileLoader = new File<>( dir, new FileStreamConverter() );
       }
 
       /**
        * @param dir 保存文件夹
        * @param maxSize 该文件夹最大大小
        */
-      public RetrofitDownConverter ( File dir, int maxSize ) throws IOException {
+      public RetrofitDownConverter ( java.io.File dir, int maxSize ) throws IOException {
 
             mDir = dir;
-            mFileLoader = new DiskLruLoader<>( dir, maxSize, new FileStreamConverter() );
+            mFileLoader = new DiskLru<>( dir, maxSize, new FileStreamConverter() );
       }
 
       @Override
-      public File onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
+      public java.io.File onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
             InputStream inputStream = response.byteStream();
             mFileLoader.save( key, inputStream );
@@ -60,12 +59,12 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
 
       }
 
-      public File getDir ( ) {
+      public java.io.File getDir ( ) {
 
             return mDir;
       }
 
-      public File getFile ( String key ) {
+      public java.io.File getFile ( String key ) {
 
             return mFileLoader.getFile( key );
       }

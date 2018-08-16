@@ -10,7 +10,7 @@ import android.view.View;
 import com.threekilogram.objectbus.bus.ObjectBus;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.file.converter.FileBitmapConverter;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.File;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
@@ -24,7 +24,7 @@ public class TestBitmapActivity extends AppCompatActivity {
       private RetrofitLoader<Bitmap>  mRetrofitLoader;
       private BitmapConverter         mBitmapConverter;
       private RetrofitBitmapConverter mRetrofitBitmapConverter;
-      private FileLoader<Bitmap>      mFileLoader;
+      private File<Bitmap>            mFileLoader;
 
       public static void start ( Context context ) {
 
@@ -51,7 +51,7 @@ public class TestBitmapActivity extends AppCompatActivity {
             );
             mRetrofitLoader = new RetrofitLoader<>( mRetrofitBitmapConverter );
 
-            mFileLoader = new FileLoader<>(
+            mFileLoader = new File<>(
                 getExternalCacheDir(),
                 new FileBitmapConverter( mBitmapConverter, getExternalCacheDir() )
             );
