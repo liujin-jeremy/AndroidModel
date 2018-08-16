@@ -10,7 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.function.Md5;
 import tech.threekilogram.depository.instance.GsonClient;
 
@@ -61,8 +61,8 @@ public class FileGsonConverter<T> implements FileConverter<T> {
                   return sGson.fromJson( reader, mValueType );
             } finally {
 
-                  CloseFunction.close( reader );
-                  CloseFunction.close( stream );
+                  Close.close( reader );
+                  Close.close( stream );
             }
       }
 
@@ -80,9 +80,9 @@ public class FileGsonConverter<T> implements FileConverter<T> {
                   sGson.toJson( value, mValueType, jsonWriter );
             } finally {
 
-                  CloseFunction.close( jsonWriter );
-                  CloseFunction.close( writer );
-                  CloseFunction.close( stream );
+                  Close.close( jsonWriter );
+                  Close.close( writer );
+                  Close.close( stream );
             }
       }
 }

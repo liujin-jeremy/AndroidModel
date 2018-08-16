@@ -11,7 +11,7 @@ import java.io.IOException;
  * @date: 2018-08-01
  * @time: 11:18
  */
-public class CloseFunction {
+public class Close {
 
       public static void close (Closeable closeable) {
 

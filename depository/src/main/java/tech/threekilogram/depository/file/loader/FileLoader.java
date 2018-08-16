@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.Close;
 
 /**
  * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link File}转换为{@link V}
@@ -74,7 +74,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                   }
             } finally {
 
-                  CloseFunction.close( stream );
+                  Close.close( stream );
             }
 
             /* return old value if should return */
@@ -128,7 +128,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         }
                   } finally {
 
-                        CloseFunction.close( stream );
+                        Close.close( stream );
                   }
             }
 

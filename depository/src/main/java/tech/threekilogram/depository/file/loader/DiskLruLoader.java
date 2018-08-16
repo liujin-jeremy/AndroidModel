@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.Close;
 
 /**
  * 底层使用{@link DiskLruCache}缓存数据到文件夹
@@ -92,7 +92,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             try {
 
                   mConverter.saveValue( key, outputStream, value );
-                  CloseFunction.close( outputStream );
+                  Close.close( outputStream );
                   editor.commit();
             } catch(IOException e) {
                   e.printStackTrace();
@@ -102,7 +102,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
                   }
             } finally {
 
-                  CloseFunction.close( outputStream );
+                  Close.close( outputStream );
             }
 
             try {
@@ -188,8 +188,8 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
                         }
                   } finally {
 
-                        CloseFunction.close( inputStream );
-                        CloseFunction.close( snapshot );
+                        Close.close( inputStream );
+                        Close.close( snapshot );
                   }
             }
 

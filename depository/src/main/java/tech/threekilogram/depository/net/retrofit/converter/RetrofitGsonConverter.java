@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
@@ -41,8 +41,8 @@ public class RetrofitGsonConverter<V> extends BaseRetrofitConverter<V> {
                   v = mGson.fromJson( reader, mValueType );
             } finally {
 
-                  CloseFunction.close( reader );
-                  CloseFunction.close( inputStream );
+                  Close.close( reader );
+                  Close.close( inputStream );
             }
 
             return v;

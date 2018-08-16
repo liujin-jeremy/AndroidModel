@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.file.loader.FileLoader;
-import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.function.Md5;
 
 /**
@@ -39,7 +39,7 @@ public class FileStringConverter implements FileConverter<String> {
                   e.printStackTrace();
             } finally {
 
-                  CloseFunction.close( stream );
+                  Close.close( stream );
             }
 
             return null;
@@ -53,7 +53,7 @@ public class FileStringConverter implements FileConverter<String> {
                   outputStream.write( value.getBytes() );
             } finally {
 
-                  CloseFunction.close( outputStream );
+                  Close.close( outputStream );
             }
       }
 }

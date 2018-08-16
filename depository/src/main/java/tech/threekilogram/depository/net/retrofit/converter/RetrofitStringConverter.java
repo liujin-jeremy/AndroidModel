@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.function.CloseFunction;
+import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
 /**
@@ -35,7 +35,7 @@ public class RetrofitStringConverter extends BaseRetrofitConverter<String> {
                   return builder.toString();
             } finally {
 
-                  CloseFunction.close( inputStream );
+                  Close.close( inputStream );
             }
       }
 

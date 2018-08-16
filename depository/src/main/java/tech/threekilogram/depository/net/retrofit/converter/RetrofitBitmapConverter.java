@@ -13,12 +13,20 @@ import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
  */
 public class RetrofitBitmapConverter extends BaseRetrofitConverter<Bitmap> {
 
-      private static final String TAG = RetrofitBitmapConverter.class.getSimpleName();
+      /**
+       * 下载到一个缓存文件夹
+       */
       private RetrofitDownConverter mDownConverter;
+      /**
+       * 转换为bitmap
+       */
       private BitmapConverter       mBitmapConverter;
 
-      public RetrofitBitmapConverter (
-          BitmapConverter bitmapConverter, File file ) {
+      /**
+       * @param bitmapConverter 转换stream为bitmap
+       * @param file cache dir
+       */
+      public RetrofitBitmapConverter ( BitmapConverter bitmapConverter, File file ) {
 
             mBitmapConverter = bitmapConverter;
             mDownConverter = new RetrofitDownConverter( file );
@@ -27,6 +35,7 @@ public class RetrofitBitmapConverter extends BaseRetrofitConverter<Bitmap> {
       @Override
       public Bitmap onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
+            /* save then read */
             File file = mDownConverter.onExecuteSuccess( key, response );
             return mBitmapConverter.read( file );
       }
