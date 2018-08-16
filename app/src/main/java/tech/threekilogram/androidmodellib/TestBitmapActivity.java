@@ -9,8 +9,9 @@ import android.util.Log;
 import android.view.View;
 import com.threekilogram.objectbus.bus.ObjectBus;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
+import tech.threekilogram.depository.file.converter.FileBitmapConverter;
+import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
@@ -23,7 +24,7 @@ public class TestBitmapActivity extends AppCompatActivity {
       private RetrofitLoader<Bitmap>  mRetrofitLoader;
       private BitmapConverter         mBitmapConverter;
       private RetrofitBitmapConverter mRetrofitBitmapConverter;
-      private RetrofitDowner          mDowner;
+      private FileLoader<Bitmap>      mFileLoader;
 
       public static void start ( Context context ) {
 
@@ -44,11 +45,16 @@ public class TestBitmapActivity extends AppCompatActivity {
             mBitmapConverter.setHeight( 500 );
             mBitmapConverter.setMode( BitmapConverter.SAMPLE );
 
-            mRetrofitBitmapConverter = new RetrofitBitmapConverter( mBitmapConverter,
-                                                                    getExternalCacheDir() );
+            mRetrofitBitmapConverter = new RetrofitBitmapConverter(
+                mBitmapConverter,
+                getExternalCacheDir()
+            );
             mRetrofitLoader = new RetrofitLoader<>( mRetrofitBitmapConverter );
 
-            mDowner = new RetrofitDowner( getExternalCacheDir() );
+            mFileLoader = new FileLoader<>(
+                getExternalCacheDir(),
+                new FileBitmapConverter( mBitmapConverter, getExternalCacheDir() )
+            );
       }
 
       public void loadFromNet ( View view ) {
@@ -62,6 +68,11 @@ public class TestBitmapActivity extends AppCompatActivity {
                         Bitmap bitmap = mRetrofitLoader.load( url );
 
                         Log.e( TAG, "run : " + bitmap.getWidth() );
+
+                        mFileLoader.save( url, bitmap );
+                        Bitmap load = mFileLoader.load( url );
+
+                        Log.e( TAG, "run 02: " + load.getWidth() );
                   }
             } ).run();
       }

@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.IntDef;
 import com.example.bitmapreader.BitmapReader;
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -85,34 +84,6 @@ public class BitmapConverter {
       public void setMode ( @ScaleMode int mode ) {
 
             mMode = mode;
-      }
-
-      public Bitmap read ( InputStream stream ) {
-
-            /* size is 0 */
-
-            if( mWidth == 0 || mHeight == 0 || mMode == 0 ) {
-
-                  return BitmapFactory.decodeStream( stream );
-            }
-
-            if( mMode == SAMPLE ) {
-                  return BitmapReader.decodeSampledBitmap( stream, mWidth, mHeight );
-            }
-
-            if( mMode == SAMPLE_MAX ) {
-                  return BitmapReader.decodeMaxSampledBitmap( stream, mWidth, mHeight );
-            }
-
-            if( mMode == MATCH_WIDTH ) {
-                  return BitmapReader.decodeBitmapToMatchWidth( stream, mWidth );
-            }
-
-            if( mMode == MATCH_HEIGHT ) {
-                  return BitmapReader.decodeBitmapToMatchHeight( stream, mHeight );
-            }
-
-            return BitmapReader.decodeBitmapToMatchSize( stream, mWidth, mHeight );
       }
 
       public Bitmap read ( File file ) {

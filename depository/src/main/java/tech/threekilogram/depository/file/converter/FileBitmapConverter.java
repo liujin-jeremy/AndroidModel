@@ -1,6 +1,7 @@
 package tech.threekilogram.depository.file.converter;
 
 import android.graphics.Bitmap;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,10 +18,12 @@ import tech.threekilogram.depository.function.Md5;
 public class FileBitmapConverter implements FileConverter<Bitmap> {
 
       private BitmapConverter mBitmapConverter;
+      private File            mDir;
 
-      public FileBitmapConverter ( BitmapConverter bitmapConverter ) {
+      public FileBitmapConverter ( BitmapConverter bitmapConverter, File dir ) {
 
             mBitmapConverter = bitmapConverter;
+            mDir = dir;
       }
 
       @Override
@@ -32,7 +35,13 @@ public class FileBitmapConverter implements FileConverter<Bitmap> {
       @Override
       public Bitmap toValue ( String key, InputStream stream ) throws Exception {
 
-            return mBitmapConverter.read( stream );
+            return mBitmapConverter.read( getFile( key ) );
+      }
+
+      public File getFile ( String key ) {
+
+            String fileName = fileName( key );
+            return new File( mDir, fileName );
       }
 
       @Override
