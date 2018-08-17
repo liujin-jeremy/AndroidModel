@@ -2,6 +2,7 @@ package tech.threekilogram.depository.net.retrofit.loader;
 
 import java.io.File;
 import java.io.IOException;
+import tech.threekilogram.depository.file.converter.FileStreamConverter.OnProgressUpdateListener;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter;
 
 /**
@@ -77,5 +78,16 @@ public class RetrofitDowner extends RetrofitLoader<File> {
             }
 
             return super.load( url );
+      }
+
+      public OnProgressUpdateListener getOnProgressUpdateListener ( ) {
+
+            return getConverter().getOnProgressUpdateListener();
+      }
+
+      public void setOnProgressUpdateListener (
+          OnProgressUpdateListener onProgressUpdateListener ) {
+
+            getConverter().setOnProgressUpdateListener( onProgressUpdateListener );
       }
 }

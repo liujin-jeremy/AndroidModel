@@ -1,12 +1,14 @@
 package tech.threekilogram.depository.net.retrofit.converter;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.file.BaseFile;
+import tech.threekilogram.depository.file.BaseFileContainer;
 import tech.threekilogram.depository.file.converter.FileStreamConverter;
-import tech.threekilogram.depository.file.loader.DiskLru;
-import tech.threekilogram.depository.file.loader.File;
+import tech.threekilogram.depository.file.converter.FileStreamConverter.OnProgressUpdateListener;
+import tech.threekilogram.depository.file.loader.DiskLruContainer;
+import tech.threekilogram.depository.file.loader.FileContainer;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 
@@ -15,38 +17,44 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
  *
  * @author liujin
  */
-public class RetrofitDownConverter extends BaseRetrofitConverter<java.io.File> {
+public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
 
       /**
        * 下载文件夹
        */
-      private java.io.File          mDir;
+      private File                           mDir;
       /**
        * 保存文件
        */
-      private BaseFile<InputStream> mFileLoader;
+      private BaseFileContainer<InputStream> mFileLoader;
+      /**
+       * converter
+       */
+      private FileStreamConverter            mFileStreamConverter;
 
       /**
        * @param dir 指定保存文件夹
        */
-      public RetrofitDownConverter ( java.io.File dir ) {
+      public RetrofitDownConverter ( File dir ) {
 
             mDir = dir;
-            mFileLoader = new File<>( dir, new FileStreamConverter() );
+            mFileStreamConverter = new FileStreamConverter();
+            mFileLoader = new FileContainer<>( dir, mFileStreamConverter );
       }
 
       /**
        * @param dir 保存文件夹
        * @param maxSize 该文件夹最大大小
        */
-      public RetrofitDownConverter ( java.io.File dir, int maxSize ) throws IOException {
+      public RetrofitDownConverter ( File dir, int maxSize ) throws IOException {
 
             mDir = dir;
-            mFileLoader = new DiskLru<>( dir, maxSize, new FileStreamConverter() );
+            mFileStreamConverter = new FileStreamConverter();
+            mFileLoader = new DiskLruContainer<>( dir, maxSize, mFileStreamConverter );
       }
 
       @Override
-      public java.io.File onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
+      public File onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
             InputStream inputStream = response.byteStream();
             mFileLoader.save( key, inputStream );
@@ -59,13 +67,33 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<java.io.File> {
 
       }
 
-      public java.io.File getDir ( ) {
+      public File getDir ( ) {
 
             return mDir;
       }
 
-      public java.io.File getFile ( String key ) {
+      public File getFile ( String key ) {
 
             return mFileLoader.getFile( key );
+      }
+
+      /**
+       * 获取进度监听
+       *
+       * @return 进度监听
+       */
+      public OnProgressUpdateListener getOnProgressUpdateListener ( ) {
+
+            return mFileStreamConverter.getOnProgressUpdateListener();
+      }
+
+      /**
+       * 设置进度监听
+       *
+       * @param updateListener 监听
+       */
+      public void setOnProgressUpdateListener ( OnProgressUpdateListener updateListener ) {
+
+            mFileStreamConverter.setOnProgressUpdateListener( updateListener );
       }
 }

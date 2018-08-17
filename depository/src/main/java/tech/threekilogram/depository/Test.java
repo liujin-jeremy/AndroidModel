@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import tech.threekilogram.depository.file.converter.FileGsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.DiskLru;
-import tech.threekilogram.depository.file.loader.File;
+import tech.threekilogram.depository.file.loader.DiskLruContainer;
+import tech.threekilogram.depository.file.loader.FileContainer;
 import tech.threekilogram.depository.function.Md5;
 import tech.threekilogram.depository.function.StringHash;
 import tech.threekilogram.depository.instance.GsonClient;
@@ -99,7 +99,7 @@ class Test {
       private static void testDiskJson ( ) {
 
             try {
-                  DiskLru<Bean> loader = new DiskLru<>(
+                  DiskLruContainer<Bean> loader = new DiskLruContainer<>(
                       TEMP,
                       MAX_SIZE,
                       new FileGsonConverter<Bean>( Bean.class )
@@ -129,7 +129,7 @@ class Test {
 
       private static void testFileJson ( ) {
 
-            File<Bean> loader = new File<>(
+            FileContainer<Bean> loader = new FileContainer<>(
                 TEMP,
                 new FileGsonConverter<Bean>( Bean.class )
             );
@@ -156,7 +156,7 @@ class Test {
       private static void testDiskString ( ) {
 
             try {
-                  DiskLru<String> loader = new DiskLru<>(
+                  DiskLruContainer<String> loader = new DiskLruContainer<>(
                       TEMP,
                       MAX_SIZE,
                       new FileStringConverter()
@@ -183,7 +183,7 @@ class Test {
 
       private static void testFileString ( ) {
 
-            File<String> loader = new File<>( TEMP, new FileStringConverter() );
+            FileContainer<String> loader = new FileContainer<>( TEMP, new FileStringConverter() );
             String key = "key";
             String value = "曾经沧海难为水";
 

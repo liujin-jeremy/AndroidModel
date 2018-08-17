@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import java.io.IOException;
-import tech.threekilogram.depository.file.BaseFile;
+import tech.threekilogram.depository.file.BaseFileContainer;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.DiskLru;
-import tech.threekilogram.depository.file.loader.File;
+import tech.threekilogram.depository.file.loader.DiskLruContainer;
+import tech.threekilogram.depository.file.loader.FileContainer;
 
 /**
  * @author liujin
@@ -20,9 +20,9 @@ public class TestFileActivity extends AppCompatActivity {
       private final String key   = "HelloFile";
       private final String value = "Hello Android Model";
 
-      private File<String>     mFileLoader;
-      private DiskLru<String>  mDiskLruLoader;
-      private BaseFile<String> mLoader;
+      private FileContainer<String>     mFileContainerLoader;
+      private DiskLruContainer<String>  mDiskLruContainerLoader;
+      private BaseFileContainer<String> mLoader;
 
       private TextView mTextView;
 
@@ -39,9 +39,10 @@ public class TestFileActivity extends AppCompatActivity {
             setContentView( R.layout.activity_test_file );
             initView();
 
-            mFileLoader = new File<>( getExternalCacheDir(), new FileStringConverter() );
+            mFileContainerLoader = new FileContainer<>(
+                getExternalCacheDir(), new FileStringConverter() );
             try {
-                  mDiskLruLoader = new DiskLru<>(
+                  mDiskLruContainerLoader = new DiskLruContainer<>(
                       getCacheDir(),
                       1024 * 1024 * 5,
                       new FileStringConverter()
@@ -50,7 +51,7 @@ public class TestFileActivity extends AppCompatActivity {
                   e.printStackTrace();
             }
 
-            mLoader = mFileLoader;
+            mLoader = mFileContainerLoader;
       }
 
       private void initView ( ) {
@@ -84,12 +85,12 @@ public class TestFileActivity extends AppCompatActivity {
 
       public void change ( View view ) {
 
-            if( mLoader == mFileLoader ) {
+            if( mLoader == mFileContainerLoader ) {
 
-                  mLoader = mDiskLruLoader;
+                  mLoader = mDiskLruContainerLoader;
             } else {
 
-                  mLoader = mFileLoader;
+                  mLoader = mFileContainerLoader;
             }
       }
 }

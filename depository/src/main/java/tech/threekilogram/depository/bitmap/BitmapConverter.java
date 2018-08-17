@@ -51,9 +51,19 @@ public class BitmapConverter {
             mCompressFormat = compressFormat;
       }
 
+      public CompressFormat getCompressFormat ( ) {
+
+            return mCompressFormat;
+      }
+
       public void setCompressQuality ( int compressQuality ) {
 
             mCompressQuality = compressQuality;
+      }
+
+      public int getCompressQuality ( ) {
+
+            return mCompressQuality;
       }
 
       /**
@@ -66,6 +76,11 @@ public class BitmapConverter {
             mWidth = width;
       }
 
+      public int getWidth ( ) {
+
+            return mWidth;
+      }
+
       /**
        * 设置缩放高度
        *
@@ -76,6 +91,11 @@ public class BitmapConverter {
             mHeight = height;
       }
 
+      public int getHeight ( ) {
+
+            return mHeight;
+      }
+
       /**
        * 设置缩放模式
        *
@@ -84,6 +104,11 @@ public class BitmapConverter {
       public void setMode ( @ScaleMode int mode ) {
 
             mMode = mode;
+      }
+
+      public int getMode ( ) {
+
+            return mMode;
       }
 
       /**

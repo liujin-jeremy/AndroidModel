@@ -10,7 +10,7 @@ import android.view.View;
 import com.threekilogram.objectbus.bus.ObjectBus;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.file.converter.FileBitmapConverter;
-import tech.threekilogram.depository.file.loader.File;
+import tech.threekilogram.depository.file.loader.FileContainer;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
@@ -24,7 +24,7 @@ public class TestBitmapActivity extends AppCompatActivity {
       private RetrofitLoader<Bitmap>  mRetrofitLoader;
       private BitmapConverter         mBitmapConverter;
       private RetrofitBitmapConverter mRetrofitBitmapConverter;
-      private File<Bitmap>            mFileLoader;
+      private FileContainer<Bitmap>   mFileContainerLoader;
 
       public static void start ( Context context ) {
 
@@ -51,7 +51,7 @@ public class TestBitmapActivity extends AppCompatActivity {
             );
             mRetrofitLoader = new RetrofitLoader<>( mRetrofitBitmapConverter );
 
-            mFileLoader = new File<>(
+            mFileContainerLoader = new FileContainer<>(
                 getExternalCacheDir(),
                 new FileBitmapConverter( mBitmapConverter, getExternalCacheDir() )
             );
@@ -69,8 +69,8 @@ public class TestBitmapActivity extends AppCompatActivity {
 
                         Log.e( TAG, "run : " + bitmap.getWidth() );
 
-                        mFileLoader.save( url, bitmap );
-                        Bitmap load = mFileLoader.load( url );
+                        mFileContainerLoader.save( url, bitmap );
+                        Bitmap load = mFileContainerLoader.load( url );
 
                         Log.e( TAG, "run 02: " + load.getWidth() );
                   }

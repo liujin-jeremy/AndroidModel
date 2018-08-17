@@ -17,7 +17,7 @@ import tech.threekilogram.depository.Container;
  * @date: 2018-08-01
  * @time: 12:01
  */
-public abstract class BaseFile<V> implements Container<String, V> {
+public abstract class BaseFileContainer<V> implements Container<String, V> {
 
       /**
        * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话

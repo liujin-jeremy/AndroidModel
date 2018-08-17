@@ -1,9 +1,10 @@
 package tech.threekilogram.depository.file.loader;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import tech.threekilogram.depository.file.BaseFile;
+import tech.threekilogram.depository.file.BaseFileContainer;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
 
@@ -14,12 +15,12 @@ import tech.threekilogram.depository.function.Close;
  *
  * @author liujin
  */
-public class File<V> extends BaseFile<V> {
+public class FileContainer<V> extends BaseFileContainer<V> {
 
       /**
        * 一个文件夹用于统一保存key对应的文件
        */
-      private java.io.File     mDir;
+      private File             mDir;
       /**
        * 辅助loader正常工作
        */
@@ -29,7 +30,7 @@ public class File<V> extends BaseFile<V> {
        * @param dir 保存文件的文件夹
        * @param converter 用于转换{@link java.io.File}为{@link V}类型的实例
        */
-      public File ( java.io.File dir, FileConverter<V> converter ) {
+      public FileContainer ( File dir, FileConverter<V> converter ) {
 
             mDir = dir;
             mConverter = converter;
@@ -59,7 +60,7 @@ public class File<V> extends BaseFile<V> {
 
             try {
 
-                  java.io.File file = getFile( key );
+                  File file = getFile( key );
                   stream = new FileOutputStream( file );
                   mConverter.saveValue( key, stream, value );
             } catch(IOException e) {
@@ -104,7 +105,7 @@ public class File<V> extends BaseFile<V> {
       @Override
       public V load ( String key ) {
 
-            java.io.File file = getFile( key );
+            File file = getFile( key );
             V result = null;
 
             if( file.exists() ) {
@@ -140,13 +141,13 @@ public class File<V> extends BaseFile<V> {
        * @return file to this key, file may not exist
        */
       @Override
-      public java.io.File getFile ( String key ) {
+      public File getFile ( String key ) {
 
             String name = mConverter.fileName( key );
-            return new java.io.File( mDir, name );
+            return new File( mDir, name );
       }
 
-      public java.io.File getDir ( ) {
+      public File getDir ( ) {
 
             return mDir;
       }
