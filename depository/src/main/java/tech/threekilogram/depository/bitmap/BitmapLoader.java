@@ -1,6 +1,9 @@
 package tech.threekilogram.depository.bitmap;
 
+import static tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode.SAMPLE;
+
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
@@ -50,13 +53,37 @@ public class BitmapLoader {
        *
        * @param width 需求宽度
        * @param height 需求高度
-       * @param scaleMode 读取方式
        */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
+      public void configBitmap ( int width, int height ) {
+
+            configBitmap( width, height, SAMPLE, Config.RGB_565 );
+      }
+
+      /**
+       * 配置bitmap加载配置
+       *
+       * @param width 需求宽度
+       * @param height 需求高度
+       * @param scaleMode 缩放方式
+       */
+      public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
 
             mBitmapConverter.setWidth( width );
             mBitmapConverter.setHeight( height );
             mBitmapConverter.setMode( scaleMode );
+            mBitmapConverter.setBitmapConfig( config );
+      }
+
+      /**
+       * 配置bitmap加载配置
+       *
+       * @param width 需求宽度
+       * @param height 需求高度
+       * @param scaleMode 缩放方式
+       */
+      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
+
+            configBitmap( width, height, scaleMode, Config.RGB_565 );
       }
 
       /**

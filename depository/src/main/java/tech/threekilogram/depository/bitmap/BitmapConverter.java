@@ -1,5 +1,10 @@
 package tech.threekilogram.depository.bitmap;
 
+import static tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode.MATCH_HEIGHT;
+import static tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode.MATCH_WIDTH;
+import static tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode.SAMPLE;
+import static tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode.SAMPLE_MAX;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
@@ -13,29 +18,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * 用于按照规则读取bitmap从file
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-15
  * @time: 21:27
  */
 public class BitmapConverter {
-
-      /**
-       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},不会小于设置的值
-       */
-      public static final int SAMPLE       = 1;
-      /**
-       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},均会小于缩放的值
-       */
-      public static final int SAMPLE_MAX   = 2;
-      /**
-       * 缩放模式:等比例缩放至匹配{@link #mWidth}
-       */
-      public static final int MATCH_WIDTH  = 3;
-      /**
-       * 缩放模式:等比例缩放至匹配{@link #mHeight}
-       */
-      public static final int MATCH_HEIGHT = 4;
 
       /**
        * 图片缩放宽度
@@ -206,7 +196,28 @@ public class BitmapConverter {
             value.compress( CompressFormat.PNG, 100, stream );
       }
 
+      /**
+       * 配置缩放模式
+       */
       @IntDef({ SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT })
       @Retention(RetentionPolicy.SOURCE)
-      public @interface ScaleMode { }
+      public @interface ScaleMode {
+
+            /**
+             * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},不会小于设置的值
+             */
+            public static final int SAMPLE       = 1;
+            /**
+             * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},均会小于缩放的值
+             */
+            public static final int SAMPLE_MAX   = 2;
+            /**
+             * 缩放模式:等比例缩放至匹配{@link #mWidth}
+             */
+            public static final int MATCH_WIDTH  = 3;
+            /**
+             * 缩放模式:等比例缩放至匹配{@link #mHeight}
+             */
+            public static final int MATCH_HEIGHT = 4;
+      }
 }
