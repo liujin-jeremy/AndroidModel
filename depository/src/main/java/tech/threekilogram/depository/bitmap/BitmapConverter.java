@@ -2,7 +2,9 @@ package tech.threekilogram.depository.bitmap;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.support.annotation.IntDef;
 import com.example.bitmapreader.BitmapReader;
 import java.io.File;
@@ -31,12 +33,27 @@ public class BitmapConverter {
        */
       public static final int MATCH_WIDTH  = 3;
       /**
-       * 缩放模式:等比例缩放至匹配{@link #mWidth}
+       * 缩放模式:等比例缩放至匹配{@link #mHeight}
        */
       public static final int MATCH_HEIGHT = 4;
+
+      /**
+       * 图片缩放宽度
+       */
       private int mWidth;
+      /**
+       * 图片缩放高度
+       */
       private int mHeight;
+      /**
+       * 图片缩放模式
+       */
       private int mMode;
+      /**
+       * 图片像素配置
+       */
+      private Bitmap.Config mBitmapConfig = Config.RGB_565;
+
       /**
        * 保存格式
        */
@@ -46,24 +63,54 @@ public class BitmapConverter {
        */
       private int                   mCompressQuality = 100;
 
-      public void setCompressFormat ( CompressFormat compressFormat ) {
-
-            mCompressFormat = compressFormat;
-      }
-
+      /**
+       * 获取设置的图片保存格式
+       */
       public CompressFormat getCompressFormat ( ) {
 
             return mCompressFormat;
       }
 
+      /**
+       * 设置图片保存格式
+       *
+       * @param compressFormat 格式
+       */
+      public void setCompressFormat ( CompressFormat compressFormat ) {
+
+            mCompressFormat = compressFormat;
+      }
+
+      /**
+       * 获取设置的图片保存质量
+       */
+      public int getCompressQuality ( ) {
+
+            return mCompressQuality;
+      }
+
+      /**
+       * 设置图片保存质量
+       */
       public void setCompressQuality ( int compressQuality ) {
 
             mCompressQuality = compressQuality;
       }
 
-      public int getCompressQuality ( ) {
+      /**
+       * 获取设置的图片像素质量
+       */
+      public Config getBitmapConfig ( ) {
 
-            return mCompressQuality;
+            return mBitmapConfig;
+      }
+
+      /**
+       * 设置图片像素质量
+       */
+      public void setBitmapConfig ( Config bitmapConfig ) {
+
+            mBitmapConfig = bitmapConfig;
       }
 
       /**
@@ -124,26 +171,28 @@ public class BitmapConverter {
 
             if( mWidth == 0 || mHeight == 0 || mMode == 0 ) {
 
-                  return BitmapFactory.decodeFile( file.getAbsolutePath() );
+                  BitmapFactory.Options options = new Options();
+                  options.inPreferredConfig = mBitmapConfig;
+                  return BitmapFactory.decodeFile( file.getAbsolutePath(), options );
             }
 
             if( mMode == SAMPLE ) {
-                  return BitmapReader.decodeSampledBitmap( file, mWidth, mHeight );
+                  return BitmapReader.sampledBitmap( file, mWidth, mHeight, mBitmapConfig );
             }
 
             if( mMode == SAMPLE_MAX ) {
-                  return BitmapReader.decodeMaxSampledBitmap( file, mWidth, mHeight );
+                  return BitmapReader.maxSampledBitmap( file, mWidth, mHeight, mBitmapConfig );
             }
 
             if( mMode == MATCH_WIDTH ) {
-                  return BitmapReader.decodeBitmapToMatchWidth( file, mWidth );
+                  return BitmapReader.matchWidth( file, mWidth, mBitmapConfig );
             }
 
             if( mMode == MATCH_HEIGHT ) {
-                  return BitmapReader.decodeBitmapToMatchHeight( file, mHeight );
+                  return BitmapReader.matchHeight( file, mHeight, mBitmapConfig );
             }
 
-            return BitmapReader.decodeBitmapToMatchSize( file, mWidth, mHeight );
+            return BitmapReader.matchSize( file, mWidth, mHeight, mBitmapConfig );
       }
 
       /**
