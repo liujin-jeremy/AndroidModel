@@ -77,6 +77,11 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
             return mFileLoader.getFile( key );
       }
 
+      public void removeFile ( String key ) {
+
+            mFileLoader.remove( key );
+      }
+
       /**
        * 获取进度监听
        *

@@ -27,12 +27,12 @@ public class GankUrl {
               + DEFAULT_COUNT
               + "/";
 
-      public static String getBeautyPageUrl (int page) {
+      public static String getBeautyPageUrl ( int page ) {
 
             return BASE_BEAUTY_URL + page;
       }
 
-      public static String getAndroidPageUrl (int page) {
+      public static String getAndroidPageUrl ( int page ) {
 
             return BASE_ANDROID_URL + page;
       }

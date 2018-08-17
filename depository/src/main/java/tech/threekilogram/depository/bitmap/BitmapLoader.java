@@ -1,15 +1,16 @@
-package tech.threekilogram.depository.client;
+package tech.threekilogram.depository.bitmap;
 
 import android.graphics.Bitmap;
 import java.io.File;
 import java.io.IOException;
-import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.file.converter.FileStreamConverter.OnProgressUpdateListener;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 
 /**
+ * 缓存bitmap对象
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-16
@@ -86,6 +87,11 @@ public class BitmapLoader {
             mMemory.clear();
       }
 
+      public void removeMemory ( String url ) {
+
+            mMemory.remove( url );
+      }
+
       /**
        * 从本地文件读取
        *
@@ -103,6 +109,11 @@ public class BitmapLoader {
                   return bitmap;
             }
             return null;
+      }
+
+      public void removeFile ( String url ) {
+
+            mDowner.removeFile( url );
       }
 
       /**

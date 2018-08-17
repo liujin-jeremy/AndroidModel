@@ -59,6 +59,11 @@ public class RetrofitDowner extends RetrofitLoader<File> {
             return getConverter().getDir();
       }
 
+      public void removeFile ( String key ) {
+
+            getConverter().removeFile( key );
+      }
+
       /**
        * 加载文件如果本地文件存在将返回本地,否则返回从网络下载
        *

@@ -1,13 +1,12 @@
 package tech.threekilogram.androidmodellib;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -18,10 +17,10 @@ import static org.junit.Assert.*;
 public class ExampleInstrumentedTest {
 
       @Test
-      public void useAppContext () {
+      public void useAppContext ( ) {
             // Context of the app under test.
             Context appContext = InstrumentationRegistry.getTargetContext();
 
-            assertEquals("tech.threekilogram.androidmodellib", appContext.getPackageName());
+            assertEquals( "tech.threekilogram.androidmodellib", appContext.getPackageName() );
       }
 }

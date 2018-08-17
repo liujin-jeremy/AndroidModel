@@ -97,23 +97,6 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
             }
       }
 
-      private void change ( ) {
-
-            if( mMemoryLoader instanceof MemoryMap ) {
-
-                  mMemoryLoader = mLruLoader;
-            } else {
-
-                  mMemoryLoader = mMapLoader;
-            }
-      }
-
-      private void size ( ) {
-
-            int size = mMemoryLoader.size();
-            showMessage( String.valueOf( size ) );
-      }
-
       private void save ( ) {
 
             String key = mEditKey.getText().toString();
@@ -169,6 +152,23 @@ public class TestMemoryActivity extends AppCompatActivity implements OnClickList
                   String value = mMemoryLoader.load( key );
                   showMessage( "value of " + key + " : " + value );
             }
+      }
+
+      private void change ( ) {
+
+            if( mMemoryLoader instanceof MemoryMap ) {
+
+                  mMemoryLoader = mLruLoader;
+            } else {
+
+                  mMemoryLoader = mMapLoader;
+            }
+      }
+
+      private void size ( ) {
+
+            int size = mMemoryLoader.size();
+            showMessage( String.valueOf( size ) );
       }
 
       private boolean notNullString ( String text ) {

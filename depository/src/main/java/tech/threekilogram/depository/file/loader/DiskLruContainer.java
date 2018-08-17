@@ -54,7 +54,7 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
       @Override
       public V save ( String key, V value ) {
 
-            java.lang.String name = mConverter.fileName( key );
+            String name = mConverter.fileName( key );
 
             V result = null;
 
@@ -124,7 +124,7 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
             }
 
             try {
-                  java.lang.String fileName = mConverter.fileName( key );
+                  String fileName = mConverter.fileName( key );
                   mDiskLruCache.remove( fileName );
             } catch(IOException e) {
 
@@ -136,7 +136,7 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
       @Override
       public boolean containsOf ( String key ) {
 
-            java.lang.String name = mConverter.fileName( key );
+            String name = mConverter.fileName( key );
 
             try {
 
@@ -156,7 +156,7 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
       @Override
       public V load ( String key ) {
 
-            java.lang.String stringKey = mConverter.fileName( key );
+            String stringKey = mConverter.fileName( key );
 
             /* try to get snapShort */
 
@@ -211,7 +211,7 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
       @Override
       public File getFile ( String key ) {
 
-            java.lang.String fileName = mConverter.fileName( key );
+            String fileName = mConverter.fileName( key );
             return new File( mDir, fileName + ".0" );
       }
 }
