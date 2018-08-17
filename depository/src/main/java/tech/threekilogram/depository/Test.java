@@ -2,6 +2,7 @@ package tech.threekilogram.depository;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import tech.threekilogram.depository.file.converter.FileGsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
@@ -47,16 +48,61 @@ class Test {
 
       public static void main ( String[] args ) {
 
-            final String url = "https://gank.io/api/data/Android/10/%d";
+            testMemoryList();
+      }
 
-            for( int i = 0; i < 10; i++ ) {
+      private static void testMemoryList ( ) {
 
-                  String s = String.format( url, i );
-                  String md5 = Md5.md5( s );
-                  String hash = StringHash.hash( s );
-                  System.out.println( md5 );
-                  System.out.println( hash );
+            /* MemoryList 使用数字索引保存/读取数据 */
+            MemoryList<String> loader = new MemoryList<>();
+
+            String value = "HelloAndroidModel - 0";
+            String value1 = "HelloAndroidModel - 1";
+            String value2 = "HelloAndroidModel - 2";
+
+            loader.save( 0, value );
+            loader.save( 1, value1 );
+            loader.save( 2, value2 );
+
+            int size = loader.size();
+            System.out.println( "size: " + size );
+
+            String valueLoad0 = loader.load( 0 );
+            System.out.println( "value at 0: " + valueLoad0 );
+
+            boolean containsOf = loader.containsOf( 2 );
+            System.out.println( "contains of 2: " + containsOf );
+
+            loader.remove( 2 );
+            containsOf = loader.containsOf( 2 );
+            System.out.println( "after remove contains of 2: " + containsOf );
+
+            loader.clear();
+            size = loader.size();
+            System.out.println( "after clear size: " + size );
+
+            List<String> values = new ArrayList<>();
+            for( int i = 0; i < 3; i++ ) {
+
+                  values.add( " item " + String.valueOf( i ) );
             }
+
+            loader.saveMore( 3, values );
+
+            String load = loader.load( 3 );
+            System.out.println( load );
+            String load1 = loader.load( 4 );
+            System.out.println( load1 );
+            String load2 = loader.load( 5 );
+            System.out.println( load2 );
+
+            loader.saveLess( 9, values );
+            String load3 = loader.load( 9 );
+            System.out.println( load3 );
+            String load4 = loader.load( 8 );
+            System.out.println( load4 );
+            String load5 = loader.load( 7 );
+            System.out.println( load5 );
       }
 
       private static void testRetrofitJson ( ) {
@@ -279,35 +325,18 @@ class Test {
             System.out.println( "after clear size: " + size );
       }
 
-      private static void testMemoryList ( ) {
+      private static void testShortName ( ) {
 
-            /* MemoryList 使用数字索引保存/读取数据 */
-            MemoryList<String> loader = new MemoryList<>();
+            final String url = "https://gank.io/api/data/Android/10/%d";
 
-            String value = "HelloAndroidModel - 0";
-            String value1 = "HelloAndroidModel - 1";
-            String value2 = "HelloAndroidModel - 2";
+            for( int i = 0; i < 10; i++ ) {
 
-            loader.save( 0, value );
-            loader.save( 1, value1 );
-            loader.save( 2, value2 );
-
-            int size = loader.size();
-            System.out.println( "size: " + size );
-
-            String valueLoad0 = loader.load( 0 );
-            System.out.println( "value at 0: " + valueLoad0 );
-
-            boolean containsOf = loader.containsOf( 2 );
-            System.out.println( "contains of 2: " + containsOf );
-
-            loader.remove( 2 );
-            containsOf = loader.containsOf( 2 );
-            System.out.println( "after remove contains of 2: " + containsOf );
-
-            loader.clear();
-            size = loader.size();
-            System.out.println( "after clear size: " + size );
+                  String s = String.format( url, i );
+                  String md5 = Md5.md5( s );
+                  String hash = StringHash.hash( s );
+                  System.out.println( md5 );
+                  System.out.println( hash );
+            }
       }
 
       private static class Bean {

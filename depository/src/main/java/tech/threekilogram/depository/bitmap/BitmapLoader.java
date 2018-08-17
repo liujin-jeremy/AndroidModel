@@ -1,6 +1,6 @@
 package tech.threekilogram.depository.bitmap;
 
-import static tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode.SAMPLE;
+import static tech.threekilogram.depository.bitmap.BitmapConverter.SAMPLE;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

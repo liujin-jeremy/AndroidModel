@@ -44,13 +44,21 @@ public class JsonLoader<V> {
        */
       protected int mCacheCount;
       /**
-       * 当前index
-       */
-      protected int mCurrentIndex = 0;
-      /**
        * memory 最多保存数目
        */
-      protected int mMemoryCount  = 50;
+      protected int mMemoryCount = 100;
+      /**
+       * 内存中保存的数据最小的index
+       */
+      protected int mMixIndex    = 0;
+      /**
+       * 内存中保存的数据最大的index
+       */
+      protected int mMaxIndex    = 0;
+      /**
+       * 是否正在加载
+       */
+      private transient boolean isLoading;
 
       public JsonLoader ( File dir, JsonConverter<V> jsonConverter ) {
 
@@ -86,6 +94,130 @@ public class JsonLoader<V> {
             mRetrofitLoader = new RetrofitLoader<>(
                 new JsonRetrofitListConverter()
             );
+      }
+
+      public void setStartIndex ( int index ) {
+
+            mMixIndex = index;
+            mMixIndex = index;
+      }
+
+      public void setMemoryCount ( int memoryCount ) {
+
+            mMemoryCount = memoryCount;
+      }
+
+      /**
+       * 加载更多数据
+       *
+       * @param url url
+       */
+      public void loadMore ( String url ) {
+
+            isLoading = true;
+            List<V> load = mRetrofitLoader.load( url );
+            mMemoryList.saveMore( mMaxIndex + 1, load );
+            int size = load.size();
+            mMixIndex += size;
+            mCacheCount += size;
+            isLoading = false;
+      }
+
+      /**
+       * 加载更少数据
+       *
+       * @param url url
+       */
+      public void loadLess ( String url ) {
+
+            isLoading = true;
+            List<V> load = mRetrofitLoader.load( url );
+            mMemoryList.saveLess( mMixIndex - 1, load );
+            int size = load.size();
+            mMixIndex -= size;
+            mCacheCount += size;
+            isLoading = false;
+      }
+
+      private void reSize ( boolean fromStart ) {
+
+            int size = mMemoryList.size();
+            if( size <= mMemoryCount ) {
+                  return;
+            }
+
+            if( fromStart ) {
+
+                  int limit = mMixIndex + mMemoryCount;
+
+                  for( int i = 0; i < size; i++ ) {
+
+                        int index = mMixIndex + i;
+
+                        V load = mMemoryList.load( index );
+
+                        if( index > limit ) {
+
+                              String key = String.valueOf( index );
+                              V remove = mFileContainer.remove( key );
+                              mFileContainer.save( key, remove );
+                        } else {
+
+                              if( load == null ) {
+                                    String key = String.valueOf( index );
+                                    V v = mFileContainer.load( key );
+                                    mMemoryList.save( index, v );
+                              }
+                        }
+                  }
+
+                  mMaxIndex -= size;
+            } else {
+
+                  int limit = mMaxIndex - mMemoryCount;
+
+                  for( int i = 0; i < size; i++ ) {
+
+                        int index = mMixIndex + i;
+
+                        V load = mMemoryList.load( index );
+
+                        if( index >= limit ) {
+
+                              if( load == null ) {
+                                    String key = String.valueOf( index );
+                                    V v = mFileContainer.load( key );
+                                    mMemoryList.save( index, v );
+                              }
+                        } else {
+
+                              String key = String.valueOf( index );
+                              V remove = mFileContainer.remove( key );
+                              mFileContainer.save( key, remove );
+                        }
+                  }
+
+                  mMixIndex += size;
+            }
+      }
+
+      /**
+       * @return true : 正在加载
+       */
+      public boolean isLoading ( ) {
+
+            return isLoading;
+      }
+
+      public V get ( int index ) {
+
+            V load = mMemoryList.load( index );
+            if( load == null ) {
+
+                  load = mFileContainer.load( String.valueOf( index ) );
+            }
+
+            return null;
       }
 
       /**

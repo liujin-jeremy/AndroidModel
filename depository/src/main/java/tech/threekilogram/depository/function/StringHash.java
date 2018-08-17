@@ -13,11 +13,19 @@ public class StringHash {
             long h = 0;
             final int len = source.length();
 
+            final int limit = Integer.MAX_VALUE / 31;
+            int count = 0;
+
             if( len > 0 ) {
                   for( int i = 0; i < len; i++ ) {
+                        if( h >= limit ) {
+                              count++;
+                        }
                         h = 31 * h + source.charAt( i );
                   }
             }
-            return String.valueOf( h );
+            return Integer.toHexString( len )
+                + Integer.toHexString( count )
+                + String.format( "%016x", h );
       }
 }
