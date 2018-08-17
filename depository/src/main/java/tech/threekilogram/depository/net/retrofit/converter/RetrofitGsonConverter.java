@@ -47,9 +47,4 @@ public class RetrofitGsonConverter<V> extends BaseRetrofitConverter<V> {
 
             return v;
       }
-
-      @Override
-      public void onExecuteFailed ( String key, int httpCode, ResponseBody errorResponse ) {
-
-      }
 }

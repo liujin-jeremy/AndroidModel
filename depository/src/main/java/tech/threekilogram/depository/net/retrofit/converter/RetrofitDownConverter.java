@@ -62,11 +62,6 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
             return mFileLoader.getFile( key );
       }
 
-      @Override
-      public void onExecuteFailed ( String key, int httpCode, ResponseBody errorResponse ) {
-
-      }
-
       public File getDir ( ) {
 
             return mDir;

@@ -38,9 +38,4 @@ public class RetrofitStringConverter extends BaseRetrofitConverter<String> {
                   Close.close( inputStream );
             }
       }
-
-      @Override
-      public void onExecuteFailed ( String key, int httpCode, ResponseBody errorResponse ) {
-
-      }
 }

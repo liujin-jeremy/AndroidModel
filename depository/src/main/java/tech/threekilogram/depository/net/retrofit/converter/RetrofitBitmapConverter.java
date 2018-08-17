@@ -39,9 +39,4 @@ public class RetrofitBitmapConverter extends BaseRetrofitConverter<Bitmap> {
             File file = mDownConverter.onExecuteSuccess( key, response );
             return mBitmapConverter.read( file );
       }
-
-      @Override
-      public void onExecuteFailed ( String key, int httpCode, ResponseBody errorResponse ) {
-
-      }
 }

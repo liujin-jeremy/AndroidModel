@@ -7,8 +7,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.Loader;
 import tech.threekilogram.depository.instance.RetrofitClient;
+import tech.threekilogram.depository.net.BaseNetLoader;
 import tech.threekilogram.depository.net.NetConverter;
-import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
 
 /**
  * 该类是{@link Loader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
@@ -19,7 +19,7 @@ import tech.threekilogram.depository.net.NetConverter.NetExceptionHandler;
  * @author liujin
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
+public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
 
       /**
        * retrofit 客户端
@@ -28,19 +28,15 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
       /**
        * 完成从{@link ResponseBody} 到value {@link V} 转换
        */
-      protected BaseRetrofitConverter<V>    mNetConverter;
+      protected BaseRetrofitConverter<V> mNetConverter;
       /**
        * retrofit service 类型
        */
-      protected Class<S>                    mServiceType;
+      protected Class<S>                 mServiceType;
       /**
        * 创建的service
        */
-      protected S                           mService;
-      /**
-       * 异常处理助手
-       */
-      protected NetExceptionHandler<String> mExceptionHandler;
+      protected S                        mService;
 
       /**
        * 最少需要这两个才能正常工作
@@ -69,17 +65,6 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
       public void setRetrofit ( Retrofit retrofit ) {
 
             mRetrofit = retrofit;
-      }
-
-      public NetExceptionHandler<String> getExceptionHandler ( ) {
-
-            return mExceptionHandler;
-      }
-
-      public void setExceptionHandler (
-          NetExceptionHandler<String> exceptionHandler ) {
-
-            mExceptionHandler = exceptionHandler;
       }
 
       @Override
@@ -119,7 +104,9 @@ public abstract class BaseRetrofitLoader<V, S> implements Loader<String, V> {
                   } else {
 
                         /* 4. 连接到网络,但是没有获取到数据 */
-                        mNetConverter.onExecuteFailed( key, response.code(), response.errorBody() );
+                        if( mNoResourceHandler != null ) {
+                              mNoResourceHandler.onExecuteFailed( key, response.code() );
+                        }
                   }
             } catch(IOException e) {
 
