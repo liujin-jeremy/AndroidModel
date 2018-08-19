@@ -1,18 +1,11 @@
 package tech.threekilogram.depository.file.converter;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.instance.GsonClient;
+import tech.threekilogram.depository.json.GsonConverter;
 
 /**
  * {@link FileConverter} 的一种实现
@@ -26,14 +19,7 @@ import tech.threekilogram.depository.instance.GsonClient;
  */
 public class FileGsonConverter<T> extends BaseFileConverter<T> {
 
-      /**
-       * gson
-       */
-      private static Gson sGson = GsonClient.INSTANCE;
-      /**
-       * value 类型
-       */
-      private Class<T> mValueType;
+      private GsonConverter<T> mGsonConverter;
 
       /**
        * 传入value类型
@@ -42,7 +28,7 @@ public class FileGsonConverter<T> extends BaseFileConverter<T> {
        */
       public FileGsonConverter ( Class<T> valueType ) {
 
-            this.mValueType = valueType;
+            mGsonConverter = new GsonConverter<>( valueType );
       }
 
       @Override
@@ -54,35 +40,12 @@ public class FileGsonConverter<T> extends BaseFileConverter<T> {
       @Override
       public T toValue ( String key, InputStream stream ) throws Exception {
 
-            Reader reader = null;
-            try {
-
-                  reader = new InputStreamReader( stream );
-                  return sGson.fromJson( reader, mValueType );
-            } finally {
-
-                  Close.close( reader );
-                  Close.close( stream );
-            }
+            return mGsonConverter.fromJson( stream );
       }
 
       @Override
       public void saveValue ( String key, OutputStream stream, T value ) throws IOException {
 
-            Writer writer = null;
-            JsonWriter jsonWriter = null;
-
-            try {
-
-                  writer = new OutputStreamWriter( stream );
-                  jsonWriter = new JsonWriter( writer );
-
-                  sGson.toJson( value, mValueType, jsonWriter );
-            } finally {
-
-                  Close.close( jsonWriter );
-                  Close.close( writer );
-                  Close.close( stream );
-            }
+            mGsonConverter.toJson( stream, value );
       }
 }
