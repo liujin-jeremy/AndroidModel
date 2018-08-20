@@ -154,6 +154,12 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
       }
 
       @Override
+      public void clear ( ) throws IOException {
+
+            mDiskLruCache.delete();
+      }
+
+      @Override
       public V load ( String key ) {
 
             String stringKey = mConverter.fileName( key );

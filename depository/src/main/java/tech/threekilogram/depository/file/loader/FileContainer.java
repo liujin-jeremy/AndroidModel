@@ -7,6 +7,7 @@ import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileContainer;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.FileClear;
 
 /**
  * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link java.io.File}转换为{@link V}
@@ -145,6 +146,12 @@ public class FileContainer<V> extends BaseFileContainer<V> {
 
             String name = mConverter.fileName( key );
             return new File( mDir, name );
+      }
+
+      @Override
+      public void clear ( ) throws IOException {
+
+            FileClear.clearFile( mDir );
       }
 
       public File getDir ( ) {

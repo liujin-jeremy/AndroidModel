@@ -20,7 +20,7 @@ public interface Container<K, V> extends Loader<K, V> {
        *
        * @return if a value exist at key return it, if key to a null value return null
        */
-      V save (K key, V value);
+      V save ( K key, V value );
 
       /**
        * remove the value to this key
@@ -29,7 +29,7 @@ public interface Container<K, V> extends Loader<K, V> {
        *
        * @return if key exist remove value at key , or null returned
        */
-      V remove (K key);
+      V remove ( K key );
 
       /**
        * test contains a value or not
@@ -38,5 +38,5 @@ public interface Container<K, V> extends Loader<K, V> {
        *
        * @return true contains this value
        */
-      boolean containsOf (K key);
+      boolean containsOf ( K key );
 }

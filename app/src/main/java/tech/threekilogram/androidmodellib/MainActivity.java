@@ -30,4 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
             TestBitmapActivity.start( this );
       }
+
+      public void toTestJson ( View view ) {
+
+            TestNetActivity.start( this );
+      }
 }

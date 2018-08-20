@@ -16,7 +16,7 @@ import tech.threekilogram.depository.memory.Memory;
 
 public class MemoryMap<K, V> implements Memory<K, V> {
 
-      private ArrayMap<K, V> mContainer;
+      protected ArrayMap<K, V> mContainer;
 
       @SuppressWarnings("WeakerAccess")
       public MemoryMap () {

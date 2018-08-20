@@ -23,11 +23,11 @@ public class GsonConverter<V> implements JsonConverter<V> {
       /**
        * gson
        */
-      private static Gson sGson = GsonClient.INSTANCE;
+      protected static Gson sGson = GsonClient.INSTANCE;
       /**
        * value 类型
        */
-      private Class<V> mValueType;
+      protected Class<V> mValueType;
 
       public GsonConverter ( Class<V> valueType ) {
 

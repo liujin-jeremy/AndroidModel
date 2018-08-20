@@ -126,4 +126,9 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
              */
             void onSaveValueToFile ( IOException e, String key, V value );
       }
+
+      /**
+       * 清空
+       */
+      public abstract void clear ( ) throws IOException;
 }

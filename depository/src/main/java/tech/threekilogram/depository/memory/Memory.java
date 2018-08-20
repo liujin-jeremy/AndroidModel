@@ -21,10 +21,10 @@ public interface Memory<K, V> extends Container<K, V> {
        *
        * @return size of container
        */
-      int size ();
+      int size ( );
 
       /**
-       * clear all value in memory
+       * 清空
        */
-      void clear ();
+      void clear ( );
 }
