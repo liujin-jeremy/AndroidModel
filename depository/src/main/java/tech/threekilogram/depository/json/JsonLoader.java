@@ -49,17 +49,13 @@ public class JsonLoader<V> {
        */
       protected transient int     mCacheCount;
       /**
-       * 已缓存最大索引值
+       * 已缓存更多数据量
        */
       protected transient int     mLoadMoreCount;
       /**
-       * 已缓存最小索引值
+       * 已缓存更少数据量
        */
       protected transient int     mLoadLessCount;
-      /**
-       * memory 最多保存数目
-       */
-      protected transient int     mMemoryCount;
       /**
        * 是否正在加载
        */
@@ -96,8 +92,6 @@ public class JsonLoader<V> {
             );
 
             mStartIndex = index;
-
-            mMemoryCount = 20;
       }
 
       /**
@@ -143,26 +137,6 @@ public class JsonLoader<V> {
             );
 
             mStartIndex = index;
-
-            mMemoryCount = 20;
-      }
-
-      /**
-       * 获取设置的内存保存数量{@link #setMemoryCount(int)}
-       *
-       * @return 设置的内存保存数据量
-       */
-      public int getMemoryCount ( ) {
-
-            return mMemoryCount;
-      }
-
-      /**
-       * @param memoryCount 设置内存中保存数据最大数量
-       */
-      public void setMemoryCount ( int memoryCount ) {
-
-            mMemoryCount = memoryCount;
       }
 
       /**
@@ -208,6 +182,39 @@ public class JsonLoader<V> {
       }
 
       /**
+       * @return 读取已经缓存最大的索引,-1没有数据
+       */
+      public int getMemoryMaxIndex ( ) {
+
+            try {
+
+                  ArrayMap<Integer, V> container = mMemoryList.container();
+                  int size = container.size();
+                  return container.keyAt( size - 1 );
+            } catch(Exception e) {
+
+                  e.printStackTrace();
+                  return -1;
+            }
+      }
+
+      /**
+       * @return 读取已经缓存最小的索引,-1没有数据
+       */
+      public int getMemoryMinIndex ( ) {
+
+            try {
+
+                  ArrayMap<Integer, V> container = mMemoryList.container();
+                  return container.keyAt( 0 );
+            } catch(Exception e) {
+
+                  e.printStackTrace();
+                  return -1;
+            }
+      }
+
+      /**
        * 加载数据
        *
        * @param url url
@@ -247,68 +254,14 @@ public class JsonLoader<V> {
             if( memorySize == 0 ) {
 
                   mMemoryList.saveMore( mStartIndex, load );
-                  reSize( mStartIndex, mStartIndex + size );
             } else {
 
                   mMemoryList.saveMore( getMemoryMaxIndex() + 1, load );
-                  int memoryMaxIndex = getMemoryMaxIndex();
-                  reSize( memoryMaxIndex - mMemoryCount + 1, memoryMaxIndex );
             }
             mCacheCount += size;
             mLoadMoreCount += size;
 
             isLoading = false;
-      }
-
-      /**
-       * 保证内存中最大数据量不超过[low,high]
-       *
-       * @param low low limit
-       * @param high high limit
-       */
-      public void reSize ( int low, int high ) {
-
-            int size = mMemoryList.size();
-            if( size <= mMemoryCount ) {
-                  return;
-            }
-
-            ArrayMap<Integer, V> container = mMemoryList.container();
-
-            /* 移除小于下限的值 */
-            Integer key = container.keyAt( 0 );
-            while( key < low ) {
-
-                  V v = container.removeAt( 0 );
-                  mFileContainer.save( key.toString(), v );
-                  key = container.keyAt( 0 );
-            }
-
-            /* 移除大于上限的值 */
-            key = container.keyAt( container.size() - 1 );
-            while( key > high ) {
-
-                  V v = container.removeAt( container.size() - 1 );
-                  mFileContainer.save( key.toString(), v );
-                  key = container.keyAt( container.size() - 1 );
-            }
-      }
-
-      /**
-       * @return 读取已经缓存最大的索引,-1没有数据
-       */
-      public int getMemoryMaxIndex ( ) {
-
-            try {
-
-                  ArrayMap<Integer, V> container = mMemoryList.container();
-                  int size = container.size();
-                  return container.keyAt( size - 1 );
-            } catch(Exception e) {
-
-                  e.printStackTrace();
-                  return -1;
-            }
       }
 
       /**
@@ -332,12 +285,9 @@ public class JsonLoader<V> {
             if( memorySize == 0 ) {
 
                   mMemoryList.saveLess( mStartIndex - 1, load );
-                  reSize( mStartIndex - 1, mStartIndex - 1 + size );
             } else {
 
                   mMemoryList.saveLess( getMemoryMinIndex() - 1, load );
-                  int memoryMinIndex = getMemoryMinIndex();
-                  reSize( memoryMinIndex, memoryMinIndex + mMemoryCount - 1 );
             }
             mCacheCount += size;
             mLoadLessCount += size;
@@ -346,18 +296,36 @@ public class JsonLoader<V> {
       }
 
       /**
-       * @return 读取已经缓存最小的索引,-1没有数据
+       * 压缩内存中最大数据量不超过[low,high]
+       *
+       * @param low low limit
+       * @param high high limit
        */
-      public int getMemoryMinIndex ( ) {
+      public void trimMemory ( int low, int high ) {
 
-            try {
+            int size = mMemoryList.size();
+            if( size <= Math.abs( high - low ) ) {
+                  return;
+            }
 
-                  ArrayMap<Integer, V> container = mMemoryList.container();
-                  return container.keyAt( 0 );
-            } catch(Exception e) {
+            ArrayMap<Integer, V> container = mMemoryList.container();
 
-                  e.printStackTrace();
-                  return -1;
+            /* 移除小于下限的值 */
+            Integer key = container.keyAt( 0 );
+            while( key < low ) {
+
+                  V v = container.removeAt( 0 );
+                  mFileContainer.save( key.toString(), v );
+                  key = container.keyAt( 0 );
+            }
+
+            /* 移除大于上限的值 */
+            key = container.keyAt( container.size() - 1 );
+            while( key > high ) {
+
+                  V v = container.removeAt( container.size() - 1 );
+                  mFileContainer.save( key.toString(), v );
+                  key = container.keyAt( container.size() - 1 );
             }
       }
 
