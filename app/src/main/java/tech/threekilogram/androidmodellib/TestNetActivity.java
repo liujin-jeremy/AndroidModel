@@ -14,11 +14,13 @@ import java.io.Reader;
 import java.util.List;
 import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.JsonLoader;
+import tech.threekilogram.messengers.Messengers;
+import tech.threekilogram.messengers.OnMessageReceiveListener;
 
 /**
  * @author liujin
  */
-public class TestNetActivity extends AppCompatActivity {
+public class TestNetActivity extends AppCompatActivity implements OnMessageReceiveListener {
 
       private static final String TAG = TestNetActivity.class.getSimpleName();
       private ObjectBus mObjectBus;
@@ -42,7 +44,7 @@ public class TestNetActivity extends AppCompatActivity {
             mObjectBus = ObjectBus.newList();
             mJsonLoader = new JsonLoader<>(
                 getExternalCacheDir(), new TestGsonConverter( ResultsBean.class ),
-                100
+                90
             );
       }
 
@@ -76,11 +78,7 @@ public class TestNetActivity extends AppCompatActivity {
                         if( page < 1 ) {
 
                               mLessPage++;
-                              Toast.makeText(
-                                  TestNetActivity.this,
-                                  "已经加载到最少",
-                                  Toast.LENGTH_SHORT
-                              ).show();
+                              Messengers.send( 12, TestNetActivity.this );
                               return;
                         }
 
@@ -137,6 +135,18 @@ public class TestNetActivity extends AppCompatActivity {
 
             int memorySize = mJsonLoader.getMemorySize();
             Log.e( TAG, "memoryCount : " + memorySize );
+      }
+
+      @Override
+      public void onReceive ( int what, Object extra ) {
+
+            if( what == 12 ) {
+                  Toast.makeText(
+                      TestNetActivity.this,
+                      "已经加载到最少",
+                      Toast.LENGTH_SHORT
+                  ).show();
+            }
       }
 
       // ========================= 辅助类 =========================

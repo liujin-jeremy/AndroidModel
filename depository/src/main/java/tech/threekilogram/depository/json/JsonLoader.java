@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileContainer;
 import tech.threekilogram.depository.file.BaseFileConverter;
@@ -43,23 +44,54 @@ public class JsonLoader<V> {
       /**
        * 标记开始索引,用于{@link #loadMore(String)}{@link #loadLess(String)}时添加数据的起始索引
        */
-      protected final     int     mStartIndex;
+      protected final     int mStartIndex;
       /**
        * 已缓存数量
        */
-      protected transient int     mCacheCount;
+      protected transient int mCacheCount;
       /**
        * 已缓存更多数据量
        */
-      protected transient int     mLoadMoreCount;
+      protected transient int mLoadMoreCount;
       /**
        * 已缓存更少数据量
        */
-      protected transient int     mLoadLessCount;
+      protected transient int mLoadLessCount;
+
+      private boolean isOverWrite;
+
       /**
        * 是否正在加载
        */
-      private transient   boolean isLoading;
+      private AtomicBoolean isLoading = new AtomicBoolean();
+      /**
+       * 临时保存需要更新到文件的数据
+       */
+      private ArrayMap<Integer, V> mNeedToCache;
+
+      /**
+       * @param jsonConverter 转换流为bean对象
+       */
+      public JsonLoader ( JsonConverter<V> jsonConverter ) {
+
+            this( jsonConverter, 0 );
+      }
+
+      /**
+       * @param jsonConverter 转换流为bean对象
+       */
+      public JsonLoader ( JsonConverter<V> jsonConverter, int startIndex ) {
+
+            mJsonConverter = jsonConverter;
+
+            mMemoryList = new MemoryList<>();
+
+            mRetrofitLoader = new RetrofitLoader<>(
+                new JsonRetrofitListConverter()
+            );
+
+            mStartIndex = startIndex;
+      }
 
       /**
        * @param dir 缓存文件夹
@@ -140,45 +172,119 @@ public class JsonLoader<V> {
       }
 
       /**
+       * 加载数据
+       *
+       * @param url url
+       * @param startIndex 加载后数据,将会使用该索引开始保存所有数据
+       */
+      public void load ( String url, int startIndex ) {
+
+            isLoading.set( true );
+
+            List<V> load = mRetrofitLoader.load( url );
+            mMemoryList.saveMore( startIndex, load );
+            int size = load.size();
+            mCacheCount += size;
+            mLoadMoreCount += size;
+
+            isLoading.set( false );
+      }
+
+      /**
+       * 加载更多数据
+       *
+       * @param url url
+       */
+      public void loadMore ( String url ) {
+
+            isLoading.set( true );
+
+            List<V> load = mRetrofitLoader.load( url );
+
+            /* empty */
+            int size;
+            if( load == null || ( size = load.size() ) == 0 ) {
+                  return;
+            }
+            /* save to memory */
+            int memorySize = mMemoryList.size();
+            if( memorySize == 0 ) {
+
+                  mMemoryList.saveMore( mStartIndex, load );
+            } else {
+
+                  mMemoryList.saveMore( getMemoryMaxIndex() + 1, load );
+            }
+            mCacheCount += size;
+            mLoadMoreCount += size;
+
+            isLoading.set( false );
+      }
+
+      /**
+       * 加载更少数据
+       *
+       * @param url url
+       */
+      public void loadLess ( String url ) {
+
+            isLoading.set( true );
+
+            List<V> load = mRetrofitLoader.load( url );
+
+            /* empty */
+            int size;
+            if( load == null || ( size = load.size() ) == 0 ) {
+                  return;
+            }
+            /* save to memory */
+            int memorySize = mMemoryList.size();
+            if( memorySize == 0 ) {
+
+                  mMemoryList.saveLess( mStartIndex - 1, load );
+            } else {
+
+                  mMemoryList.saveLess( getMemoryMinIndex() - 1, load );
+            }
+            mCacheCount += size;
+            mLoadLessCount += size;
+
+            isLoading.set( false );
+      }
+
+      /**
+       * @return true : 正在加载数据中,该方法用于判断是否正在加载中,通过判断该值可以防止多次加载同一数据
+       */
+      public boolean isLoading ( ) {
+
+            return isLoading.get();
+      }
+
+      /**
+       * 获取缓存的数据,如果没有数据需要{@link #loadMore(String)}或者{@link #loadLess(String)}加载数据
+       *
+       * @param index value index
+       *
+       * @return value at index
+       */
+      public V get ( int index ) {
+
+            V load = mMemoryList.load( index );
+
+            if( load == null && mFileContainer != null ) {
+                  load = mFileContainer.load( String.valueOf( index ) );
+                  mMemoryList.save( index, load );
+            }
+
+            return load;
+      }
+
+      /**
        * @return 当前内存中数据量
        */
       public int getMemorySize ( ) {
 
             return mMemoryList.size();
-      }
-
-      /**
-       * 清空缓存文件夹
-       *
-       * @throws IOException 异常
-       */
-      public void clearFile ( ) throws IOException {
-
-            mFileContainer.clear();
-      }
-
-      /**
-       * @return 获取程序运行期间已经缓存的最大索引, 即文件中保存的最大索引
-       */
-      public int getCacheMaxIndex ( ) {
-
-            return mStartIndex + mLoadMoreCount - 1;
-      }
-
-      /**
-       * @return 获取程序运行期间已经缓存的最小索引, 即文件中保存的最小索引
-       */
-      public int getCacheMinIndex ( ) {
-
-            return mStartIndex - mLoadLessCount;
-      }
-
-      /**
-       * @return 读取已经缓存数量
-       */
-      public int getCacheCount ( ) {
-
-            return mCacheCount;
       }
 
       /**
@@ -215,145 +321,98 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 加载数据
-       *
-       * @param url url
-       * @param startIndex 加载后数据,将会使用该索引开始保存所有数据
-       */
-      public void load ( String url, int startIndex ) {
-
-            isLoading = true;
-
-            List<V> load = mRetrofitLoader.load( url );
-            mMemoryList.saveMore( startIndex, load );
-            int size = load.size();
-            mCacheCount += size;
-            mLoadMoreCount += size;
-
-            isLoading = false;
-      }
-
-      /**
-       * 加载更多数据
-       *
-       * @param url url
-       */
-      public void loadMore ( String url ) {
-
-            isLoading = true;
-
-            List<V> load = mRetrofitLoader.load( url );
-
-            /* empty */
-            int size;
-            if( load == null || ( size = load.size() ) == 0 ) {
-                  return;
-            }
-            /* save to memory */
-            int memorySize = mMemoryList.size();
-            if( memorySize == 0 ) {
-
-                  mMemoryList.saveMore( mStartIndex, load );
-            } else {
-
-                  mMemoryList.saveMore( getMemoryMaxIndex() + 1, load );
-            }
-            mCacheCount += size;
-            mLoadMoreCount += size;
-
-            isLoading = false;
-      }
-
-      /**
-       * 加载更少数据
-       *
-       * @param url url
-       */
-      public void loadLess ( String url ) {
-
-            isLoading = true;
-
-            List<V> load = mRetrofitLoader.load( url );
-
-            /* empty */
-            int size;
-            if( load == null || ( size = load.size() ) == 0 ) {
-                  return;
-            }
-            /* save to memory */
-            int memorySize = mMemoryList.size();
-            if( memorySize == 0 ) {
-
-                  mMemoryList.saveLess( mStartIndex - 1, load );
-            } else {
-
-                  mMemoryList.saveLess( getMemoryMinIndex() - 1, load );
-            }
-            mCacheCount += size;
-            mLoadLessCount += size;
-
-            isLoading = false;
-      }
-
-      /**
-       * 压缩内存中最大数据量不超过[low,high]
+       * 从内存中移除指定区间的数据
        *
        * @param low low limit
        * @param high high limit
        */
       public void trimMemory ( int low, int high ) {
 
-            int size = mMemoryList.size();
-            if( size <= Math.abs( high - low ) ) {
-                  return;
-            }
+            try {
+                  ArrayMap<Integer, V> container = mMemoryList.container();
 
-            ArrayMap<Integer, V> container = mMemoryList.container();
+                  Integer key = container.keyAt( 0 );
+                  while( key >= low && key < high ) {
 
-            /* 移除小于下限的值 */
-            Integer key = container.keyAt( 0 );
-            while( key < low ) {
-
-                  V v = container.removeAt( 0 );
-                  mFileContainer.save( key.toString(), v );
-                  key = container.keyAt( 0 );
-            }
-
-            /* 移除大于上限的值 */
-            key = container.keyAt( container.size() - 1 );
-            while( key > high ) {
-
-                  V v = container.removeAt( container.size() - 1 );
-                  mFileContainer.save( key.toString(), v );
-                  key = container.keyAt( container.size() - 1 );
+                        container.removeAt( 0 );
+                        key = container.keyAt( 0 );
+                  }
+            } catch(Exception e) {
+                  e.printStackTrace();
             }
       }
 
       /**
-       * @return true : 正在加载数据中,该方法用于判断是否正在加载中,通过判断该值可以防止多次加载同一数据
+       * @param overWrite true:如果本地存在该缓存将会重写缓存,false:不会更新缓存直接使用旧的
        */
-      public boolean isLoading ( ) {
+      public void setOverWrite ( boolean overWrite ) {
 
-            return isLoading;
+            isOverWrite = overWrite;
       }
 
       /**
-       * 获取缓存的数据,如果没有数据需要{@link #loadMore(String)}或者{@link #loadLess(String)}加载数据
+       * 从内存中移除指定区间的数据,并缓存到文件
        *
-       * @param index value index
-       *
-       * @return value at index
+       * @param low low limit
+       * @param high high limit
        */
-      public V get ( int index ) {
+      public void cacheMemory ( int low, int high ) {
 
-            V load = mMemoryList.load( index );
+            try {
+                  ArrayMap<Integer, V> container = mMemoryList.container();
 
-            if( load == null ) {
-                  load = mFileContainer.load( String.valueOf( index ) );
-                  mMemoryList.save( index, load );
+                  Integer key = container.keyAt( 0 );
+                  while( key >= low && key < high ) {
+
+                        V v = container.removeAt( 0 );
+                        String fileName = key.toString();
+                        if( mFileContainer.containsOf( fileName ) ) {
+
+                              if( isOverWrite ) {
+                                    mFileContainer.save( fileName, v );
+                              }
+                        } else {
+                              mFileContainer.save( fileName, v );
+                        }
+                        key = container.keyAt( 0 );
+                  }
+            } catch(Exception e) {
+                  e.printStackTrace();
             }
+      }
 
-            return load;
+      /**
+       * @return 获取程序运行期间已经缓存的最大索引, 即文件中保存的最大索引
+       */
+      public int getCacheMaxIndex ( ) {
+
+            return mStartIndex + mLoadMoreCount - 1;
+      }
+
+      /**
+       * @return 获取程序运行期间已经缓存的最小索引, 即文件中保存的最小索引
+       */
+      public int getCacheMinIndex ( ) {
+
+            return mStartIndex - mLoadLessCount;
+      }
+
+      /**
+       * @return 读取已经缓存数量
+       */
+      public int getCacheCount ( ) {
+
+            return mCacheCount;
+      }
+
+      /**
+       * 清空缓存文件夹
+       *
+       * @throws IOException 异常
+       */
+      public void clearFileCache ( ) throws IOException {
+
+            mFileContainer.clear();
       }
 
       // ========================= 辅助内部类 =========================
