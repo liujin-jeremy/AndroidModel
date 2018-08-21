@@ -17,10 +17,7 @@ import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-17
- * @time: 13:48
+ * @param <V>
  */
 public class JsonLoader<V> {
 
@@ -44,30 +41,27 @@ public class JsonLoader<V> {
       /**
        * 标记开始索引,用于{@link #loadMore(String)}{@link #loadLess(String)}时添加数据的起始索引
        */
-      protected final     int mStartIndex;
+      protected final     int     mStartIndex;
       /**
        * 已缓存数量
        */
-      protected transient int mCacheCount;
+      protected transient int     mCacheCount;
       /**
        * 已缓存更多数据量
        */
-      protected transient int mLoadMoreCount;
+      protected transient int     mLoadMoreCount;
       /**
        * 已缓存更少数据量
        */
-      protected transient int mLoadLessCount;
-
-      private boolean isOverWrite;
-
+      protected transient int     mLoadLessCount;
+      /**
+       * 标识在已经存在文件缓存的情况下如何保存文件缓存
+       */
+      private             boolean isOverWrite;
       /**
        * 是否正在加载
        */
       private AtomicBoolean isLoading = new AtomicBoolean();
-      /**
-       * 临时保存需要更新到文件的数据
-       */
-      private ArrayMap<Integer, V> mNeedToCache;
 
       /**
        * @param jsonConverter 转换流为bean对象
@@ -406,7 +400,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 清空缓存文件夹
+       * 清空缓存文件夹,当每次退出app时或者进入app时推荐清空缓存
        *
        * @throws IOException 异常
        */
