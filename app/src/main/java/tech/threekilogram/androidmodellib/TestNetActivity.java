@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.threekilogram.objectbus.bus.ObjectBus;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -46,6 +47,14 @@ public class TestNetActivity extends AppCompatActivity implements OnMessageRecei
                 getExternalCacheDir(), new TestGsonConverter( ResultsBean.class ),
                 90
             );
+            /* 一般在app退出时清空,此处只是示例 */
+            try {
+                  mJsonLoader.clearFileCache();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+            /* 配置内存中最大保存数据量 */
+            mJsonLoader.setMemoryMaxCount( 64 );
       }
 
       public void loadMore ( View view ) {
@@ -93,7 +102,6 @@ public class TestNetActivity extends AppCompatActivity implements OnMessageRecei
 
             int memoryMaxIndex = mJsonLoader.getMemoryMaxIndex();
             ResultsBean resultsBean = mJsonLoader.get( memoryMaxIndex );
-
             Log.e( TAG, "getMemoryMax index : " + memoryMaxIndex );
             Log.e( TAG, "getMemoryMax : " + resultsBean );
       }
@@ -102,7 +110,6 @@ public class TestNetActivity extends AppCompatActivity implements OnMessageRecei
 
             int memoryMinIndex = mJsonLoader.getMemoryMinIndex();
             ResultsBean resultsBean = mJsonLoader.get( memoryMinIndex );
-
             Log.e( TAG, "getMemoryMin index : " + memoryMinIndex );
             Log.e( TAG, "getMemoryMin : " + resultsBean );
       }

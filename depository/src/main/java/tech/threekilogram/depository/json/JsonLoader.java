@@ -17,7 +17,7 @@ import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
- * @param <V>
+ * @author liujin
  */
 public class JsonLoader<V> {
 
@@ -61,7 +61,24 @@ public class JsonLoader<V> {
       /**
        * 是否正在加载
        */
-      private AtomicBoolean isLoading = new AtomicBoolean();
+      protected AtomicBoolean isLoading            = new AtomicBoolean();
+      /**
+       * 内存最大保存数量
+       */
+      protected int           mMemoryMaxCount      = 128;
+      /**
+       * {@link #cacheMemory(int, int, boolean)}每次调用时缓存多少数据
+       */
+      protected int           mCacheCountEveryTime = mMemoryMaxCount >> 2;
+      /**
+       * true时,正在缓存文件,不需要再次启动缓存
+       */
+      private   AtomicBoolean isCachingFile        = new AtomicBoolean();
+
+      /**
+       * 临时保存需要需要写入文件的bean
+       */
+      private ArrayMap<Integer, V> mCacheFile = new ArrayMap<>();
 
       /**
        * @param jsonConverter 转换流为bean对象
@@ -166,12 +183,26 @@ public class JsonLoader<V> {
       }
 
       /**
+       * 配置内存中最大保存数据量,最好是2^n
+       *
+       * @param memoryMaxCount 最大内存中保存数据量
+       */
+      public void setMemoryMaxCount ( int memoryMaxCount ) {
+
+            mMemoryMaxCount = memoryMaxCount;
+            mCacheCountEveryTime = memoryMaxCount >> 2;
+      }
+
+      /**
        * 加载数据
        *
        * @param url url
        * @param startIndex 加载后数据,将会使用该索引开始保存所有数据
        */
       public void load ( String url, int startIndex ) {
+
+            int memoryMinIndex = getMemoryMinIndex();
+            int memoryMaxIndex = getMemoryMaxIndex();
 
             isLoading.set( true );
 
@@ -182,6 +213,33 @@ public class JsonLoader<V> {
             mLoadMoreCount += size;
 
             isLoading.set( false );
+
+            /* 根据需要缓存bean对象 */
+
+            if( startIndex < memoryMinIndex ) {
+
+                  /* 一个阈值,加载到该阈值就需要缓存文件了 */
+                  final int offset = 20;
+
+                  if( mMemoryList.size() >= mMemoryMaxCount - offset ) {
+
+                        int maxIndex = getMemoryMaxIndex();
+                        cacheMemory( maxIndex - mCacheCountEveryTime, maxIndex + 1, true );
+                  }
+            }
+
+            int endIndex = startIndex + size;
+            if( endIndex > memoryMaxIndex ) {
+
+                  /* 一个阈值,加载到该阈值就需要缓存文件了 */
+                  final int offset = 20;
+
+                  if( mMemoryList.size() >= mMemoryMaxCount - offset ) {
+
+                        int minIndex = getMemoryMinIndex();
+                        cacheMemory( minIndex, minIndex + mCacheCountEveryTime + 1, false );
+                  }
+            }
       }
 
       /**
@@ -213,6 +271,15 @@ public class JsonLoader<V> {
             mLoadMoreCount += size;
 
             isLoading.set( false );
+
+            /* 一个阈值,加载到该阈值就需要缓存文件了 */
+            final int offset = 20;
+
+            if( mMemoryList.size() >= mMemoryMaxCount - offset ) {
+
+                  int minIndex = getMemoryMinIndex();
+                  cacheMemory( minIndex, minIndex + mCacheCountEveryTime + 1, false );
+            }
       }
 
       /**
@@ -244,6 +311,15 @@ public class JsonLoader<V> {
             mLoadLessCount += size;
 
             isLoading.set( false );
+
+            /* 一个阈值,加载到该阈值就需要缓存文件了 */
+            final int offset = 20;
+
+            if( mMemoryList.size() >= mMemoryMaxCount - offset ) {
+
+                  int maxIndex = getMemoryMaxIndex();
+                  cacheMemory( maxIndex - mCacheCountEveryTime, maxIndex + 1, true );
+            }
       }
 
       /**
@@ -263,14 +339,33 @@ public class JsonLoader<V> {
        */
       public V get ( int index ) {
 
-            V load = mMemoryList.load( index );
+            V v = mMemoryList.load( index );
 
-            if( load == null && mFileContainer != null ) {
-                  load = mFileContainer.load( String.valueOf( index ) );
-                  mMemoryList.save( index, load );
+            if( v != null ) {
+                  return v;
             }
 
-            return load;
+            v = mCacheFile.get( index );
+
+            if( v != null ) {
+
+                  mCacheFile.remove( index );
+                  mMemoryList.save( index, v );
+                  return v;
+            }
+
+            if( mFileContainer != null ) {
+
+                  Integer key = index;
+                  v = mFileContainer.load( key.toString() );
+                  if( v != null ) {
+
+                        mMemoryList.save( key, v );
+                        return v;
+                  }
+            }
+
+            return null;
       }
 
       /**
@@ -315,28 +410,6 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 从内存中移除指定区间的数据
-       *
-       * @param low low limit
-       * @param high high limit
-       */
-      public void trimMemory ( int low, int high ) {
-
-            try {
-                  ArrayMap<Integer, V> container = mMemoryList.container();
-
-                  Integer key = container.keyAt( 0 );
-                  while( key >= low && key < high ) {
-
-                        container.removeAt( 0 );
-                        key = container.keyAt( 0 );
-                  }
-            } catch(Exception e) {
-                  e.printStackTrace();
-            }
-      }
-
-      /**
        * @param overWrite true:如果本地存在该缓存将会重写缓存,false:不会更新缓存直接使用旧的
        */
       public void setOverWrite ( boolean overWrite ) {
@@ -350,29 +423,80 @@ public class JsonLoader<V> {
        * @param low low limit
        * @param high high limit
        */
-      public void cacheMemory ( int low, int high ) {
+      private void cacheMemory ( int low, int high, boolean fromStart ) {
 
             try {
                   ArrayMap<Integer, V> container = mMemoryList.container();
+                  ArrayMap<Integer, V> cacheFile = mCacheFile;
 
-                  Integer key = container.keyAt( 0 );
-                  while( key >= low && key < high ) {
+                  if( fromStart ) {
 
-                        V v = container.removeAt( 0 );
-                        String fileName = key.toString();
-                        if( mFileContainer.containsOf( fileName ) ) {
+                        int size = container.size();
+                        Integer key = container.keyAt( size - 1 );
+                        while( key >= low && key < high ) {
 
-                              if( isOverWrite ) {
-                                    mFileContainer.save( fileName, v );
-                              }
-                        } else {
-                              mFileContainer.save( fileName, v );
+                              V v = container.removeAt( size - 1 );
+                              cacheFile.put( key, v );
+
+                              size = container.size();
+                              key = container.keyAt( size - 1 );
                         }
-                        key = container.keyAt( 0 );
+                  } else {
+
+                        Integer key = container.keyAt( 0 );
+                        while( key >= low && key < high ) {
+
+                              V v = container.removeAt( 0 );
+                              cacheFile.put( key, v );
+
+                              key = container.keyAt( 0 );
+                        }
                   }
             } catch(Exception e) {
                   e.printStackTrace();
             }
+
+            notifyToCacheFile();
+      }
+
+      /**
+       * 缓存文件
+       */
+      private void notifyToCacheFile ( ) {
+
+            if( isCachingFile.get() ) {
+
+                  return;
+            }
+            isCachingFile.set( true );
+
+            ArrayMap<Integer, V> cacheFile = mCacheFile;
+            BaseFileContainer<V> fileContainer = mFileContainer;
+
+            while( cacheFile.size() > 0 ) {
+
+                  Integer key = cacheFile.keyAt( 0 );
+                  V v = cacheFile.removeAt( 0 );
+
+                  if( v != null ) {
+
+                        String fileKey = key.toString();
+                        if( fileContainer.containsOf( fileKey ) ) {
+
+                              /* 已经有缓存文件,但是配置需要覆盖它 */
+
+                              if( isOverWrite ) {
+                                    fileContainer.save( fileKey, v );
+                              }
+                        } else {
+
+                              /* 没有缓存文件需要缓存一下 */
+
+                              fileContainer.save( fileKey, v );
+                        }
+                  }
+            }
+            isCachingFile.set( false );
       }
 
       /**
@@ -400,7 +524,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 清空缓存文件夹,当每次退出app时或者进入app时推荐清空缓存
+       * 清空缓存文件夹,每次退出app时或者进入app时推荐清空缓存文件
        *
        * @throws IOException 异常
        */
