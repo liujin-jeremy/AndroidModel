@@ -47,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.menu00:
                               changeFragment( TestMemoryListFragment.newInstance() );
                               break;
+
+                        case R.id.menu01:
+                              changeFragment( TestMemoryBitmap.newInstance() );
+                              break;
+
                         default:
                               break;
                   }

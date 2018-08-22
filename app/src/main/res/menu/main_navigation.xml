@@ -5,4 +5,9 @@
           android:id="@+id/menu00"
           android:title="testMemoryList"/>
 
+      <item
+          android:id="@+id/menu01"
+          android:title="testMemoryBitmap"/>
+
+
 </menu>
