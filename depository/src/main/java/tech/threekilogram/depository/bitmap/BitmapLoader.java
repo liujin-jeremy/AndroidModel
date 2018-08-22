@@ -123,7 +123,7 @@ public abstract class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 子类实现该方法,决定如何在后台线程加载图片
+       * 子类实现该方法,决定如何在后台线程加载图片,该框架并不提供异步功能,由用户自己提供,防止引入多个库的情况下,线程驻留太多,所以本框架并不提供异步功能
        *
        * @param runnable runnable 框架封装的后台加载任务
        */
