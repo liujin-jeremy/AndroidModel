@@ -29,13 +29,22 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
        */
       @SuppressWarnings("WeakerAccess")
       public static final int SAVE_STRATEGY_RETURN_OLD = 1;
+
       /**
        * 该值会影响 {@link #save(Object, Object)} 和 {@link #remove(Object)}的返回值, 如果是{@link
        * #SAVE_STRATEGY_COVER},那么直接返回null,不回去解析文件为value, 如果是{@link
        * #SAVE_STRATEGY_RETURN_OLD},那么 {@link #save(Object,
        * Object)}会去尝试解析file为value,然后返回该value
        */
-      protected           int mSaveStrategy            = SAVE_STRATEGY_COVER;
+      protected int mSaveStrategy = SAVE_STRATEGY_COVER;
+      /**
+       * 辅助该类完成stream到{@link V}的转换工作
+       */
+      protected FileConverter<V>    mConverter;
+      /**
+       * 处理发生的异常
+       */
+      protected ExceptionHandler<V> mExceptionHandler;
 
       /**
        * 读取保存策略
@@ -46,11 +55,6 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
 
             return mSaveStrategy;
       }
-
-      /**
-       * 处理发生的异常
-       */
-      protected ExceptionHandler<V> mExceptionHandler;
 
       /**
        * 设置当保存文件时,如果文件已经存在怎么处理, 如果是{@link #SAVE_STRATEGY_COVER}那么 {@link
@@ -66,6 +70,15 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
       }
 
       /**
+       * 保存策略的值类型
+       */
+      @Retention(RetentionPolicy.SOURCE)
+      @SuppressWarnings("WeakerAccess")
+      @IntDef(value = { SAVE_STRATEGY_COVER,
+                        SAVE_STRATEGY_RETURN_OLD })
+      public @interface SaveStrategyValue { }
+
+      /**
        * @return 异常处理类, 或者null
        */
       public ExceptionHandler<V> getExceptionHandler ( ) {
@@ -78,29 +91,31 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
        *
        * @param exceptionHandler 异常处理类
        */
-      public void setExceptionHandler (
-          ExceptionHandler<V> exceptionHandler ) {
+      public void setExceptionHandler ( ExceptionHandler<V> exceptionHandler ) {
 
             mExceptionHandler = exceptionHandler;
       }
 
       /**
-       * 根据key返回文件
+       * 根据key返回文件,文件可能不存在,{@link File#exists()}可能返回false
        *
        * @param key key
        *
-       * @return 文件
+       * @return 文件(可能不存在)
        */
       public abstract File getFile ( String key );
 
       /**
-       * 保存策略的值类型
+       * 清空
+       *
+       * @throws IOException 文件异常
        */
-      @Retention(RetentionPolicy.SOURCE)
-      @SuppressWarnings("WeakerAccess")
-      @IntDef(value = { SAVE_STRATEGY_COVER,
-                        SAVE_STRATEGY_RETURN_OLD })
-      public static @interface SaveStrategyValue { }
+      public abstract void clear ( ) throws IOException;
+
+      public FileConverter<V> getConverter ( ) {
+
+            return mConverter;
+      }
 
       /**
        * handle exception
@@ -127,9 +142,4 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
              */
             void onSaveValueToFile ( IOException e, String key, V value );
       }
-
-      /**
-       * 清空
-       */
-      public abstract void clear ( ) throws IOException;
 }

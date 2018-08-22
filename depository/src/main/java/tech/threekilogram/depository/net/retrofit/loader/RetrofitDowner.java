@@ -2,8 +2,8 @@ package tech.threekilogram.depository.net.retrofit.loader;
 
 import java.io.File;
 import java.io.IOException;
-import tech.threekilogram.depository.file.converter.FileStreamConverter.OnProgressUpdateListener;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter.OnProgressUpdateListener;
 
 /**
  * 使用 retrofit 从网络下载文件,保存到指定文件夹
@@ -29,11 +29,6 @@ public class RetrofitDowner extends RetrofitLoader<File> {
       public RetrofitDowner ( File dir, int maxSize ) throws IOException {
 
             super( new RetrofitDownConverter( dir, maxSize ) );
-      }
-
-      public RetrofitDowner ( RetrofitDownConverter netConverter ) {
-
-            super( netConverter );
       }
 
       private RetrofitDownConverter getConverter ( ) {
@@ -85,11 +80,19 @@ public class RetrofitDowner extends RetrofitLoader<File> {
             return super.load( url );
       }
 
+      /**
+       * {@link RetrofitDownConverter#getOnProgressUpdateListener()}
+       */
       public OnProgressUpdateListener getOnProgressUpdateListener ( ) {
 
             return getConverter().getOnProgressUpdateListener();
       }
 
+      /**
+       * {@link RetrofitDownConverter#setOnProgressUpdateListener(OnProgressUpdateListener)}
+       *
+       * @param onProgressUpdateListener 进度监听
+       */
       public void setOnProgressUpdateListener (
           OnProgressUpdateListener onProgressUpdateListener ) {
 

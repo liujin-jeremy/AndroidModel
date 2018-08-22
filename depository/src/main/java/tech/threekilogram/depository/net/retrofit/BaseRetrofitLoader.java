@@ -133,4 +133,9 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
           String key,
           String url,
           S service );
+
+      public BaseRetrofitConverter<V> getNetConverter ( ) {
+
+            return mNetConverter;
+      }
 }

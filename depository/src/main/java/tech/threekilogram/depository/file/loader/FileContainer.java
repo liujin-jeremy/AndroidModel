@@ -21,11 +21,7 @@ public class FileContainer<V> extends BaseFileContainer<V> {
       /**
        * 一个文件夹用于统一保存key对应的文件
        */
-      private File             mDir;
-      /**
-       * 辅助loader正常工作
-       */
-      private FileConverter<V> mConverter;
+      private File mDir;
 
       /**
        * @param dir 保存文件的文件夹

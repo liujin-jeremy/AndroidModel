@@ -24,13 +24,10 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
        * 保存数据
        */
       private DiskLruCache mDiskLruCache;
-
       /**
-       * 辅助该类完成stream到{@link V}的转换工作
+       * 文件夹
        */
-      private FileConverter<V> mConverter;
-
-      private File mDir;
+      private File         mDir;
 
       /**
        * @param folder which dir to save data

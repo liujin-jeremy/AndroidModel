@@ -14,6 +14,16 @@ public abstract class BaseRetrofitConverter<V> implements NetConverter<V, Respon
 
       protected KeyUrlConverter mUrlConverter;
 
+      public BaseRetrofitConverter ( ) { }
+
+      /**
+       * @param urlConverter 辅助转换url,从key中
+       */
+      public BaseRetrofitConverter ( KeyUrlConverter urlConverter ) {
+
+            mUrlConverter = urlConverter;
+      }
+
       @Override
       public String urlFromKey ( String key ) {
 
@@ -23,16 +33,6 @@ public abstract class BaseRetrofitConverter<V> implements NetConverter<V, Respon
             }
 
             return key;
-      }
-
-      public KeyUrlConverter getUrlConverter ( ) {
-
-            return mUrlConverter;
-      }
-
-      public void setUrlConverter ( KeyUrlConverter urlConverter ) {
-
-            mUrlConverter = urlConverter;
       }
 
       /**
