@@ -177,6 +177,10 @@ public class BitmapConverter {
                   return BitmapReader.matchHeight( file, mHeight, mBitmapConfig );
             }
 
+            if( mMode == MATCH_SIZE ) {
+                  return BitmapReader.matchSize( file, mWidth, mHeight, mBitmapConfig );
+            }
+
             return BitmapReader.matchSize( file, mWidth, mHeight, mBitmapConfig );
       }
 
@@ -207,11 +211,15 @@ public class BitmapConverter {
        * 缩放模式:等比例缩放至匹配{@link #mHeight}
        */
       public static final int MATCH_HEIGHT = 4;
+      /**
+       * 缩放模式:等比例缩放至匹配{@link #mHeight}或者匹配{@link #mWidth}
+       */
+      public static final int MATCH_SIZE   = 5;
 
       /**
        * 配置缩放模式
        */
-      @IntDef({ SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT })
+      @IntDef({ SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT, MATCH_SIZE })
       @Retention(RetentionPolicy.SOURCE)
       public @interface ScaleMode { }
 }

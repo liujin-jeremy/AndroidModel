@@ -106,22 +106,6 @@ public class TestNetActivity extends AppCompatActivity implements OnMessageRecei
             } ).run();
       }
 
-      public void getMax ( View view ) {
-
-            int memoryMaxIndex = mJsonLoader.getMemoryMaxIndex();
-            ResultsBean resultsBean = mJsonLoader.get( memoryMaxIndex );
-            Log.e( TAG, "getMemoryMax index : " + memoryMaxIndex );
-            Log.e( TAG, "getMemoryMax : " + resultsBean );
-      }
-
-      public void getMin ( View view ) {
-
-            int memoryMinIndex = mJsonLoader.getMemoryMinIndex();
-            ResultsBean resultsBean = mJsonLoader.get( memoryMinIndex );
-            Log.e( TAG, "getMemoryMin index : " + memoryMinIndex );
-            Log.e( TAG, "getMemoryMin : " + resultsBean );
-      }
-
       public void cacheMax ( View view ) {
 
             int maxIndex = mJsonLoader.getCacheMaxIndex();

@@ -1,6 +1,6 @@
 package tech.threekilogram.depository.bitmap;
 
-import static tech.threekilogram.depository.bitmap.BitmapConverter.SAMPLE;
+import static tech.threekilogram.depository.bitmap.BitmapConverter.MATCH_SIZE;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -56,7 +56,7 @@ public class BitmapLoader {
        */
       public void configBitmap ( int width, int height ) {
 
-            configBitmap( width, height, SAMPLE, Config.RGB_565 );
+            configBitmap( width, height, MATCH_SIZE, Config.RGB_565 );
       }
 
       /**
