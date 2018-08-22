@@ -44,6 +44,22 @@
                 android:onClick="toTestJson"
                 android:text="toTestJson"/>
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@color/colorOrange"
+                android:onClick="toTestJsonBitmap"
+                android:text="toTestJsonBitmap"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@color/colorOrange"
+                android:onClick="toBitmapLoader"
+                android:text="toBitmapLoader"/>
+
       </LinearLayout>
 
 </ScrollView>

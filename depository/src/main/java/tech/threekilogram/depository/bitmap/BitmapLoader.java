@@ -4,12 +4,15 @@ import static tech.threekilogram.depository.bitmap.BitmapConverter.MATCH_SIZE;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.file.converter.FileStreamConverter.OnProgressUpdateListener;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
+import tech.threekilogram.messengers.Messengers;
+import tech.threekilogram.messengers.OnMessageReceiveListener;
 
 /**
  * 缓存bitmap对象
@@ -19,7 +22,9 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
  * @date: 2018-08-16
  * @time: 21:44
  */
-public class BitmapLoader {
+public abstract class BitmapLoader implements OnMessageReceiveListener {
+
+      private static final String TAG = BitmapLoader.class.getSimpleName();
 
       /**
        * 内存缓存
@@ -66,12 +71,9 @@ public class BitmapLoader {
        * @param height 需求高度
        * @param scaleMode 缩放方式
        */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
+      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
 
-            mBitmapConverter.setWidth( width );
-            mBitmapConverter.setHeight( height );
-            mBitmapConverter.setMode( scaleMode );
-            mBitmapConverter.setBitmapConfig( config );
+            configBitmap( width, height, scaleMode, Config.RGB_565 );
       }
 
       /**
@@ -81,19 +83,64 @@ public class BitmapLoader {
        * @param height 需求高度
        * @param scaleMode 缩放方式
        */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
+      public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
 
-            configBitmap( width, height, scaleMode, Config.RGB_565 );
+            mBitmapConverter.setWidth( width );
+            mBitmapConverter.setHeight( height );
+            mBitmapConverter.setMode( scaleMode );
+            mBitmapConverter.setBitmapConfig( config );
+      }
+
+      public void load ( String url ) {
+
+            Bitmap fromMemory = loadFromMemory( url );
+            if( fromMemory == null ) {
+
+                  asyncLoad( new AsyncLoadRunnable( url ) );
+            }
+      }
+
+      /**
+       * 实现async load
+       *
+       * @param runnable runnable
+       */
+      protected abstract void asyncLoad ( Runnable runnable );
+
+      protected void setResult ( String url, Bitmap bitmap ) {
+
+            if( bitmap == null ) {
+
+                  Messengers.send( 13, url, this );
+            } else {
+                  Messengers.send( 11, url, this );
+            }
+      }
+
+      @Override
+      public void onReceive ( int what, Object extra ) {
+
+            String url = (String) extra;
+
+            if( what == 11 ) {
+
+                  Bitmap bitmap = loadFromMemory( url );
+
+                  Log.e( TAG, "onReceive : " + bitmap.getWidth() );
+            } else {
+
+                  Log.e( TAG, "onReceive : bitmap null" );
+            }
       }
 
       /**
        * 从内存读取
        *
-       * @param url url
+       * @param url mUrl
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromMemory ( String url ) {
+      protected Bitmap loadFromMemory ( String url ) {
 
             return mMemory.load( url );
       }
@@ -122,18 +169,21 @@ public class BitmapLoader {
       /**
        * 从本地文件读取
        *
-       * @param url url
+       * @param url mUrl
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromFile ( String url ) {
+      protected Bitmap loadFromFile ( String url ) {
 
             File file = mDowner.getFile( url );
             if( file != null ) {
 
                   Bitmap bitmap = mBitmapConverter.read( file );
-                  mMemory.save( url, bitmap );
-                  return bitmap;
+
+                  if( bitmap != null ) {
+                        mMemory.save( url, bitmap );
+                        return bitmap;
+                  }
             }
             return null;
       }
@@ -144,9 +194,9 @@ public class BitmapLoader {
       }
 
       /**
-       * get url file
+       * get mUrl file
        *
-       * @param url url
+       * @param url mUrl
        *
        * @return file or null
        */
@@ -168,18 +218,20 @@ public class BitmapLoader {
       /**
        * 从网络读取
        *
-       * @param url url
+       * @param url mUrl
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromNet ( String url ) {
+      protected Bitmap loadFromNet ( String url ) {
 
             File file = mDowner.load( url );
             if( file != null ) {
 
                   Bitmap bitmap = mBitmapConverter.read( file );
-                  mMemory.save( url, bitmap );
-                  return bitmap;
+                  if( bitmap != null ) {
+                        mMemory.save( url, bitmap );
+                        return bitmap;
+                  }
             }
             return null;
       }
@@ -203,5 +255,43 @@ public class BitmapLoader {
           OnProgressUpdateListener onProgressUpdateListener ) {
 
             mDowner.setOnProgressUpdateListener( onProgressUpdateListener );
+      }
+
+      /**
+       * 辅助类,辅助异步加载bitmap {@link #load(String)}
+       */
+      private class AsyncLoadRunnable implements Runnable {
+
+            private String mUrl;
+
+            public AsyncLoadRunnable ( String url ) {
+
+                  mUrl = url;
+            }
+
+            @Override
+            public void run ( ) {
+
+                  Bitmap fromFile = loadFromFile( mUrl );
+                  if( fromFile == null ) {
+
+                        Bitmap fromNet = loadFromNet( mUrl );
+                        if( fromNet == null ) {
+                              setResult( mUrl, null );
+                        } else {
+                              setResult( mUrl, fromNet );
+                        }
+                  } else {
+
+                        setResult( mUrl, fromFile );
+                  }
+            }
+      }
+
+      /**
+       * 用于{@link #load(String)}加载任务完成后回调
+       */
+      public interface OnLoadFinishedListener {
+
       }
 }
