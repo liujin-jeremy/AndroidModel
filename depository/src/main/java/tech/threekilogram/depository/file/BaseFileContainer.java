@@ -55,7 +55,8 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
       /**
        * 设置当保存文件时,如果文件已经存在怎么处理, 如果是{@link #SAVE_STRATEGY_COVER}那么 {@link
        * #save(Object, Object)}直接返回null,不会去尝试解析file为value, 如果是{@link #SAVE_STRATEGY_RETURN_OLD}那么
-       * {@link #save(Object, Object)}会去尝试解析file为value,然后返回该值,同时保存新的value到该文件
+       * {@link #save(Object, Object)}会去尝试解析file为value,然后返回该值,同时保存新的value到该文件,同样会影响{@link
+       * #remove(Object)}
        *
        * @param saveStrategy 策略
        */

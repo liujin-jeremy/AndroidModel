@@ -59,6 +59,10 @@ public class TestNetActivity extends AppCompatActivity implements OnMessageRecei
 
       public void loadMore ( View view ) {
 
+            if( mJsonLoader.isLoading() ) {
+                  return;
+            }
+
             mObjectBus.toPool( new Runnable() {
 
                   @Override
@@ -75,6 +79,10 @@ public class TestNetActivity extends AppCompatActivity implements OnMessageRecei
       }
 
       public void loadLess ( View view ) {
+
+            if( mJsonLoader.isLoading() ) {
+                  return;
+            }
 
             mObjectBus.toPool( new Runnable() {
 

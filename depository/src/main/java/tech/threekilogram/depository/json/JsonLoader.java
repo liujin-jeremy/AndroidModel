@@ -1,14 +1,17 @@
 package tech.threekilogram.depository.json;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileContainer;
+import tech.threekilogram.depository.file.BaseFileContainer.SaveStrategyValue;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.loader.DiskLruContainer;
 import tech.threekilogram.depository.file.loader.FileContainer;
@@ -20,6 +23,8 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
  * @author liujin
  */
 public class JsonLoader<V> {
+
+      private static final String TAG = JsonLoader.class.getSimpleName();
 
       /**
        * 内存
@@ -41,68 +46,43 @@ public class JsonLoader<V> {
       /**
        * 标记开始索引,用于{@link #loadMore(String)}{@link #loadLess(String)}时添加数据的起始索引
        */
-      protected final     int     mStartIndex;
+      protected final int mStartIndex;
       /**
        * 已缓存数量
        */
-      protected transient int     mCacheCount;
+      protected AtomicInteger mCacheCount    = new AtomicInteger();
       /**
        * 已缓存更多数据量
        */
-      protected transient int     mLoadMoreCount;
+      protected AtomicInteger mLoadMoreCount = new AtomicInteger();
       /**
        * 已缓存更少数据量
        */
-      protected transient int     mLoadLessCount;
+      protected AtomicInteger mLoadLessCount = new AtomicInteger();
       /**
        * 标识在已经存在文件缓存的情况下如何保存文件缓存
        */
-      private             boolean isOverWrite;
+      private boolean isOverWrite;
       /**
        * 是否正在加载
        */
-      protected AtomicBoolean isLoading            = new AtomicBoolean();
+      protected AtomicBoolean        isLoading            = new AtomicBoolean();
       /**
        * 内存最大保存数量
        */
-      protected int           mMemoryMaxCount      = 128;
+      protected int                  mMemoryMaxCount      = 128;
       /**
        * {@link #cacheMemory(int, int, boolean)}每次调用时缓存多少数据
        */
-      protected int           mCacheCountEveryTime = mMemoryMaxCount >> 2;
+      protected int                  mCacheCountEveryTime = mMemoryMaxCount >> 2;
       /**
        * true时,正在缓存文件,不需要再次启动缓存
        */
-      private   AtomicBoolean isCachingFile        = new AtomicBoolean();
-
+      protected AtomicBoolean        isCachingFile        = new AtomicBoolean();
       /**
        * 临时保存需要需要写入文件的bean
        */
-      private ArrayMap<Integer, V> mCacheFile = new ArrayMap<>();
-
-      /**
-       * @param jsonConverter 转换流为bean对象
-       */
-      public JsonLoader ( JsonConverter<V> jsonConverter ) {
-
-            this( jsonConverter, 0 );
-      }
-
-      /**
-       * @param jsonConverter 转换流为bean对象
-       */
-      public JsonLoader ( JsonConverter<V> jsonConverter, int startIndex ) {
-
-            mJsonConverter = jsonConverter;
-
-            mMemoryList = new MemoryList<>();
-
-            mRetrofitLoader = new RetrofitLoader<>(
-                new JsonRetrofitListConverter()
-            );
-
-            mStartIndex = startIndex;
-      }
+      protected ArrayMap<Integer, V> mCacheFile           = new ArrayMap<>();
 
       /**
        * @param dir 缓存文件夹
@@ -194,55 +174,6 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 加载数据
-       *
-       * @param url url
-       * @param startIndex 加载后数据,将会使用该索引开始保存所有数据
-       */
-      public void load ( String url, int startIndex ) {
-
-            int memoryMinIndex = getMemoryMinIndex();
-            int memoryMaxIndex = getMemoryMaxIndex();
-
-            isLoading.set( true );
-
-            List<V> load = mRetrofitLoader.load( url );
-            mMemoryList.saveMore( startIndex, load );
-            int size = load.size();
-            mCacheCount += size;
-            mLoadMoreCount += size;
-
-            isLoading.set( false );
-
-            /* 根据需要缓存bean对象 */
-
-            if( startIndex < memoryMinIndex ) {
-
-                  /* 一个阈值,加载到该阈值就需要缓存文件了 */
-                  final int offset = 20;
-
-                  if( mMemoryList.size() >= mMemoryMaxCount - offset ) {
-
-                        int maxIndex = getMemoryMaxIndex();
-                        cacheMemory( maxIndex - mCacheCountEveryTime, maxIndex + 1, true );
-                  }
-            }
-
-            int endIndex = startIndex + size;
-            if( endIndex > memoryMaxIndex ) {
-
-                  /* 一个阈值,加载到该阈值就需要缓存文件了 */
-                  final int offset = 20;
-
-                  if( mMemoryList.size() >= mMemoryMaxCount - offset ) {
-
-                        int minIndex = getMemoryMinIndex();
-                        cacheMemory( minIndex, minIndex + mCacheCountEveryTime + 1, false );
-                  }
-            }
-      }
-
-      /**
        * 加载更多数据
        *
        * @param url url
@@ -265,10 +196,10 @@ public class JsonLoader<V> {
                   mMemoryList.saveMore( mStartIndex, load );
             } else {
 
-                  mMemoryList.saveMore( getMemoryMaxIndex() + 1, load );
+                  mMemoryList.saveMore( getCacheMaxIndex() + 1, load );
             }
-            mCacheCount += size;
-            mLoadMoreCount += size;
+            mCacheCount.addAndGet( size );
+            mLoadMoreCount.addAndGet( size );
 
             isLoading.set( false );
 
@@ -305,10 +236,10 @@ public class JsonLoader<V> {
                   mMemoryList.saveLess( mStartIndex - 1, load );
             } else {
 
-                  mMemoryList.saveLess( getMemoryMinIndex() - 1, load );
+                  mMemoryList.saveLess( getCacheMinIndex() - 1, load );
             }
-            mCacheCount += size;
-            mLoadLessCount += size;
+            mCacheCount.addAndGet( size );
+            mLoadLessCount.addAndGet( size );
 
             isLoading.set( false );
 
@@ -331,7 +262,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 获取缓存的数据,如果没有数据需要{@link #loadMore(String)}或者{@link #loadLess(String)}加载数据
+       * 获取缓存的数据,如果没有数据(return null)需要{@link #loadMore(String)}或者{@link #loadLess(String)}加载数据
        *
        * @param index value index
        *
@@ -366,6 +297,74 @@ public class JsonLoader<V> {
             }
 
             return null;
+      }
+
+      /**
+       * 修改/添加内存中数据
+       *
+       * @param index 修改位置
+       * @param v 新值
+       */
+      public void save ( int index, V v ) {
+
+            mMemoryList.save( index, v );
+      }
+
+      /**
+       * 修改/添加缓存文件中数据
+       *
+       * @param index 位置
+       * @param v 新值
+       */
+      public void saveFile ( int index, V v ) {
+
+            mFileContainer.save( String.valueOf( index ), v );
+      }
+
+      /**
+       * 删除内存中该索引值
+       *
+       * @param index 索引
+       *
+       * @return 在索引位置的值
+       */
+      public V delete ( int index ) {
+
+            return mMemoryList.remove( index );
+      }
+
+      /**
+       * 设置缓存文件保存/读取策略{@link BaseFileContainer#setSaveStrategy(int)}
+       *
+       * @param strategy 策略
+       */
+      public void setSaveStrategy ( @SaveStrategyValue int strategy ) {
+
+            mFileContainer.setSaveStrategy( strategy );
+      }
+
+      /**
+       * 删除该索引缓存文件,该方法返回值与{@link #setSaveStrategy(int)}有关
+       *
+       * @param index 索引
+       *
+       * @return 在索引位置的值或者null,
+       */
+      public V deleteFile ( int index ) {
+
+            return mFileContainer.remove( String.valueOf( index ) );
+      }
+
+      /**
+       * 获取索引位置的缓存文件
+       *
+       * @param index 索引
+       *
+       * @return null or 缓存文件
+       */
+      public File getCacheFile ( int index ) {
+
+            return mFileContainer.getFile( String.valueOf( index ) );
       }
 
       /**
@@ -412,7 +411,7 @@ public class JsonLoader<V> {
       /**
        * @param overWrite true:如果本地存在该缓存将会重写缓存,false:不会更新缓存直接使用旧的
        */
-      public void setOverWrite ( boolean overWrite ) {
+      public void setShouldOverWrite ( boolean overWrite ) {
 
             isOverWrite = overWrite;
       }
@@ -424,6 +423,11 @@ public class JsonLoader<V> {
        * @param high high limit
        */
       private void cacheMemory ( int low, int high, boolean fromStart ) {
+
+            if( isCachingFile.get() ) {
+
+                  return;
+            }
 
             try {
                   ArrayMap<Integer, V> container = mMemoryList.container();
@@ -464,10 +468,6 @@ public class JsonLoader<V> {
        */
       private void notifyToCacheFile ( ) {
 
-            if( isCachingFile.get() ) {
-
-                  return;
-            }
             isCachingFile.set( true );
 
             ArrayMap<Integer, V> cacheFile = mCacheFile;
@@ -491,7 +491,7 @@ public class JsonLoader<V> {
                         } else {
 
                               /* 没有缓存文件需要缓存一下 */
-
+                              Log.e( TAG, "notifyToCacheFile : " + fileKey + " --> " + v );
                               fileContainer.save( fileKey, v );
                         }
                   }
@@ -500,19 +500,19 @@ public class JsonLoader<V> {
       }
 
       /**
-       * @return 获取程序运行期间已经缓存的最大索引, 即文件中保存的最大索引
+       * @return 获取程序运行期间已经缓存的最大索引, 即文件中保存的最大索引,-1没有数据
        */
       public int getCacheMaxIndex ( ) {
 
-            return mStartIndex + mLoadMoreCount - 1;
+            return mStartIndex + mLoadMoreCount.get() - 1;
       }
 
       /**
-       * @return 获取程序运行期间已经缓存的最小索引, 即文件中保存的最小索引
+       * @return 获取程序运行期间已经缓存的最小索引, 即文件中保存的最小索引,-1没有数据
        */
       public int getCacheMinIndex ( ) {
 
-            return mStartIndex - mLoadLessCount;
+            return mStartIndex - mLoadLessCount.get();
       }
 
       /**
@@ -520,7 +520,7 @@ public class JsonLoader<V> {
        */
       public int getCacheCount ( ) {
 
-            return mCacheCount;
+            return mCacheCount.get();
       }
 
       /**
