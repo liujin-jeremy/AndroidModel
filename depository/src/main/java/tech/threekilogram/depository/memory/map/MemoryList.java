@@ -13,6 +13,12 @@ import java.util.List;
  */
 public class MemoryList<V> extends MemoryMap<Integer, V> {
 
+      /**
+       * 使用index为起点保存整个数据
+       *
+       * @param startIndex 起始坐标
+       * @param values 数据
+       */
       public void saveMore ( int startIndex, List<V> values ) {
 
             final int size = values.size();
@@ -23,14 +29,21 @@ public class MemoryList<V> extends MemoryMap<Integer, V> {
             }
       }
 
+      /**
+       * 使用index为终点保存整个数据
+       *
+       * @param startIndex 终点
+       * @param values 数据
+       */
       public void saveLess ( int startIndex, List<V> values ) {
 
             final int size = values.size();
+            final int off = startIndex - size;
 
             for( int i = 0; i < size; i++ ) {
 
                   V v = values.get( i );
-                  save( startIndex - size + i + 1, v );
+                  save( off + i + 1, v );
             }
       }
 }

@@ -27,4 +27,11 @@ public interface Memory<K, V> extends Container<K, V> {
        * 清空
        */
       void clear ( );
+
+      /**
+       * return value container
+       *
+       * @return what contains value
+       */
+      Object container ( );
 }

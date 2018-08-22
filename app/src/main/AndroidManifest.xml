@@ -18,20 +18,6 @@
                         <category android:name="android.intent.category.LAUNCHER"/>
                   </intent-filter>
             </activity>
-            <activity
-                android:launchMode="singleTop"
-                android:name=".TestMemoryActivity">
-            </activity>
-            <activity android:name=".TestFileActivity">
-            </activity>
-            <activity android:name=".TestNetActivity">
-            </activity>
-            <activity android:name=".TestBitmapActivity">
-            </activity>
-            <activity android:name=".TestBitmapLoaderActivity">
-            </activity>
-            <activity android:name=".TestJsonBitmapActivity">
-            </activity>
       </application>
 
 </manifest>

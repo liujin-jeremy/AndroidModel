@@ -1,48 +1,66 @@
 package tech.threekilogram.androidmodellib;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 /**
  * @author liujin
  */
 public class MainActivity extends AppCompatActivity {
 
+      private FrameLayout    mContainer;
+      private NavigationView mNavigationView;
+      private DrawerLayout   mDrawer;
+
       @Override
       protected void onCreate ( Bundle savedInstanceState ) {
 
             super.onCreate( savedInstanceState );
             setContentView( R.layout.activity_main );
+            initView();
       }
 
-      public void toTestMemory ( View view ) {
+      private void initView ( ) {
 
-            TestMemoryActivity.start( this );
+            mDrawer = findViewById( R.id.drawer );
+            mNavigationView = findViewById( R.id.navigationView );
+            mContainer = findViewById( R.id.container );
+
+            mNavigationView.setNavigationItemSelectedListener( new MainMenuClickListener() );
       }
 
-      public void toTestFile ( View view ) {
+      private class MainMenuClickListener implements OnNavigationItemSelectedListener {
 
-            TestFileActivity.start( this );
+            @Override
+            public boolean onNavigationItemSelected ( @NonNull MenuItem item ) {
+
+                  switch( item.getItemId() ) {
+
+                        case R.id.menu00:
+                              changeFragment( TestMemoryListFragment.newInstance() );
+                              break;
+                        default:
+                              break;
+                  }
+
+                  mDrawer.closeDrawer( Gravity.START );
+                  return true;
+            }
       }
 
-      public void toTestBitmap ( View view ) {
+      private void changeFragment ( Fragment fragment ) {
 
-            TestBitmapActivity.start( this );
-      }
-
-      public void toTestJson ( View view ) {
-
-            TestNetActivity.start( this );
-      }
-
-      public void toTestJsonBitmap ( View view ) {
-
-            TestJsonBitmapActivity.start( this );
-      }
-
-      public void toBitmapLoader ( View view ) {
-
-            TestBitmapLoaderActivity.start( this );
+            getSupportFragmentManager().beginTransaction()
+                                       .replace( R.id.container, fragment )
+                                       .commit();
       }
 }
+
