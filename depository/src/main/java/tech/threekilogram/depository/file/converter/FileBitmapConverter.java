@@ -18,19 +18,19 @@ import tech.threekilogram.depository.file.BaseFileConverter;
  */
 public class FileBitmapConverter extends BaseFileConverter<Bitmap> {
 
+      /**
+       * 转换stream为指定格式的bitmap
+       */
       private BitmapConverter mBitmapConverter;
+      /**
+       * 缓存文件夹
+       */
       private File            mDir;
 
-      public FileBitmapConverter ( BitmapConverter bitmapConverter, File dir ) {
+      public FileBitmapConverter ( File dir, BitmapConverter bitmapConverter ) {
 
             mBitmapConverter = bitmapConverter;
             mDir = dir;
-      }
-
-      @Override
-      public String fileName ( String key ) {
-
-            return mKeyNameConverter.encodeToName( key );
       }
 
       @Override
@@ -39,7 +39,7 @@ public class FileBitmapConverter extends BaseFileConverter<Bitmap> {
             return mBitmapConverter.read( getFile( key ) );
       }
 
-      public File getFile ( String key ) {
+      private File getFile ( String key ) {
 
             String fileName = fileName( key );
             return new File( mDir, fileName );

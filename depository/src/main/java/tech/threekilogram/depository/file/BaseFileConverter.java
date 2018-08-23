@@ -13,7 +13,7 @@ public abstract class BaseFileConverter<V> implements FileConverter<V> {
       protected KeyNameConverter mKeyNameConverter = new KeyNameConverter();
 
       /**
-       * 设置{@link #fileName(String)}采用较短名字还是较长名字
+       * 设置{@link #fileName(String)}采用较短名字还是长名字
        *
        * @param set true:短名字
        */
@@ -26,5 +26,11 @@ public abstract class BaseFileConverter<V> implements FileConverter<V> {
 
                   mKeyNameConverter.setMode( KeyNameConverter.MD5 );
             }
+      }
+
+      @Override
+      public String fileName ( String key ) {
+
+            return mKeyNameConverter.encodeToName( key );
       }
 }

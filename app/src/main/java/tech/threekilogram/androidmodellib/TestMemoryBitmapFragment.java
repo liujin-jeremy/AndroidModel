@@ -21,11 +21,11 @@ import tech.threekilogram.depository.memory.lru.MemoryBitmap;
  * @date: 2018-08-22
  * @time: 20:49
  */
-public class TestMemoryBitmap extends Fragment implements OnClickListener {
+public class TestMemoryBitmapFragment extends Fragment implements OnClickListener {
 
-      public static TestMemoryBitmap newInstance ( ) {
+      public static TestMemoryBitmapFragment newInstance ( ) {
 
-            return new TestMemoryBitmap();
+            return new TestMemoryBitmapFragment();
       }
 
       private Button               mSave;
@@ -73,7 +73,11 @@ public class TestMemoryBitmap extends Fragment implements OnClickListener {
             mSave = itemView.findViewById( R.id.save );
             mImageView = itemView.findViewById( R.id.imageView );
             mSave.setOnClickListener( this );
-            mMemorySize = (TextView) itemView.findViewById( R.id.memorySize );
+            mMemorySize = itemView.findViewById( R.id.memorySize );
+            mMemorySize.setText(
+                "memory size: " +
+                    ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() )
+            );
       }
 
       @Override

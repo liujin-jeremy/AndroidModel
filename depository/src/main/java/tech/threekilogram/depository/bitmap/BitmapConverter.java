@@ -144,6 +144,45 @@ public class BitmapConverter {
       }
 
       /**
+       * 配置bitmap加载配置
+       *
+       * @param width 需求宽度
+       * @param height 需求高度
+       */
+      public void configBitmap ( int width, int height ) {
+
+            configBitmap( width, height, MATCH_SIZE, Config.RGB_565 );
+      }
+
+      /**
+       * 配置bitmap加载配置
+       *
+       * @param width 需求宽度
+       * @param height 需求高度
+       * @param scaleMode 缩放方式
+       */
+      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
+
+            configBitmap( width, height, scaleMode, Config.RGB_565 );
+      }
+
+      /**
+       * 配置bitmap加载配置
+       *
+       * @param width 需求宽度
+       * @param height 需求高度
+       * @param scaleMode 缩放方式
+       * @param config bitmap 像素格式
+       */
+      public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
+
+            setWidth( width );
+            setHeight( height );
+            setMode( scaleMode );
+            setBitmapConfig( config );
+      }
+
+      /**
        * read a bitmap
        *
        * @param file file bitmap

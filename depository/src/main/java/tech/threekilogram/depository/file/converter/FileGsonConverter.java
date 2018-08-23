@@ -32,12 +32,6 @@ public class FileGsonConverter<T> extends BaseFileConverter<T> {
       }
 
       @Override
-      public String fileName ( String key ) {
-
-            return mKeyNameConverter.encodeToName( key );
-      }
-
-      @Override
       public T toValue ( String key, InputStream stream ) throws Exception {
 
             return mGsonConverter.fromJson( stream );

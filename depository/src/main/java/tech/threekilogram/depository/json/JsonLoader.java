@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.file.BaseFileContainer;
-import tech.threekilogram.depository.file.BaseFileContainer.SaveStrategyValue;
 import tech.threekilogram.depository.file.BaseFileConverter;
-import tech.threekilogram.depository.file.loader.DiskLruContainer;
-import tech.threekilogram.depository.file.loader.FileContainer;
+import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.BaseFileLoader.SaveStrategyValue;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
+import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
@@ -30,7 +30,7 @@ public class JsonLoader<V> {
       /**
        * 文件
        */
-      protected BaseFileContainer<V>    mFileContainer;
+      protected BaseFileLoader<V>       mFileContainer;
       /**
        * 网络
        */
@@ -102,7 +102,7 @@ public class JsonLoader<V> {
 
             mMemoryList = new MemoryList<>();
 
-            mFileContainer = new FileContainer<>(
+            mFileContainer = new FileLoader<>(
                 dir,
                 new JsonFileConverter()
             );
@@ -146,7 +146,7 @@ public class JsonLoader<V> {
 
             mMemoryList = new MemoryList<>();
 
-            mFileContainer = new DiskLruContainer<>(
+            mFileContainer = new DiskLruLoader<>(
                 dir,
                 maxFileSize,
                 new JsonFileConverter()
@@ -345,7 +345,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 设置缓存文件保存/读取策略{@link BaseFileContainer#setSaveStrategy(int)}
+       * 设置缓存文件保存/读取策略{@link BaseFileLoader#setSaveStrategy(int)}
        *
        * @param strategy 策略
        */
@@ -447,7 +447,7 @@ public class JsonLoader<V> {
             isCachingFile.set( true );
 
             ArrayMap<Integer, V> cacheFile = mCacheFile;
-            BaseFileContainer<V> fileContainer = mFileContainer;
+            BaseFileLoader<V> fileContainer = mFileContainer;
 
             while( cacheFile.size() > 0 ) {
 

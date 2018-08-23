@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.file.BaseFileContainer;
 import tech.threekilogram.depository.file.BaseFileConverter;
-import tech.threekilogram.depository.file.loader.DiskLruContainer;
-import tech.threekilogram.depository.file.loader.FileContainer;
+import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
+import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
@@ -23,15 +23,15 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
       /**
        * 下载文件夹
        */
-      private File                           mDir;
+      private File                        mDir;
       /**
        * 保存文件
        */
-      private BaseFileContainer<InputStream> mFileLoader;
+      private BaseFileLoader<InputStream> mFileLoader;
       /**
        * converter
        */
-      private FileStreamConverter            mFileStreamConverter;
+      private FileStreamConverter         mFileStreamConverter;
 
       /**
        * @param dir 指定保存文件夹
@@ -40,7 +40,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
 
             mDir = dir;
             mFileStreamConverter = new FileStreamConverter();
-            mFileLoader = new FileContainer<>( dir, mFileStreamConverter );
+            mFileLoader = new FileLoader<>( dir, mFileStreamConverter );
       }
 
       /**
@@ -51,7 +51,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
 
             mDir = dir;
             mFileStreamConverter = new FileStreamConverter();
-            mFileLoader = new DiskLruContainer<>( dir, maxSize, mFileStreamConverter );
+            mFileLoader = new DiskLruLoader<>( dir, maxSize, mFileStreamConverter );
       }
 
       @Override

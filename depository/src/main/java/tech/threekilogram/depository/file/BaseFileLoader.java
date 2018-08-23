@@ -17,7 +17,7 @@ import tech.threekilogram.depository.Container;
  * @date: 2018-08-01
  * @time: 12:01
  */
-public abstract class BaseFileContainer<V> implements Container<String, V> {
+public abstract class BaseFileLoader<V> implements Container<String, V> {
 
       /**
        * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话
@@ -106,12 +106,17 @@ public abstract class BaseFileContainer<V> implements Container<String, V> {
       public abstract File getFile ( String key );
 
       /**
-       * 清空
+       * 清空缓存文件
        *
        * @throws IOException 文件异常
        */
       public abstract void clear ( ) throws IOException;
 
+      /**
+       * 获取转换器
+       *
+       * @return 设置的转换器
+       */
       public FileConverter<V> getConverter ( ) {
 
             return mConverter;

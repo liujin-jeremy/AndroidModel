@@ -21,7 +21,7 @@ import tech.threekilogram.messengers.OnMessageReceiveListener;
  * @date: 2018-08-16
  * @time: 21:44
  */
-public abstract class BitmapLoader implements OnMessageReceiveListener {
+public class BitmapLoader implements OnMessageReceiveListener {
 
       private static final String TAG = BitmapLoader.class.getSimpleName();
 
@@ -106,7 +106,7 @@ public abstract class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 加载该url对应的图片
+       * 异步加载该url对应的图片,需要实现{@link #asyncLoad(Runnable)}完成异步任务执行,使用{@link OnLoadFinishedListener}监听结果
        *
        * @param url 图片url
        */
@@ -127,7 +127,7 @@ public abstract class BitmapLoader implements OnMessageReceiveListener {
        *
        * @param runnable runnable 框架封装的后台加载任务
        */
-      protected abstract void asyncLoad ( AsyncLoadRunnable runnable );
+      protected void asyncLoad ( Runnable runnable ) { }
 
       /**
        * 创建后台加载图片任务
@@ -176,7 +176,7 @@ public abstract class BitmapLoader implements OnMessageReceiveListener {
        *
        * @return bitmap or null
        */
-      protected Bitmap loadFromMemory ( String url ) {
+      public Bitmap loadFromMemory ( String url ) {
 
             return mMemory.load( url );
       }
@@ -209,7 +209,7 @@ public abstract class BitmapLoader implements OnMessageReceiveListener {
        *
        * @return bitmap or null
        */
-      protected Bitmap loadFromFile ( String url ) {
+      public Bitmap loadFromFile ( String url ) {
 
             File file = mDowner.getFile( url );
             if( file != null ) {
@@ -258,7 +258,7 @@ public abstract class BitmapLoader implements OnMessageReceiveListener {
        *
        * @return bitmap or null
        */
-      protected Bitmap loadFromNet ( String url ) {
+      public Bitmap loadFromNet ( String url ) {
 
             File file = mDowner.load( url );
             if( file != null ) {

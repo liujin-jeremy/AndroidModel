@@ -9,5 +9,8 @@
           android:id="@+id/menu01"
           android:title="testMemoryBitmap"/>
 
+      <item
+          android:id="@+id/menu02"
+          android:title="testFileLoader"/>
 
 </menu>

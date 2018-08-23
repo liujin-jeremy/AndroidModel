@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.depository.file.BaseFileContainer;
+import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
 
@@ -18,7 +18,7 @@ import tech.threekilogram.depository.function.Close;
  *
  * @author liujin
  */
-public class DiskLruContainer<V> extends BaseFileContainer<V> {
+public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
       /**
        * 保存数据
@@ -36,7 +36,7 @@ public class DiskLruContainer<V> extends BaseFileContainer<V> {
        *
        * @throws IOException 创建缓存文件异常
        */
-      public DiskLruContainer (
+      public DiskLruLoader (
           File folder,
           long maxSize,
           FileConverter<V> converter ) throws IOException {

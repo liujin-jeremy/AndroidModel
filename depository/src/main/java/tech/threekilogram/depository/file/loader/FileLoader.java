@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import tech.threekilogram.depository.file.BaseFileContainer;
+import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.function.FileClear;
@@ -16,7 +16,7 @@ import tech.threekilogram.depository.function.FileClear;
  *
  * @author liujin
  */
-public class FileContainer<V> extends BaseFileContainer<V> {
+public class FileLoader<V> extends BaseFileLoader<V> {
 
       /**
        * 一个文件夹用于统一保存key对应的文件
@@ -27,7 +27,7 @@ public class FileContainer<V> extends BaseFileContainer<V> {
        * @param dir 保存文件的文件夹
        * @param converter 用于转换{@link java.io.File}为{@link V}类型的实例
        */
-      public FileContainer ( File dir, FileConverter<V> converter ) {
+      public FileLoader ( File dir, FileConverter<V> converter ) {
 
             mDir = dir;
             mConverter = converter;
