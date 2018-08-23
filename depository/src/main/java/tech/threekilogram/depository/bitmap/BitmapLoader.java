@@ -142,7 +142,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 用于设置异步加载{@link #asyncLoad(AsyncLoadRunnable)}设置结果
+       * 用于设置异步加载{@link #asyncLoad(Runnable)}设置结果
        */
       protected void setResult ( String url, Bitmap bitmap ) {
 

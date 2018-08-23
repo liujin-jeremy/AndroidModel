@@ -13,4 +13,8 @@
           android:id="@+id/menu02"
           android:title="testFileLoader"/>
 
+      <item
+          android:id="@+id/menu03"
+          android:title="testDiskLoader"/>
+
 </menu>

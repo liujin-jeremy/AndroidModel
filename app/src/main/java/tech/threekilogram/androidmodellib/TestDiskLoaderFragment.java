@@ -15,11 +15,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.io.File;
+import java.io.IOException;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.file.converter.FileBitmapConverter;
 import tech.threekilogram.depository.file.converter.FileGsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.instance.GsonClient;
 
 /**
@@ -28,22 +29,22 @@ import tech.threekilogram.depository.instance.GsonClient;
  * @date: 2018-08-23
  * @time: 8:40
  */
-public class TestFileLoaderFragment extends Fragment implements OnClickListener {
+public class TestDiskLoaderFragment extends Fragment implements OnClickListener {
 
-      private FileLoader<String>           mStringFileLoader;
-      private FileLoader<GankCategoryBean> mJsonFileLoader;
-      private FileLoader<Bitmap>           mBitmapFileLoader;
-      private Button                       mString;
-      private TextView                     mMsg;
-      private Button                       mLoadString;
-      private Button                       mRemoveString;
-      private Button                       mSaveJson;
-      private Button                       mLoadJson;
-      private Button                       mRemoveJson;
-      private Button                       mSaveBitmap;
-      private Button                       mLoadBitmap;
-      private Button                       mRemoveBitmap;
-      private ImageView                    mImageView;
+      private DiskLruLoader<String>           mStringFileLoader;
+      private DiskLruLoader<GankCategoryBean> mJsonFileLoader;
+      private DiskLruLoader<Bitmap>           mBitmapFileLoader;
+      private Button                          mString;
+      private TextView                        mMsg;
+      private Button                          mLoadString;
+      private Button                          mRemoveString;
+      private Button                          mSaveJson;
+      private Button                          mLoadJson;
+      private Button                          mRemoveJson;
+      private Button                          mSaveBitmap;
+      private Button                          mLoadBitmap;
+      private Button                          mRemoveBitmap;
+      private ImageView                       mImageView;
 
       private final String JSON = "{\n"
           + "    \"error\": false,\n"
@@ -62,9 +63,9 @@ public class TestFileLoaderFragment extends Fragment implements OnClickListener 
           + "    ]\n"
           + "}";
 
-      public static TestFileLoaderFragment newInstance ( ) {
+      public static TestDiskLoaderFragment newInstance ( ) {
 
-            return new TestFileLoaderFragment();
+            return new TestDiskLoaderFragment();
       }
 
       @Nullable
@@ -83,31 +84,46 @@ public class TestFileLoaderFragment extends Fragment implements OnClickListener 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
 
-            File file = getContext().getExternalFilesDir( "file" );
+            File file = getContext().getExternalFilesDir( "disk" );
 
-            mStringFileLoader = new FileLoader<>(
-                file,
-                new FileStringConverter()
-            );
+            try {
+                  mStringFileLoader = new DiskLruLoader<>(
+                      file,
+                      10 * 1024 * 1024,
+                      new FileStringConverter()
+                  );
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
 
-            mJsonFileLoader = new FileLoader<>(
-                file,
-                new FileGsonConverter<>( GankCategoryBean.class )
-            );
+            try {
+                  mJsonFileLoader = new DiskLruLoader<>(
+                      file,
+                      10 * 1024 * 1024,
+                      new FileGsonConverter<>( GankCategoryBean.class )
+                  );
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
 
             ScreenSize.init( getContext() );
-            FileBitmapConverter converter = new FileBitmapConverter();
-            mBitmapFileLoader = new FileLoader<>(
-                file,
-                converter
-            );
-            converter.configBitmap(
-                mBitmapFileLoader,
-                ScreenSize.getWidth(),
-                ScreenSize.getHeight(),
-                BitmapConverter.MATCH_WIDTH,
-                Config.RGB_565
-            );
+            try {
+                  FileBitmapConverter converter = new FileBitmapConverter();
+                  mBitmapFileLoader = new DiskLruLoader<>(
+                      file,
+                      10 * 1024 * 1024,
+                      converter
+                  );
+                  converter.configBitmap(
+                      mBitmapFileLoader,
+                      ScreenSize.getWidth(),
+                      ScreenSize.getHeight(),
+                      BitmapConverter.MATCH_WIDTH,
+                      Config.RGB_565
+                  );
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
       }
 
       private void initView ( @NonNull final View itemView ) {
