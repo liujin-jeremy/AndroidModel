@@ -23,8 +23,6 @@ import tech.threekilogram.messengers.OnMessageReceiveListener;
  */
 public class BitmapLoader implements OnMessageReceiveListener {
 
-      private static final String TAG = BitmapLoader.class.getSimpleName();
-
       private static final int LOAD_SUCCESS = 11;
       private static final int LOAD_FAILED  = 13;
 
@@ -97,6 +95,9 @@ public class BitmapLoader implements OnMessageReceiveListener {
             mBitmapConverter.setBitmapConfig( config );
       }
 
+      /**
+       * 转发给监听消息
+       */
       protected void notifyListener ( String url, Bitmap bitmap ) {
 
             if( mOnLoadFinishedListener != null ) {
@@ -123,7 +124,9 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 子类实现该方法,决定如何在后台线程加载图片,该框架并不提供异步功能,由用户自己提供,防止引入多个库的情况下,线程驻留太多,所以本框架并不提供异步功能
+       * 子类实现该方法,决定如何在后台线程加载图片,
+       * 该框架并不提供异步功能,由用户自己提供,
+       * 这样可以防止引入多个库的情况下,线程驻留太多,耗费资源
        *
        * @param runnable runnable 框架封装的后台加载任务
        */
@@ -170,7 +173,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 从内存读取
+       * 仅从内存读取
        *
        * @param url mUrl
        *
@@ -203,7 +206,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 从本地文件读取
+       * 仅从本地文件读取
        *
        * @param url mUrl
        *
@@ -252,7 +255,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 从网络读取
+       * 仅从网络读取
        *
        * @param url mUrl
        *
@@ -294,7 +297,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 获取设置的监听
+       * 获取设置的加载完成监听
        *
        * @return 监听
        */
@@ -304,7 +307,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 设置监听
+       * 设置加载完成监听
        *
        * @param onLoadFinishedListener 加载完成监听
        */

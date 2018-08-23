@@ -312,12 +312,15 @@ public class JsonLoader<V> {
 
             mMemoryList.save( index, v );
 
-            if( index < getCacheMinIndex() ) {
+            int minIndex = getCacheMinIndex();
+            int maxIndex = getCacheMaxIndex();
 
-                  mLoadLessCount.addAndGet( 1 );
-            } else if( index > getCacheMaxIndex() ) {
+            if( index < minIndex ) {
 
-                  mLoadMoreCount.addAndGet( 1 );
+                  mLoadLessCount.addAndGet( minIndex - index );
+            } else if( index > maxIndex ) {
+
+                  mLoadMoreCount.addAndGet( index - maxIndex );
             }
       }
 
@@ -345,16 +348,6 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 设置缓存文件保存/读取策略{@link BaseFileLoader#setSaveStrategy(int)}
-       *
-       * @param strategy 策略
-       */
-      public void setSaveStrategy ( @SaveStrategyValue int strategy ) {
-
-            mFileContainer.setSaveStrategy( strategy );
-      }
-
-      /**
        * 删除该索引缓存文件,该方法返回值与{@link #setSaveStrategy(int)}有关
        *
        * @param index 索引
@@ -364,6 +357,16 @@ public class JsonLoader<V> {
       public V deleteFile ( int index ) {
 
             return mFileContainer.remove( String.valueOf( index ) );
+      }
+
+      /**
+       * 设置缓存文件保存/读取策略{@link BaseFileLoader#setSaveStrategy(int)}
+       *
+       * @param strategy 策略
+       */
+      public void setSaveStrategy ( @SaveStrategyValue int strategy ) {
+
+            mFileContainer.setSaveStrategy( strategy );
       }
 
       /**
