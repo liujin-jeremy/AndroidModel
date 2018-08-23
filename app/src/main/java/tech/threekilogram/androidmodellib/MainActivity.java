@@ -60,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                               changeFragment( TestDiskLoaderFragment.newInstance() );
                               break;
 
+                        case R.id.menu04:
+                              changeFragment( TestDownFragment.newInstance() );
+                              break;
+
                         default:
                               break;
                   }

@@ -74,6 +74,10 @@ public class RetrofitDowner extends RetrofitLoader<File> {
 
             if( file != null && file.exists() ) {
 
+                  OnProgressUpdateListener listener = getOnProgressUpdateListener();
+                  if( listener != null ) {
+                        listener.onProgressUpdate( url, file.length(), file.length() );
+                  }
                   return file;
             }
 

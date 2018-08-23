@@ -64,7 +64,7 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V, Response
       @Override
       public V load ( String key ) {
 
-            /* 1. 获得url */
+            /* 1. 暂存url */
 
             /* 2. 制造一个call对象 */
             if( mService == null ) {
