@@ -47,7 +47,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
        * @param dir 保存文件夹
        * @param maxSize 该文件夹最大大小
        */
-      public RetrofitDownConverter ( File dir, int maxSize ) throws IOException {
+      public RetrofitDownConverter ( File dir, long maxSize ) throws IOException {
 
             mDir = dir;
             mFileStreamConverter = new FileStreamConverter();
@@ -183,7 +183,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
       }
 
       /**
-       * 监视进度
+       * 监视下载进度
        */
       @SuppressWarnings("AlibabaAbstractClassShouldStartWithAbstractNaming")
       public interface OnProgressUpdateListener {

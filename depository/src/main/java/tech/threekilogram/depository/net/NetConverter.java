@@ -13,15 +13,6 @@ import okhttp3.ResponseBody;
 public interface NetConverter<V, P> {
 
       /**
-       * 从 key 中获取url
-       *
-       * @param key key
-       *
-       * @return url
-       */
-      String urlFromKey ( String key );
-
-      /**
        * 当网络响应成功之后的回调,需要完成从响应到value的变换
        * <p>
        * get a success response then convert it to value

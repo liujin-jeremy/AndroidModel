@@ -4,12 +4,14 @@ import java.io.IOException;
 import tech.threekilogram.depository.Loader;
 
 /**
+ * 网络加载接口
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-17
  * @time: 14:40
  */
-public abstract class BaseNetLoader<V> implements Loader<String, V> {
+public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
 
       /**
        * 异常处理助手
@@ -19,6 +21,10 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
        * 没有该资源助手
        */
       protected NoResourceHandler           mNoResourceHandler;
+      /**
+       * 辅助完成响应到value的转换
+       */
+      protected NetConverter<V, P>          mNetConverter;
 
       /**
        * 获取设置的异常处理类
@@ -69,19 +75,17 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
              * 当从网络下载的文件转换时的异常{@link NetConverter#onExecuteSuccess(String, Object)}
              *
              * @param key key key
-             * @param url url url from {@link NetConverter#urlFromKey(String)}
              * @param e exception exception
              */
-            void onConvertException ( K key, java.lang.String url, Exception e );
+            void onConvertException ( K key, Exception e );
 
             /**
              * 无法连接网络
              *
              * @param key key key
-             * @param url url url from {@link NetConverter#urlFromKey(String)}
              * @param e exception exception
              */
-            void onConnectException ( K key, java.lang.String url, IOException e );
+            void onConnectException ( K key, IOException e );
       }
 
       /**
@@ -98,5 +102,10 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
              * @param httpCode http code
              */
             void onExecuteFailed ( String key, int httpCode );
+      }
+
+      public NetConverter<V, P> getNetConverter ( ) {
+
+            return mNetConverter;
       }
 }

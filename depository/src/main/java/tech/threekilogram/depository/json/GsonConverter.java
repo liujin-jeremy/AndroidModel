@@ -34,6 +34,11 @@ public class GsonConverter<V> implements JsonConverter<V> {
             mValueType = valueType;
       }
 
+      /**
+       * 该方法需要用户自己实现,转换流为一组bean对象
+       *
+       * @param inputStream stream
+       */
       @Override
       public List<V> fromJsonArray ( InputStream inputStream ) {
 

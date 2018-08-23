@@ -26,7 +26,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        *
        * @throws IOException 创建文件夹失败
        */
-      public RetrofitDowner ( File dir, int maxSize ) throws IOException {
+      public RetrofitDowner ( File dir, long maxSize ) throws IOException {
 
             super( new RetrofitDownConverter( dir, maxSize ) );
       }

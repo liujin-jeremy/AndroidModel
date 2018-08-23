@@ -5,13 +5,11 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import tech.threekilogram.depository.Loader;
 import tech.threekilogram.depository.instance.RetrofitClient;
 import tech.threekilogram.depository.net.BaseNetLoader;
-import tech.threekilogram.depository.net.NetConverter;
 
 /**
- * 该类是{@link Loader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
+ * 该类是{@link BaseNetLoader}的retrofit实现版本,用于使用retrofit从网络获取value,需要配置Service才能正常工作
  *
  * @param <V> value 类型
  * @param <S> 用于{@link retrofit2.Retrofit#create(Class)}中的class类型,即:retrofit服务类型
@@ -19,24 +17,20 @@ import tech.threekilogram.depository.net.NetConverter;
  * @author liujin
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
+public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V, ResponseBody> {
 
       /**
        * retrofit 客户端
        */
       protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
       /**
-       * 完成从{@link ResponseBody} 到value {@link V} 转换
-       */
-      protected BaseRetrofitConverter<V> mNetConverter;
-      /**
        * retrofit service 类型
        */
-      protected Class<S>                 mServiceType;
+      protected Class<S> mServiceType;
       /**
        * 创建的service
        */
-      protected S                        mService;
+      protected S        mService;
 
       /**
        * 最少需要这两个才能正常工作
@@ -71,14 +65,13 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
       public V load ( String key ) {
 
             /* 1. 获得url */
-            String urlFromKey = mNetConverter.urlFromKey( key );
 
             /* 2. 制造一个call对象 */
             if( mService == null ) {
 
                   mService = mRetrofit.create( mServiceType );
             }
-            Call<ResponseBody> call = configService( key, urlFromKey, mService );
+            Call<ResponseBody> call = configService( key, mService );
 
             /* 3. 执行call */
             try {
@@ -98,7 +91,7 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
                               e.printStackTrace();
                               /* 6. 转换异常 */
                               if( mExceptionHandler != null ) {
-                                    mExceptionHandler.onConvertException( key, urlFromKey, e );
+                                    mExceptionHandler.onConvertException( key, e );
                               }
                         }
                   } else {
@@ -113,7 +106,7 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
                   /* 4. 没有连接到网络 */
                   e.printStackTrace();
                   if( mExceptionHandler != null ) {
-                        mExceptionHandler.onConnectException( key, urlFromKey, e );
+                        mExceptionHandler.onConnectException( key, e );
                   }
             }
 
@@ -124,18 +117,9 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V> {
        * config retrofit service
        *
        * @param key key
-       * @param url url from key at {@link NetConverter#urlFromKey(String)}}
        * @param service service to config
        *
        * @return a call to execute
        */
-      protected abstract Call<ResponseBody> configService (
-          String key,
-          String url,
-          S service );
-
-      public BaseRetrofitConverter<V> getNetConverter ( ) {
-
-            return mNetConverter;
-      }
+      protected abstract Call<ResponseBody> configService ( String key, S service );
 }

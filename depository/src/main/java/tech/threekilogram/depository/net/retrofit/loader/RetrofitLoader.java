@@ -21,7 +21,6 @@ public class RetrofitLoader<V> extends BaseRetrofitLoader<V, StreamService> {
 
       @Override
       protected Call<ResponseBody> configService (
-          String key,
           String url,
           StreamService service ) {
 

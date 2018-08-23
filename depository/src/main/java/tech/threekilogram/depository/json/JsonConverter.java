@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
+ * json 转换为bean对象接口
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-17
