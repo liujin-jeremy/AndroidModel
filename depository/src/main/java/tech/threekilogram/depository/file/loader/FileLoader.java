@@ -22,6 +22,10 @@ public class FileLoader<V> extends BaseFileLoader<V> {
        * 一个文件夹用于统一保存key对应的文件
        */
       private File mDir;
+      /**
+       * 缓存创建的file
+       */
+      private KeyFileLoader<String> mFileLoader = new KeyFileLoader<>();
 
       /**
        * @param dir 保存文件的文件夹
@@ -140,8 +144,17 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       @Override
       public File getFile ( String key ) {
 
-            String name = mConverter.fileName( key );
-            return new File( mDir, name );
+            File file = mFileLoader.get( key );
+
+            if( file == null ) {
+
+                  String name = mConverter.fileName( key );
+                  file = new File( mDir, name );
+                  mFileLoader.put( key, file );
+                  return file;
+            }
+
+            return file;
       }
 
       @Override

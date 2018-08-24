@@ -1,5 +1,7 @@
 package tech.threekilogram.depository.net.retrofit.loader;
 
+import android.content.Context;
+import java.io.File;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
@@ -14,9 +16,23 @@ import tech.threekilogram.depository.net.retrofit.BaseRetrofitLoader;
  */
 public class RetrofitLoader<V> extends BaseRetrofitLoader<V, StreamService> {
 
-      public RetrofitLoader ( BaseRetrofitConverter<V> netConverter ) {
+      /**
+       * {@link BaseRetrofitLoader#BaseRetrofitLoader(Context, Class, BaseRetrofitConverter)}
+       */
+      public RetrofitLoader ( Context context, BaseRetrofitConverter<V> netConverter ) {
 
-            super( StreamService.class, netConverter );
+            super( context, StreamService.class, netConverter );
+      }
+
+      /**
+       * {@link BaseRetrofitLoader#BaseRetrofitLoader(File, long, Class, BaseRetrofitConverter)}
+       */
+      public RetrofitLoader (
+          File cache,
+          long maxFileSize,
+          BaseRetrofitConverter<V> netConverter ) {
+
+            super( cache, maxFileSize, StreamService.class, netConverter );
       }
 
       @Override

@@ -1,5 +1,8 @@
 package tech.threekilogram.depository.instance;
 
+import java.io.File;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
@@ -10,12 +13,15 @@ import retrofit2.Retrofit;
  */
 public class RetrofitClient {
 
-      /**
-       * this baseUrl means nothing, all service use {@link retrofit2.http.Url} params to get url
-       * path
-       */
-      public static Retrofit INSTANCE = new Retrofit
-          .Builder()
-          .baseUrl("https://github.com/")
-          .build();
+      public static Retrofit instance ( File file, long maxSize ) {
+
+            Cache cache = new Cache( file, maxSize );
+            OkHttpClient client = new OkHttpClient.Builder().cache( cache ).build();
+
+            return new Retrofit
+                .Builder()
+                .client( client )
+                .baseUrl( "https://github.com/" )
+                .build();
+      }
 }

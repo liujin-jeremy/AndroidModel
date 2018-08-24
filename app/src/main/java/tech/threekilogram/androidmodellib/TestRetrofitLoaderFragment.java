@@ -55,11 +55,15 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
-            mStringLoader = new RetrofitLoader<>( new RetrofitStringConverter() );
+            mStringLoader = new RetrofitLoader<>( getContext(), new RetrofitStringConverter() );
             mJsonLoader = new RetrofitLoader<>(
-                new RetrofitGsonConverter<GankCategoryBean>( GankCategoryBean.class ) );
+                getContext(),
+                new RetrofitGsonConverter<>( GankCategoryBean.class )
+            );
             mBitmapLoader = new RetrofitLoader<>(
-                new RetrofitBitmapConverter( getActivity().getExternalFilesDir( "bitmap" ) ) );
+                getContext(),
+                new RetrofitBitmapConverter( getActivity().getExternalFilesDir( "bitmap" ) )
+            );
       }
 
       private void initView ( @NonNull final View itemView ) {

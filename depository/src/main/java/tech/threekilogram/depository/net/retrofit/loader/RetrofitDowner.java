@@ -17,7 +17,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        */
       public RetrofitDowner ( File dir ) {
 
-            super( new RetrofitDownConverter( dir ) );
+            super( dir, 200 * 1024 * 1024, new RetrofitDownConverter( dir ) );
       }
 
       /**
@@ -28,7 +28,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        */
       public RetrofitDowner ( File dir, long maxSize ) throws IOException {
 
-            super( new RetrofitDownConverter( dir, maxSize ) );
+            super( dir, maxSize, new RetrofitDownConverter( dir, maxSize ) );
       }
 
       private RetrofitDownConverter getConverter ( ) {

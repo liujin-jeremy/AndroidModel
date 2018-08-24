@@ -1,5 +1,7 @@
 package tech.threekilogram.depository.net.retrofit;
 
+import android.content.Context;
+import java.io.File;
 import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -22,7 +24,7 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V, Response
       /**
        * retrofit 客户端
        */
-      protected Retrofit mRetrofit = RetrofitClient.INSTANCE;
+      protected Retrofit mRetrofit;
       /**
        * retrofit service 类型
        */
@@ -39,11 +41,43 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V, Response
        * @param netConverter 转换器
        */
       protected BaseRetrofitLoader (
+          Context context,
           Class<S> serviceType,
           BaseRetrofitConverter<V> netConverter ) {
 
             mNetConverter = netConverter;
             mServiceType = serviceType;
+
+            File cache = null;
+            try {
+                  cache = context.getExternalCacheDir();
+            } catch(Exception e) {
+                  e.printStackTrace();
+            }
+            if( cache == null || !cache.exists() ) {
+
+                  cache = context.getCacheDir();
+            }
+            final long maxSize = 100 * 1024 * 1024;
+
+            mRetrofit = RetrofitClient.instance( cache, maxSize );
+      }
+
+      /**
+       * @param cache retrofit cache dir
+       * @param maxFileSize cache dir max size
+       * @param serviceType service type
+       * @param netConverter converter
+       */
+      public BaseRetrofitLoader (
+          File cache,
+          long maxFileSize,
+          Class<S> serviceType,
+          BaseRetrofitConverter<V> netConverter ) {
+
+            mNetConverter = netConverter;
+            mServiceType = serviceType;
+            mRetrofit = RetrofitClient.instance( cache, maxFileSize );
       }
 
       public Retrofit getRetrofit ( ) {

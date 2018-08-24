@@ -28,6 +28,10 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
        * 文件夹
        */
       private File         mDir;
+      /**
+       * 缓存file
+       */
+      private KeyFileLoader<String> mFileLoader = new KeyFileLoader<>();
 
       /**
        * @param folder which dir to save data
@@ -214,7 +218,16 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       @Override
       public File getFile ( String key ) {
 
-            String fileName = mConverter.fileName( key );
-            return new File( mDir, fileName + ".0" );
+            File file = mFileLoader.get( key );
+
+            if( file == null ) {
+
+                  String fileName = mConverter.fileName( key );
+                  file = new File( mDir, fileName + ".0" );
+                  mFileLoader.put( key, file );
+                  return file;
+            }
+
+            return file;
       }
 }
