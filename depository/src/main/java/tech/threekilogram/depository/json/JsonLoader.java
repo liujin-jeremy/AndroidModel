@@ -10,9 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
-import tech.threekilogram.depository.key.KeyNameConverter;
 import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
@@ -29,7 +27,7 @@ public class JsonLoader<V> {
       /**
        * 文件
        */
-      protected BaseFileLoader<V>       mFileContainer;
+      protected FileLoader<V>           mFileContainer;
       /**
        * 网络
        */
@@ -78,33 +76,6 @@ public class JsonLoader<V> {
       }
 
       /**
-       * @param dir 缓存文件夹
-       * @param maxFileSize 缓存文件夹最大大小
-       * @param jsonConverter 转换流为bean
-       */
-      public JsonLoader (
-          File dir,
-          int maxFileSize,
-          JsonConverter<V> jsonConverter ) throws IOException {
-
-            mJsonConverter = jsonConverter;
-
-            mMemoryList = new MemoryList<>();
-
-            mFileContainer = new DiskLruLoader<>(
-                dir,
-                maxFileSize,
-                new JsonFileConverter()
-            );
-
-            mRetrofitLoader = new RetrofitLoader<>(
-                dir,
-                maxFileSize,
-                new JsonRetrofitListConverter()
-            );
-      }
-
-      /**
        * 设置缓存文件过期策略,如果没有设置,默认使用{@link DefaultCacheExpiredStrategy}
        */
       public void setCacheExpiredStrategy (
@@ -119,6 +90,37 @@ public class JsonLoader<V> {
       public CacheExpiredStrategy getCacheExpiredStrategy ( ) {
 
             return mCacheExpiredStrategy;
+      }
+
+      /**
+       * 测试是否包含该key对应的缓存
+       *
+       * @param index key
+       *
+       * @return true:有该key缓存
+       */
+      public boolean containsOf ( int index ) {
+
+            if( mMemoryList.containsOf( index ) ) {
+                  return true;
+            }
+
+            String key = String.valueOf( index );
+            File file = mFileContainer.getFile( key );
+
+            if( file != null && file.exists() ) {
+
+                  if( mCacheExpiredStrategy.testCacheFile( file ) ) {
+
+                        mFileContainer.remove( key );
+                        return false;
+                  } else {
+
+                        return true;
+                  }
+            }
+
+            return false;
       }
 
       /**
@@ -158,7 +160,7 @@ public class JsonLoader<V> {
        * @param index 修改位置
        * @param v 新值
        */
-      public void saveToMemory ( int index, V v ) {
+      public void saveMemory ( int index, V v ) {
 
             mMemoryList.save( index, v );
       }
@@ -170,7 +172,7 @@ public class JsonLoader<V> {
        *
        * @return 原先在该位置的值
        */
-      public V removeAtMemory ( int index ) {
+      public V removeMemory ( int index ) {
 
             return mMemoryList.remove( index );
       }
@@ -190,7 +192,7 @@ public class JsonLoader<V> {
             if( file.exists() ) {
 
                   if( mCacheExpiredStrategy.testCacheFile( file ) ) {
-
+                        mFileContainer.remove( key );
                         return null;
                   } else {
 
@@ -255,7 +257,9 @@ public class JsonLoader<V> {
       }
 
       /**
-       * @return 当前内存中数据量
+       * 读取内存中有多少项数据
+       *
+       * @return 内存中数据项
        */
       public int getMemorySize ( ) {
 
@@ -263,20 +267,57 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 获取索引位置的缓存文件
+       * 压缩内存头部数据,并缓存到文件
        *
-       * @param index 索引
-       *
-       * @return null or 缓存文件
+       * @param maxCount 内存中最多保留多少数据,如果超过该值,将会移除头部数据
        */
-      public File getCacheFile ( int index ) {
+      public void trimHeadMemory ( int maxCount ) {
 
-            File file = mFileContainer.getFile( String.valueOf( index ) );
-            if( file.exists() ) {
-
-                  return file;
+            if( isCachingFile.get() ) {
+                  return;
             }
-            return null;
+
+            try {
+                  ArrayMap<Integer, V> container = mMemoryList.container();
+                  ArrayMap<Integer, V> cacheFile = mToCacheFileTemp;
+
+                  while( container.size() > maxCount ) {
+                        Integer key = container.keyAt( 0 );
+                        V v = container.removeAt( 0 );
+                        cacheFile.put( key, v );
+                  }
+            } catch(Exception e) {
+                  e.printStackTrace();
+            }
+
+            notifyToCacheFile();
+      }
+
+      /**
+       * 压缩内存尾部数据,并缓存到文件
+       *
+       * @param maxCount 内存中最多保留多少数据,如果超过该值,将会移除尾部数据
+       */
+      public void trimNailMemory ( int maxCount ) {
+
+            if( isCachingFile.get() ) {
+                  return;
+            }
+
+            try {
+                  ArrayMap<Integer, V> container = mMemoryList.container();
+                  ArrayMap<Integer, V> cacheFile = mToCacheFileTemp;
+
+                  while( container.size() > maxCount ) {
+                        Integer key = container.keyAt( container.size() - 1 );
+                        V v = container.removeAt( container.size() - 1 );
+                        cacheFile.put( key, v );
+                  }
+            } catch(Exception e) {
+                  e.printStackTrace();
+            }
+
+            notifyToCacheFile();
       }
 
       /**
@@ -366,15 +407,10 @@ public class JsonLoader<V> {
        */
       private class JsonFileConverter extends BaseFileConverter<V> {
 
-            JsonFileConverter ( ) {
-
-                  mKeyNameConverter.setMode( KeyNameConverter.DEFAULT );
-            }
-
             @Override
             public String fileName ( String key ) {
 
-                  return mKeyNameConverter.encodeToName( key );
+                  return key;
             }
 
             @Override
