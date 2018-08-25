@@ -1,6 +1,7 @@
 package tech.threekilogram.depository.file;
 
 import tech.threekilogram.depository.key.KeyNameConverter;
+import tech.threekilogram.depository.key.KeyNameConverter.EncodeMode;
 
 /**
  * @author: Liujin
@@ -14,18 +15,10 @@ public abstract class BaseFileConverter<V> implements FileConverter<V> {
 
       /**
        * 设置{@link #fileName(String)}采用较短名字还是长名字
-       *
-       * @param set true:短名字
        */
-      public void shortName ( boolean set ) {
+      public void setMode ( @EncodeMode int mode ) {
 
-            if( set ) {
-
-                  mKeyNameConverter.setMode( KeyNameConverter.HASH );
-            } else {
-
-                  mKeyNameConverter.setMode( KeyNameConverter.MD5 );
-            }
+            mKeyNameConverter.setMode( mode );
       }
 
       @Override

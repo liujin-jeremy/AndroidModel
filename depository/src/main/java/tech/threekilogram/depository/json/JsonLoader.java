@@ -12,6 +12,7 @@ import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.key.KeyNameConverter;
 import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
@@ -152,6 +153,29 @@ public class JsonLoader<V> {
       }
 
       /**
+       * 修改/添加内存中数据
+       *
+       * @param index 修改位置
+       * @param v 新值
+       */
+      public void saveToMemory ( int index, V v ) {
+
+            mMemoryList.save( index, v );
+      }
+
+      /**
+       * 删除内存中该索引值
+       *
+       * @param index 索引
+       *
+       * @return 原先在该位置的值
+       */
+      public V removeAtMemory ( int index ) {
+
+            return mMemoryList.remove( index );
+      }
+
+      /**
        * 从缓存文件中获取缓存的数据,如果没有数据或者缓存过期返回null
        *
        * @param index 数据索引
@@ -160,8 +184,8 @@ public class JsonLoader<V> {
        */
       public V loadFile ( int index ) {
 
-            Integer key = index;
-            File file = mFileContainer.getFile( key.toString() );
+            String key = String.valueOf( index );
+            File file = mFileContainer.getFile( key );
 
             if( file.exists() ) {
 
@@ -170,10 +194,31 @@ public class JsonLoader<V> {
                         return null;
                   } else {
 
-                        return mFileContainer.load( key.toString() );
+                        return mFileContainer.load( key );
                   }
             }
             return null;
+      }
+
+      /**
+       * 修改/添加缓存文件中数据
+       *
+       * @param index 修改位置
+       * @param v 新值
+       */
+      public void saveFile ( int index, V v ) {
+
+            mFileContainer.save( String.valueOf( index ), v );
+      }
+
+      /**
+       * 删除内存中该索引值
+       *
+       * @param index 索引
+       */
+      public void deleteFile ( int index ) {
+
+            mFileContainer.remove( String.valueOf( index ) );
       }
 
       /**
@@ -190,47 +235,6 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 修改/添加内存中数据
-       *
-       * @param index 修改位置
-       * @param v 新值
-       */
-      public void saveMemory ( int index, V v ) {
-
-            mMemoryList.save( index, v );
-      }
-
-      /**
-       * 修改/添加缓存文件中数据
-       *
-       * @param index 修改位置
-       * @param v 新值
-       */
-      public void saveFile ( int index, V v ) {
-
-            mFileContainer.save( String.valueOf( index ), v );
-      }
-
-      /**
-       * 从网络加载更多数据数据,并保存到指定索引位置,最好在后台线程操作
-       *
-       * @param url url
-       * @param index 加载后的数据使用该索引为起点保存到缓存中
-       */
-      public void saveMore ( String url, int index ) {
-
-            isLoading.set( true );
-
-            List<V> load = mRetrofitLoader.load( url );
-            if( load == null || load.size() == 0 ) {
-                  return;
-            }
-            mMemoryList.saveMore( index, load );
-
-            isLoading.set( false );
-      }
-
-      /**
        * 判断{@link #mRetrofitLoader}是否正在运行中
        *
        * @return true : 正在从网络加载数据中
@@ -241,33 +245,21 @@ public class JsonLoader<V> {
       }
 
       /**
+       * 从网络加载更多数据数据,并保存到指定索引位置,最好在后台线程操作
+       *
+       * @param index 加载后的数据使用该索引为起点保存到缓存中
+       */
+      public void saveMore ( int index, List<V> list ) {
+
+            mMemoryList.saveMore( index, list );
+      }
+
+      /**
        * @return 当前内存中数据量
        */
       public int getMemorySize ( ) {
 
             return mMemoryList.size();
-      }
-
-      /**
-       * 删除内存中该索引值
-       *
-       * @param index 索引
-       *
-       * @return 原先在该位置的值
-       */
-      public V deleteMemory ( int index ) {
-
-            return mMemoryList.remove( index );
-      }
-
-      /**
-       * 删除内存中该索引值
-       *
-       * @param index 索引
-       */
-      public void deleteFile ( int index ) {
-
-            mFileContainer.remove( String.valueOf( index ) );
       }
 
       /**
@@ -293,7 +285,7 @@ public class JsonLoader<V> {
        * @param from 起始位置
        * @param to 结束位置
        */
-      private void trimMemory ( int from, int to ) {
+      public void trimMemory ( int from, int to ) {
 
             if( isCachingFile.get() ) {
                   return;
@@ -374,6 +366,11 @@ public class JsonLoader<V> {
        */
       private class JsonFileConverter extends BaseFileConverter<V> {
 
+            JsonFileConverter ( ) {
+
+                  mKeyNameConverter.setMode( KeyNameConverter.DEFAULT );
+            }
+
             @Override
             public String fileName ( String key ) {
 
@@ -448,9 +445,6 @@ public class JsonLoader<V> {
 
             public CacheExpiredStrategyTime ( long expiredTime ) {
 
-                  if( expiredTime < 0 ) {
-                        expiredTime = 0;
-                  }
                   mExpiredTime = expiredTime;
             }
 

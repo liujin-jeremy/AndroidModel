@@ -25,5 +25,9 @@
           android:id="@+id/menu05"
           android:title="testRetrofitLoader"/>
 
+      <item
+          android:id="@+id/menu06"
+          android:title="testBitmapLoader"/>
+
 
 </menu>

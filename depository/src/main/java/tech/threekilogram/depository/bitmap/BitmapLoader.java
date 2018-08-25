@@ -21,6 +21,7 @@ import tech.threekilogram.messengers.OnMessageReceiveListener;
  * @date: 2018-08-16
  * @time: 21:44
  */
+@SuppressWarnings("WeakerAccess")
 public class BitmapLoader implements OnMessageReceiveListener {
 
       private static final int LOAD_SUCCESS = 11;
@@ -113,7 +114,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
        */
       public void load ( String url ) {
 
-            Bitmap fromMemory = loadFromMemory( url );
+            Bitmap fromMemory = loadMemory( url );
             if( fromMemory == null ) {
 
                   asyncLoad( createRunnable( url ) );
@@ -164,7 +165,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
 
             if( what == LOAD_SUCCESS ) {
 
-                  Bitmap bitmap = loadFromMemory( url );
+                  Bitmap bitmap = loadMemory( url );
                   notifyListener( url, bitmap );
             } else {
 
@@ -179,7 +180,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromMemory ( String url ) {
+      public Bitmap loadMemory ( String url ) {
 
             return mMemory.load( url );
       }
@@ -200,6 +201,11 @@ public class BitmapLoader implements OnMessageReceiveListener {
             mMemory.clear();
       }
 
+      /**
+       * 删除内存中对应bitmap
+       *
+       * @param url url
+       */
       public void removeMemory ( String url ) {
 
             mMemory.remove( url );
@@ -215,7 +221,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
       public Bitmap loadFromFile ( String url ) {
 
             File file = mDowner.getFile( url );
-            if( file != null ) {
+            if( file != null && file.exists() ) {
 
                   Bitmap bitmap = mBitmapConverter.read( file );
 
@@ -227,17 +233,22 @@ public class BitmapLoader implements OnMessageReceiveListener {
             return null;
       }
 
+      /**
+       * 删除对应bitmap文件
+       *
+       * @param url url
+       */
       public void removeFile ( String url ) {
 
             mDowner.removeFile( url );
       }
 
       /**
-       * get mUrl file
+       * get url file
        *
        * @param url mUrl
        *
-       * @return file or null
+       * @return file may not exist
        */
       public File getFile ( String url ) {
 
@@ -261,7 +272,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromNet ( String url ) {
+      public Bitmap loadNet ( String url ) {
 
             File file = mDowner.load( url );
             if( file != null ) {
@@ -335,7 +346,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
                   Bitmap fromFile = loadFromFile( mUrl );
                   if( fromFile == null ) {
 
-                        Bitmap fromNet = loadFromNet( mUrl );
+                        Bitmap fromNet = loadNet( mUrl );
                         if( fromNet == null ) {
                               setResult( mUrl, null );
                         } else {

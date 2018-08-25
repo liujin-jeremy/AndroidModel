@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
                               changeFragment( TestRetrofitLoaderFragment.newInstance() );
                               break;
 
+                        case R.id.menu06:
+                              changeFragment( TestBitmapLoaderFragment.newInstance() );
+                              break;
+
                         default:
                               break;
                   }

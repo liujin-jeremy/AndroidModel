@@ -16,9 +16,12 @@ public class ScreenSize {
 
       public static void init ( Context context ) {
 
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            sWidth = displayMetrics.widthPixels;
-            sHeight = displayMetrics.heightPixels;
+            if( sWidth == -1 || sHeight == -1 ) {
+
+                  DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+                  sWidth = displayMetrics.widthPixels;
+                  sHeight = displayMetrics.heightPixels;
+            }
       }
 
       public static int getWidth ( ) {

@@ -14,10 +14,11 @@ import tech.threekilogram.depository.function.StringHash;
  */
 public class KeyNameConverter {
 
-      public static final int MD5   = 11;
-      public static final int HASH  = 12;
+      public static final int MD5     = 11;
+      public static final int HASH    = 12;
+      public static final int DEFAULT = 13;
       @EncodeMode
-      private             int mMode = HASH;
+      private             int mMode   = HASH;
 
       public void setMode ( @EncodeMode int mode ) {
 
@@ -46,7 +47,7 @@ public class KeyNameConverter {
             return key;
       }
 
-      @IntDef({ MD5, HASH })
+      @IntDef({ MD5, HASH, DEFAULT })
       @Retention(RetentionPolicy.SOURCE)
       public @interface EncodeMode { }
 }
