@@ -3,7 +3,6 @@ package tech.threekilogram.depository.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import java.util.Set;
-import tech.threekilogram.depository.Container;
 
 /**
  * 使用{@link SharedPreferences}保存数据
@@ -13,7 +12,7 @@ import tech.threekilogram.depository.Container;
  * @date: 2018-08-13
  * @time: 13:35
  */
-public class Preference implements Container<String, String> {
+public class Preference {
 
       private SharedPreferences mPreferences;
 
@@ -22,21 +21,18 @@ public class Preference implements Container<String, String> {
             mPreferences = context.getSharedPreferences( name, Context.MODE_PRIVATE );
       }
 
-      @Override
-      public String save ( String key, String value ) {
-
-            mPreferences.edit().putString( key, value ).apply();
-            return null;
-      }
-
-      @Override
       public String remove ( String key ) {
 
             mPreferences.edit().remove( key ).apply();
             return null;
       }
 
-      @Override
+      public String save ( String key, String value ) {
+
+            mPreferences.edit().putString( key, value ).apply();
+            return null;
+      }
+
       public boolean containsOf ( String key ) {
 
             return mPreferences.contains( key );
@@ -65,12 +61,6 @@ public class Preference implements Container<String, String> {
       public void save ( String key, Set<String> value ) {
 
             mPreferences.edit().putStringSet( key, value ).apply();
-      }
-
-      @Override
-      public String load ( String key ) {
-
-            return getString( key );
       }
 
       public String getString ( String key ) {
