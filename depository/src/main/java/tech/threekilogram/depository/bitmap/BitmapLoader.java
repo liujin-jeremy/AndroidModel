@@ -218,7 +218,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromFile ( String url ) {
+      public Bitmap loadFile ( String url ) {
 
             File file = mDowner.getFile( url );
             if( file != null && file.exists() ) {
@@ -343,7 +343,7 @@ public class BitmapLoader implements OnMessageReceiveListener {
             @Override
             public void run ( ) {
 
-                  Bitmap fromFile = loadFromFile( mUrl );
+                  Bitmap fromFile = loadFile( mUrl );
                   if( fromFile == null ) {
 
                         Bitmap fromNet = loadNet( mUrl );

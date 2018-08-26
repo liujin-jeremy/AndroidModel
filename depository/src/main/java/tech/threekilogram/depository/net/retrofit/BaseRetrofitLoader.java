@@ -37,6 +37,7 @@ public abstract class BaseRetrofitLoader<V, S> extends BaseNetLoader<V, Response
       /**
        * 最少需要这两个才能正常工作
        *
+       * @param context 用来创建缓存文件夹
        * @param serviceType 服务类型
        * @param netConverter 转换器
        */
