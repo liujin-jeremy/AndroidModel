@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.threekilogram.objectbus.executor.PoolThreadExecutor;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,7 +27,18 @@ import tech.threekilogram.depository.json.JsonLoader;
  * @date: 2018-08-25
  * @time: 11:12
  */
-public class TestJsonLoaderFragment extends Fragment implements OnClickListener, OnClickListener {
+public class TestJsonLoaderFragment extends Fragment implements OnClickListener {
+
+      private static final String TAG = TestJsonLoaderFragment.class.getSimpleName();
+
+      public static TestJsonLoaderFragment newInstance ( ) {
+
+            Bundle args = new Bundle();
+
+            TestJsonLoaderFragment fragment = new TestJsonLoaderFragment();
+            fragment.setArguments( args );
+            return fragment;
+      }
 
       private Button                  mLoadMore;
       private RecyclerView            mRecycler;
@@ -57,7 +70,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener,
             mLoadMore.setOnClickListener( this );
             mRecycler = (RecyclerView) itemView.findViewById( R.id.recycler );
             mRecycler.setLayoutManager( new LinearLayoutManager( getContext() ) );
-            mSaveMore = (Button) itemView.findViewById( R.id.saveMore );
+            mSaveMore = (Button) itemView.findViewById( R.id.memorySize );
             mSaveMore.setOnClickListener( this );
       }
 
@@ -66,8 +79,23 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener,
 
             switch( v.getId() ) {
                   case R.id.loadMore:
+                        PoolThreadExecutor.execute( new Runnable() {
+
+                              @Override
+                              public void run ( ) {
+
+                                    int cachedCount = mJsonLoader.getCachedCount();
+                                    int index = cachedCount / 10 + 1;
+                                    final String url =
+                                        "https://gank.io/api/data/Android/10/" + index;
+
+                                    mJsonLoader.loadMore( cachedCount, url );
+                              }
+                        } );
                         break;
-                  case R.id.saveMore:
+                  case R.id.memorySize:
+                        int memorySize = mJsonLoader.getCachedCount();
+                        Log.e( TAG, "onClick : " + memorySize );
                         break;
                   default:
                         break;

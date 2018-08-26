@@ -29,5 +29,9 @@
           android:id="@+id/menu06"
           android:title="testBitmapLoader"/>
 
+      <item
+          android:id="@+id/menu07"
+          android:title="testJsonLoader"/>
+
 
 </menu>

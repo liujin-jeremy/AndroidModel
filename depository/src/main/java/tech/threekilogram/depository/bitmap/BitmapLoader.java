@@ -10,8 +10,6 @@ import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter.OnProgressUpdateListener;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
-import tech.threekilogram.messengers.Messengers;
-import tech.threekilogram.messengers.OnMessageReceiveListener;
 
 /**
  * 缓存bitmap对象
@@ -22,27 +20,20 @@ import tech.threekilogram.messengers.OnMessageReceiveListener;
  * @time: 21:44
  */
 @SuppressWarnings("WeakerAccess")
-public class BitmapLoader implements OnMessageReceiveListener {
-
-      private static final int LOAD_SUCCESS = 11;
-      private static final int LOAD_FAILED  = 13;
+public class BitmapLoader {
 
       /**
        * 内存缓存
        */
-      protected MemoryBitmap<String>   mMemory;
+      protected MemoryBitmap<String> mMemory;
       /**
        * bitmap 转换
        */
-      protected BitmapConverter        mBitmapConverter;
+      protected BitmapConverter      mBitmapConverter;
       /**
        * 下载
        */
-      protected RetrofitDowner         mDowner;
-      /**
-       * 监听
-       */
-      protected OnLoadFinishedListener mOnLoadFinishedListener;
+      protected RetrofitDowner       mDowner;
 
       public BitmapLoader ( int maxMemorySize, File cacheDir ) {
 
@@ -97,79 +88,31 @@ public class BitmapLoader implements OnMessageReceiveListener {
       }
 
       /**
-       * 转发给监听消息
-       */
-      protected void notifyListener ( String url, Bitmap bitmap ) {
-
-            if( mOnLoadFinishedListener != null ) {
-
-                  mOnLoadFinishedListener.onFinished( url, bitmap );
-            }
-      }
-
-      /**
-       * 异步加载该url对应的图片,需要实现{@link #asyncLoad(Runnable)}完成异步任务执行,使用{@link OnLoadFinishedListener}监听结果
+       * 加载该url对应的图片,
        *
        * @param url 图片url
        */
-      public void load ( String url ) {
+      public Bitmap load ( String url ) {
 
             Bitmap fromMemory = loadMemory( url );
             if( fromMemory == null ) {
 
-                  asyncLoad( createRunnable( url ) );
+                  Bitmap fromFile = loadFile( url );
+                  if( fromFile == null ) {
+
+                        Bitmap fromNet = loadNet( url );
+                        if( fromNet == null ) {
+                              return null;
+                        } else {
+                              return fromNet;
+                        }
+                  } else {
+
+                        return fromFile;
+                  }
             } else {
 
-                  notifyListener( url, fromMemory );
-            }
-      }
-
-      /**
-       * 子类实现该方法,决定如何在后台线程加载图片,
-       * 该框架并不提供异步功能,由用户自己提供,
-       * 这样可以防止引入多个库的情况下,线程驻留太多,耗费资源
-       *
-       * @param runnable runnable 框架封装的后台加载任务
-       */
-      protected void asyncLoad ( Runnable runnable ) { }
-
-      /**
-       * 创建后台加载图片任务
-       *
-       * @param url 图片 url
-       *
-       * @return 任务
-       */
-      protected AsyncLoadRunnable createRunnable ( String url ) {
-
-            return new AsyncLoadRunnable( url );
-      }
-
-      /**
-       * 用于设置异步加载{@link #asyncLoad(Runnable)}设置结果
-       */
-      protected void setResult ( String url, Bitmap bitmap ) {
-
-            if( bitmap == null ) {
-
-                  Messengers.send( LOAD_FAILED, url, this );
-            } else {
-                  Messengers.send( LOAD_SUCCESS, url, this );
-            }
-      }
-
-      @Override
-      public void onReceive ( int what, Object extra ) {
-
-            String url = (String) extra;
-
-            if( what == LOAD_SUCCESS ) {
-
-                  Bitmap bitmap = loadMemory( url );
-                  notifyListener( url, bitmap );
-            } else {
-
-                  notifyListener( url, null );
+                  return fromMemory;
             }
       }
 
@@ -305,71 +248,5 @@ public class BitmapLoader implements OnMessageReceiveListener {
           OnProgressUpdateListener onProgressUpdateListener ) {
 
             mDowner.setOnProgressUpdateListener( onProgressUpdateListener );
-      }
-
-      /**
-       * 获取设置的加载完成监听
-       *
-       * @return 监听
-       */
-      public OnLoadFinishedListener getOnLoadFinishedListener ( ) {
-
-            return mOnLoadFinishedListener;
-      }
-
-      /**
-       * 设置加载完成监听
-       *
-       * @param onLoadFinishedListener 加载完成监听
-       */
-      public void setOnLoadFinishedListener (
-          OnLoadFinishedListener onLoadFinishedListener ) {
-
-            mOnLoadFinishedListener = onLoadFinishedListener;
-      }
-
-      /**
-       * 辅助类,辅助异步加载bitmap {@link #load(String)}
-       */
-      protected class AsyncLoadRunnable implements Runnable {
-
-            private String mUrl;
-
-            public AsyncLoadRunnable ( String url ) {
-
-                  mUrl = url;
-            }
-
-            @Override
-            public void run ( ) {
-
-                  Bitmap fromFile = loadFile( mUrl );
-                  if( fromFile == null ) {
-
-                        Bitmap fromNet = loadNet( mUrl );
-                        if( fromNet == null ) {
-                              setResult( mUrl, null );
-                        } else {
-                              setResult( mUrl, fromNet );
-                        }
-                  } else {
-
-                        setResult( mUrl, fromFile );
-                  }
-            }
-      }
-
-      /**
-       * 用于{@link #load(String)}加载任务完成后回调
-       */
-      public interface OnLoadFinishedListener {
-
-            /**
-             * 当{@link #load(String)}完成时回调该方法
-             *
-             * @param url bitmap url
-             * @param bitmap bitmap
-             */
-            void onFinished ( String url, Bitmap bitmap );
       }
 }

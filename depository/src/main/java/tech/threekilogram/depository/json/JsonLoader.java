@@ -19,9 +19,7 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 /**
  * @author liujin
  */
-public abstract class JsonLoader<V> {
-
-      private static final String TAG = JsonLoader.class.getSimpleName();
+public class JsonLoader<V> {
 
       /**
        * 内存
@@ -145,7 +143,7 @@ public abstract class JsonLoader<V> {
             }
             mMemoryList.saveMore( index, list );
 
-            mIndexes.updateIndex( index, index + list.size() );
+            mIndexes.updateIndex( index, index + list.size() - 1 );
       }
 
       /**
@@ -168,6 +166,16 @@ public abstract class JsonLoader<V> {
       public V loadMemory ( int index ) {
 
             return mMemoryList.load( index );
+      }
+
+      /**
+       * 返回内存中数据数量
+       *
+       * @return 数据量
+       */
+      public int getMemorySize ( ) {
+
+            return mMemoryList.size();
       }
 
       /**
@@ -253,7 +261,19 @@ public abstract class JsonLoader<V> {
             return null;
       }
 
-// ========================= 辅助转换 =========================
+      /**
+       * 清除缓存
+       */
+      public void clearFile ( ) {
+
+            try {
+                  mFileContainer.clear();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+      }
+
+      // ========================= 辅助转换 =========================
 
       /**
        * 辅助保存json为文件
@@ -480,15 +500,6 @@ public abstract class JsonLoader<V> {
                               /* do nothing */
                         }
                   }
-            }
-
-            public static void main ( String[] args ) {
-
-                  String s = String.valueOf( 5 );
-                  Integer index = 5;
-                  String s1 = index.toString();
-
-                  System.out.println( s + " " + s1 );
             }
       }
 }

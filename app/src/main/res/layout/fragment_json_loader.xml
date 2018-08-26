@@ -17,6 +17,17 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"/>
 
+      <Button
+          android:id="@+id/memorySize"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="memorySize"
+          app:layout_constraintStart_toEndOf="@+id/loadMore"
+          app:layout_constraintTop_toTopOf="parent"/>
+
       <android.support.v7.widget.RecyclerView
           android:id="@+id/recycler"
           android:layout_width="0dp"
@@ -26,14 +37,4 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/loadMore"/>
-      <Button
-          android:id="@+id/saveMore"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="saveMore"
-          app:layout_constraintStart_toEndOf="@+id/loadMore"
-          app:layout_constraintTop_toTopOf="parent"/>
 </android.support.constraint.ConstraintLayout>

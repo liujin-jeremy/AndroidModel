@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
                               changeFragment( TestBitmapLoaderFragment.newInstance() );
                               break;
 
+                        case R.id.menu07:
+                              changeFragment( TestJsonLoaderFragment.newInstance() );
+                              break;
+
                         default:
                               break;
                   }

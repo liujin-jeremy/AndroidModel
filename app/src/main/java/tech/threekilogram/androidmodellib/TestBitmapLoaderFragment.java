@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.objectbus.executor.PoolThreadExecutor;
 import tech.threekilogram.depository.bitmap.BitmapLoader;
-import tech.threekilogram.depository.bitmap.BitmapLoader.OnLoadFinishedListener;
+import tech.threekilogram.messengers.Messengers;
+import tech.threekilogram.messengers.OnMessageReceiveListener;
 
 /**
  * @author: Liujin
@@ -22,7 +22,8 @@ import tech.threekilogram.depository.bitmap.BitmapLoader.OnLoadFinishedListener;
  * @date: 2018-08-25
  * @time: 9:10
  */
-public class TestBitmapLoaderFragment extends Fragment implements OnClickListener {
+public class TestBitmapLoaderFragment extends Fragment implements OnClickListener,
+                                                                  OnMessageReceiveListener {
 
       private static final String TAG = TestBitmapLoaderFragment.class.getSimpleName();
 
@@ -89,18 +90,34 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
 
             switch( v.getId() ) {
                   case R.id.load:
-                        int i = mUrlIndex % mBitmaps.length;
-                        mLoader.load( mBitmaps[ i ] );
-                        mUrlIndex++;
+                        PoolThreadExecutor.execute( new Runnable() {
+
+                              @Override
+                              public void run ( ) {
+
+                                    int i = mUrlIndex % mBitmaps.length;
+                                    Bitmap bitmap = mLoader.load( mBitmaps[ i ] );
+                                    mUrlIndex++;
+                                    Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
+                              }
+                        } );
                         break;
                   default:
                         break;
             }
       }
 
+      @Override
+      public void onReceive ( int what, Object extra ) {
+
+            if( what == 11 ) {
+                  mImage.setImageBitmap( (Bitmap) extra );
+            }
+      }
+
       private class Loader extends BitmapLoader {
 
-            public Loader ( ) {
+            Loader ( ) {
 
                   super(
                       (int) Runtime.getRuntime().maxMemory() >> 3,
@@ -109,33 +126,6 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
 
                   ScreenSize.init( getContext() );
                   configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
-                  setOnLoadFinishedListener( new OnLoadFinished() );
-            }
-
-            @Override
-            protected void asyncLoad ( Runnable runnable ) {
-
-                  PoolThreadExecutor.execute( runnable );
-            }
-      }
-
-      private class OnLoadFinished implements OnLoadFinishedListener {
-
-            OnLoadFinished ( ) {
-
-            }
-
-            @Override
-            public void onFinished ( String url, Bitmap bitmap ) {
-
-                  if( bitmap != null ) {
-
-                        Log.e( TAG, "onFinished : " + url + " " + bitmap.getWidth() );
-                        mImage.setImageBitmap( bitmap );
-                  } else {
-
-                        Log.e( TAG, "onFinished : null bitmap " + url );
-                  }
             }
       }
 }
