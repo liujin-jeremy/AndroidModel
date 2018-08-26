@@ -31,7 +31,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       /**
        * 缓存file
        */
-      private KeyFileLoader<String> mFileLoader = new KeyFileLoader<>();
+      private KeyFileCache<String> mFileLoader = new KeyFileCache<>();
 
       /**
        * @param folder which dir to save data

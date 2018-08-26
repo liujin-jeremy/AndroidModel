@@ -37,7 +37,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
       }
 
       /**
-       * @param url 获取保存的文件
+       * @param url 获取该url对应的文件,文件可能不存在{@link File#exists()}
        *
        * @return 文件
        */
@@ -54,9 +54,14 @@ public class RetrofitDowner extends RetrofitLoader<File> {
             return getConverter().getDir();
       }
 
-      public void removeFile ( String key ) {
+      /**
+       * 删除该url对应的文件
+       *
+       * @param url url
+       */
+      public void removeFile ( String url ) {
 
-            getConverter().removeFile( key );
+            getConverter().removeFile( url );
       }
 
       /**

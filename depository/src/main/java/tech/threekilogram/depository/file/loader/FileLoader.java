@@ -25,7 +25,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       /**
        * 缓存创建的file
        */
-      private KeyFileLoader<String> mFileLoader = new KeyFileLoader<>();
+      private KeyFileCache<String> mFileLoader = new KeyFileCache<>();
 
       /**
        * @param dir 保存文件的文件夹

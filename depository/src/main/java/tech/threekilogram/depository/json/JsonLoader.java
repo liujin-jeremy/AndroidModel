@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileConverter;
+import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
@@ -28,7 +30,7 @@ public class JsonLoader<V> {
       /**
        * 文件
        */
-      protected FileLoader<V>           mFileContainer;
+      protected BaseFileLoader<V>       mFileContainer;
       /**
        * 网络
        */
@@ -68,6 +70,30 @@ public class JsonLoader<V> {
 
             mFileContainer = new FileLoader<>(
                 dir,
+                new JsonFileConverter()
+            );
+
+            mJsonConverter = jsonConverter;
+            mRetrofitLoader = new RetrofitLoader<>(
+                dir,
+                100 * 1024 * 1024,
+                new JsonRetrofitListConverter()
+            );
+      }
+
+      /**
+       * @param dir 缓存文件夹
+       * @param maxSize 文件夹最大大小
+       * @param jsonConverter 转换流为bean对象
+       */
+      public JsonLoader ( File dir, int maxSize, JsonConverter<V> jsonConverter )
+          throws IOException {
+
+            mMemoryList = new MemoryList<>();
+
+            mFileContainer = new DiskLruLoader<>(
+                dir,
+                maxSize,
                 new JsonFileConverter()
             );
 
@@ -219,7 +245,7 @@ public class JsonLoader<V> {
 
             mIsCacheToFile.set( true );
             ArrayMap<Integer, V> willCacheToFile = mWillCacheToFile;
-            FileLoader<V> fileContainer = mFileContainer;
+            BaseFileLoader<V> fileContainer = mFileContainer;
 
             while( willCacheToFile.size() > 0 ) {
 

@@ -235,11 +235,15 @@ public class BitmapConverter {
       }
 
       /**
-       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},不会小于设置的值
+       * 缩放模式:加载原图
+       */
+      public static final int DEFAULT      = 0;
+      /**
+       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},缩放后图片尺寸不会小于设置的值
        */
       public static final int SAMPLE       = 1;
       /**
-       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},均会小于缩放的值
+       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},缩放后图片尺寸均会小于设置的值
        */
       public static final int SAMPLE_MAX   = 2;
       /**
@@ -258,7 +262,7 @@ public class BitmapConverter {
       /**
        * 配置缩放模式
        */
-      @IntDef({ SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT, MATCH_SIZE })
+      @IntDef({ DEFAULT, SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT, MATCH_SIZE })
       @Retention(RetentionPolicy.SOURCE)
       public @interface ScaleMode { }
 }

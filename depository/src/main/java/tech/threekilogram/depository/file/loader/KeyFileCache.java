@@ -4,14 +4,14 @@ import android.util.LruCache;
 import java.io.File;
 
 /**
- * 保存key file
+ * 缓存key file
  *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-24
  * @time: 16:54
  */
-public class KeyFileLoader<K> {
+class KeyFileCache<K> {
 
       private LruCache<K, File> mCache = new LruCache<>( 16 );
 

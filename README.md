@@ -23,11 +23,11 @@ Add it in your root build.gradle at the end of repositories:
 
 ### 使用内存缓存
 
-* MemoryListLoader
+* MemoryList
 
 ```
 /* MemoryListLoader 使用数字索引保存/读取数据 */
-MemoryListLoader<String> loader = new MemoryListLoader<>();
+MemoryList<String> loader = new MemoryList<>();
 
 String value = "HelloAndroidModel - 0";
 String value1 = "HelloAndroidModel - 1";
@@ -54,11 +54,11 @@ loader.remove( 2 );
 loader.clear();
 ```
 
-* MemoryMapLoader
+* MemoryMap
 
 ```
-/* MemoryListLoader 使用map保存/读取数据 */
-MemoryMapLoader<String, String> loader = new MemoryMapLoader<>();
+/* MemoryMap 使用map保存/读取数据 */
+MemoryMap<String, String> loader = new MemoryMap<>();
 
 String value = "HelloAndroidModel - 0";
 String value1 = "HelloAndroidModel - 1";
@@ -88,11 +88,11 @@ loader.remove( key2 );
 loader.clear();
 ```
 
-* MemoryLruCacheLoader
+* MemoryLruCache
 
 ```
-/* MemoryListLoader 使用lruCache保存/读取数据 */
-MemoryLruCacheLoader<String, String> loader = new MemoryLruCacheLoader<>( 3 );	//最多3个值
+/* MemoryLruCache 使用lruCache保存/读取数据 */
+MemoryLruCache<String, String> loader = new MemoryLruCache<>( 3 );	//最多3个值
 
 String value = "HelloAndroidModel - 0";
 String value1 = "HelloAndroidModel - 1";
@@ -143,7 +143,7 @@ System.out.println( "value at key: " + load ); // null
 
 #### 示例
 
-* string
+* 从本地文件读取string
 
 ```
 // FileStringConverter 会将文件流转为string对象
@@ -151,14 +151,19 @@ FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
 
 String key = "key";
 String value = "曾经沧海难为水";
+
 // 保存
 loader.save( key, value );
+
 // 读取
 String load = loader.load( key );
+
 // 获取文件
 File file = loader.getFile( key );
+
 // 删除文件
 String remove = loader.remove( key );
+
 // 测试是否有该文件
 boolean containsOf = loader.containsOf( key );
 ```
@@ -182,17 +187,23 @@ FileLoader<Bean> loader = new FileLoader<>(
 );
 
 String key = "json";
+
 // 创建一个value用于保存
 Gson gson = GsonClient.INSTANCE;
 Bean bean = gson.fromJson( JSON, Bean.class );
+
 // 保存
 loader.save( key, bean );
+
 // 读取
 Bean load = loader.load( key );
+
 // 获取文件
 File file = loader.getFile( key );
+
 // 删除
 loader.remove( key );
+
 // 测试是否包含改文件
 boolean containsOf = loader.containsOf( key );
 ```
@@ -208,34 +219,55 @@ DiskLruLoader<Bean> loader = new DiskLruLoader<>(
 
 > 目前框架只实现了 FileStringConverter 和 FileGsonConverter, 其他类型数据需要自己实现FileConverter<T>接口,完成转换工作
 
-### 使用网络
+### 使用网络缓存
 
-* 下载
+* 下载文件
 
 ```
 // 配置文件夹
 RetrofitDowner loader = new RetrofitDowner( TEMP );
+
 // url
 final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
+
 // 从网络下载
 File file = loader.load( url00 );
+
+// 设置下载进度监听
+OnProgressUpdateListener onProgressUpdateListener = new OnProgressUpdateListener() {
+      @Override
+      public void onProgressUpdate ( String key, long total, long current ) {
+            Log.e( TAG, "onProgressUpdate : " + total + " " + current );
+      }
+};
+mRetrofitDowner.setOnProgressUpdateListener( onProgressUpdateListener );
 ```
 
-* string
+* 从网络获取string
 
 ```
 // 配置
 RetrofitLoader<String> loader = new RetrofitLoader<>( new RetrofitStringConverter() );
+
+// url
 final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
+
+// 读取
 String load = loader.load( url );
 ```
 
-* json
+* 从网络获取json
 
 ```
 // json
 RetrofitLoader<Bean> loader = new RetrofitLoader<>( new RetrofitGsonConverter<Bean>(Bean.class) );
+
 // url
 final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
+
+// 读取
 Bean bean = loader.load( url );
 ```
+
+### Bitmap缓存
+

@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import tech.threekilogram.depository.memory.lru.size.BitmapSize;
 
 /**
+ * {@link MemoryLruCache}的bitmap实现版本
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-15
