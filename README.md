@@ -285,6 +285,16 @@ mLoader = new BitmapLoader(
 // 配置图片缩放
 mLoader.configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
 
-// 加载图片
-Bitmap bitmap = mLoader.load(url);
+// 内存加载图片
+Bitmap bitmap = mLoader.loadMemory(url);
+
+// 从文件/网络加载图片
+Bitmap bitmap = mLoader.loadFileNet(url);
 ```
+
+> 将内存/文件网络加载分开是因为,文件网络加载需要异步操作
+
+### Json缓存
+
+> 该类提供了json对象三级缓存
+

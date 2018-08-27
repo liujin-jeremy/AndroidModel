@@ -19,55 +19,67 @@ public class MemoryMap<K, V> implements Memory<K, V> {
       protected ArrayMap<K, V> mContainer;
 
       @SuppressWarnings("WeakerAccess")
-      public MemoryMap () {
+      public MemoryMap ( ) {
 
             mContainer = new ArrayMap<>();
       }
 
-      public MemoryMap ( int size) {
+      public MemoryMap ( int size ) {
 
-            mContainer = new ArrayMap<>(size);
+            mContainer = new ArrayMap<>( size );
       }
 
       @Override
-      public ArrayMap<K, V> container () {
+      public ArrayMap<K, V> container ( ) {
 
             return mContainer;
       }
 
       @Override
-      public int size () {
+      public int size ( ) {
 
             return mContainer.size();
       }
 
       @Override
-      public void clear () {
+      public void clear ( ) {
 
             mContainer.clear();
       }
 
       @Override
-      public V save (K key, V value) {
+      public V save ( K key, V value ) {
 
-            return mContainer.put(key, value);
+            return mContainer.put( key, value );
+      }
+
+      public void saveAll ( ArrayMap<K, V> map ) {
+
+            ArrayMap<K, V> container = mContainer;
+
+            int size = map.size();
+            for( int i = 0; i < size; i++ ) {
+                  K key = map.keyAt( i );
+                  V v = map.valueAt( i );
+                  container.put( key, v );
+            }
       }
 
       @Override
-      public V remove (K key) {
+      public V remove ( K key ) {
 
-            return mContainer.remove(key);
+            return mContainer.remove( key );
       }
 
       @Override
-      public V load (K key) {
+      public V load ( K key ) {
 
-            return mContainer.get(key);
+            return mContainer.get( key );
       }
 
       @Override
-      public boolean containsOf (K key) {
+      public boolean containsOf ( K key ) {
 
-            return mContainer.containsKey(key);
+            return mContainer.containsKey( key );
       }
 }

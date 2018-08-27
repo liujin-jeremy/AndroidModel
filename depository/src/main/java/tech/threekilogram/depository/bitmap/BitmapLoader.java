@@ -88,31 +88,24 @@ public class BitmapLoader {
       }
 
       /**
-       * 加载该url对应的图片,
+       * 从文件网络加载该url对应的图片
        *
        * @param url 图片url
        */
-      public Bitmap load ( String url ) {
+      public Bitmap loadFileNet ( String url ) {
 
-            Bitmap fromMemory = loadMemory( url );
-            if( fromMemory == null ) {
+            Bitmap fromFile = loadFile( url );
+            if( fromFile == null ) {
 
-                  Bitmap fromFile = loadFile( url );
-                  if( fromFile == null ) {
-
-                        Bitmap fromNet = loadNet( url );
-                        if( fromNet == null ) {
-                              return null;
-                        } else {
-                              return fromNet;
-                        }
+                  Bitmap fromNet = loadNet( url );
+                  if( fromNet == null ) {
+                        return null;
                   } else {
-
-                        return fromFile;
+                        return fromNet;
                   }
             } else {
 
-                  return fromMemory;
+                  return fromFile;
             }
       }
 

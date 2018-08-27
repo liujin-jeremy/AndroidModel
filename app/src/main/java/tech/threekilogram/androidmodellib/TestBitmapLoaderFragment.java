@@ -97,13 +97,20 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
 
             switch( v.getId() ) {
                   case R.id.load:
+
+                        final int i = mUrlIndex % mBitmaps.length;
+                        Bitmap bitmap = mLoader.loadMemory( mBitmaps[ i ] );
+                        if( bitmap != null ) {
+                              mImage.setImageBitmap( bitmap );
+                              return;
+                        }
+
                         PoolThreadExecutor.execute( new Runnable() {
 
                               @Override
                               public void run ( ) {
 
-                                    int i = mUrlIndex % mBitmaps.length;
-                                    Bitmap bitmap = mLoader.load( mBitmaps[ i ] );
+                                    Bitmap bitmap = mLoader.loadFileNet( mBitmaps[ i ] );
                                     mUrlIndex++;
                                     Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
                               }

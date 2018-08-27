@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.JsonLoader;
+import tech.threekilogram.depository.json.JsonLoader.OnMemorySizeTooLargeListener;
 
 /**
  * @author: Liujin
@@ -30,6 +28,12 @@ import tech.threekilogram.depository.json.JsonLoader;
 public class TestJsonLoaderFragment extends Fragment implements OnClickListener {
 
       private static final String TAG = TestJsonLoaderFragment.class.getSimpleName();
+      private Button mLoadMore;
+      private Button mCacheCount;
+      private Button mCachedMin;
+      private Button mCachedMax;
+      private Button mPrintMemory;
+      private Button mTrim09;
 
       public static TestJsonLoaderFragment newInstance ( ) {
 
@@ -40,10 +44,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             return fragment;
       }
 
-      private Button                  mLoadMore;
-      private RecyclerView            mRecycler;
       private JsonLoader<ResultsBean> mJsonLoader;
-      private Button                  mSaveMore;
 
       @Nullable
       @Override
@@ -62,16 +63,45 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
             File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
             mJsonLoader = new JsonLoader<>( jsonFile, new GankGsonConverter( ResultsBean.class ) );
+
+            PoolThreadExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        mJsonLoader.clearAllFile();
+                  }
+            } );
+            mJsonLoader.setOnMemorySizeTooLargeListener( new OnMemorySizeTooLargeListener() {
+
+                  @Override
+                  public int getMaxMemorySize ( ) {
+
+                        return 50;
+                  }
+
+                  @Override
+                  public void onMemorySizeTooLarge ( int memorySize ) {
+
+                        Log.e( TAG, "onMemorySizeTooLarge : " + memorySize );
+                  }
+            } );
       }
 
       private void initView ( @NonNull final View itemView ) {
 
             mLoadMore = (Button) itemView.findViewById( R.id.loadMore );
             mLoadMore.setOnClickListener( this );
-            mRecycler = (RecyclerView) itemView.findViewById( R.id.recycler );
-            mRecycler.setLayoutManager( new LinearLayoutManager( getContext() ) );
-            mSaveMore = (Button) itemView.findViewById( R.id.memorySize );
-            mSaveMore.setOnClickListener( this );
+            mCacheCount = (Button) itemView.findViewById( R.id.cacheCount );
+            mCacheCount.setOnClickListener( this );
+            mCachedMin = (Button) itemView.findViewById( R.id.cachedMin );
+            mCachedMin.setOnClickListener( this );
+            mCachedMax = (Button) itemView.findViewById( R.id.cachedMax );
+            mCachedMax.setOnClickListener( this );
+            mPrintMemory = (Button) itemView.findViewById( R.id.printMemory );
+            mPrintMemory.setOnClickListener( this );
+            mTrim09 = (Button) itemView.findViewById( R.id.trim09 );
+            mTrim09.setOnClickListener( this );
       }
 
       @Override
@@ -79,6 +109,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
             switch( v.getId() ) {
                   case R.id.loadMore:
+
                         PoolThreadExecutor.execute( new Runnable() {
 
                               @Override
@@ -87,15 +118,32 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     int cachedCount = mJsonLoader.getCachedCount();
                                     int index = cachedCount / 10 + 1;
                                     final String url =
-                                        "https://gank.io/api/data/Android/10/" + index;
+                                        "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/" + index;
 
                                     mJsonLoader.loadMore( cachedCount, url );
+                                    Log.e( TAG, "run : load more finished " + mJsonLoader
+                                        .getCachedCount() );
                               }
                         } );
                         break;
-                  case R.id.memorySize:
+                  case R.id.cacheCount:
                         int memorySize = mJsonLoader.getCachedCount();
-                        Log.e( TAG, "onClick : " + memorySize );
+                        Log.e( TAG, "onClick : memorySize " + memorySize );
+                        break;
+                  case R.id.cachedMin:
+                        int cachedMin = mJsonLoader.getCachedMin();
+                        Log.e( TAG, "onClick : cachedMin " + cachedMin );
+                        break;
+                  case R.id.cachedMax:
+                        int cachedMax = mJsonLoader.getCachedMax();
+                        Log.e( TAG, "onClick : cachedMax " + cachedMax );
+                        break;
+                  case R.id.printMemory:
+                        mJsonLoader.printMemory();
+                        break;
+                  case R.id.trim09:
+                        mJsonLoader.trimMemory( 0, 10 );
+                        Log.e( TAG, "onClick : trim 0-9 finished" );
                         break;
                   default:
                         break;
@@ -115,35 +163,6 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                   GankCategoryBean bean = sGson
                       .fromJson( new InputStreamReader( inputStream ), GankCategoryBean.class );
                   return bean.getResults();
-            }
-      }
-
-      private class Adapter extends RecyclerView.Adapter {
-
-            @NonNull
-            @Override
-            public ViewHolder onCreateViewHolder ( @NonNull ViewGroup parent, int viewType ) {
-
-                  return null;
-            }
-
-            @Override
-            public void onBindViewHolder ( @NonNull ViewHolder holder, int position ) {
-
-            }
-
-            @Override
-            public int getItemCount ( ) {
-
-                  return 0;
-            }
-      }
-
-      private class Holder extends ViewHolder {
-
-            public Holder ( View itemView ) {
-
-                  super( itemView );
             }
       }
 }

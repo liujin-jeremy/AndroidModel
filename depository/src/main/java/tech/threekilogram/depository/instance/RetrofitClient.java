@@ -13,6 +13,11 @@ import retrofit2.Retrofit;
  */
 public class RetrofitClient {
 
+      public static final Retrofit INSTANCE = new Retrofit
+          .Builder()
+          .baseUrl( "https://github.com/" )
+          .build();
+
       public static Retrofit instance ( File file, long maxSize ) {
 
             Cache cache = new Cache( file, maxSize );

@@ -73,7 +73,7 @@ public class TestMemoryBitmapFragment extends Fragment implements OnClickListene
             mSave = itemView.findViewById( R.id.save );
             mImageView = itemView.findViewById( R.id.imageView );
             mSave.setOnClickListener( this );
-            mMemorySize = itemView.findViewById( R.id.memorySize );
+            mMemorySize = itemView.findViewById( R.id.cacheCount );
             mMemorySize.setText(
                 "memory size: " +
                     ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() )

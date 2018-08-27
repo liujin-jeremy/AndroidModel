@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.json;
 
 import android.support.v4.util.ArrayMap;
-import android.support.v4.util.ArraySet;
+import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,16 +12,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.map.MemoryList;
+import tech.threekilogram.depository.net.LoadingUrls;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
  * @author liujin
  */
+@SuppressWarnings("WeakerAccess")
 public class JsonLoader<V> {
+
+      private static final String TAG = JsonLoader.class.getSimpleName();
 
       /**
        * 内存
@@ -40,25 +43,23 @@ public class JsonLoader<V> {
        */
       protected JsonConverter<V>        mJsonConverter;
       /**
+       * 记录所有正在加载的url
+       */
+      protected       LoadingUrls          mLoadingUrls     = new LoadingUrls();
+      /**
        * 管理APP运行期间所有缓存的索引
        */
-      protected       CachedIndexes        mIndexes              = new CachedIndexes();
-      /**
-       * 缓存文件过期策略,一旦过期就重新创建
-       */
-      protected       CacheExpiredStrategy mCacheExpiredStrategy = new DefaultCacheExpiredStrategy();
-      /**
-       * 正在加载的url集合
-       */
-      protected final ArraySet<String>     mUrlLoadings          = new ArraySet<>();
+      protected       CachedIndexes        mIndexes         = new CachedIndexes();
       /**
        * 临时保存需要需要写入文件的bean
        */
-      protected final ArrayMap<Integer, V> mWillCacheToFile      = new ArrayMap<>();
+      protected final ArrayMap<Integer, V> mWillCacheToFile = new ArrayMap<>();
       /**
        * true : 正在缓存文件
        */
-      protected final AtomicBoolean        mIsCacheToFile        = new AtomicBoolean();
+      protected final AtomicBoolean        mIsCacheToFile   = new AtomicBoolean();
+
+      protected OnMemorySizeTooLargeListener mOnMemorySizeTooLargeListener;
 
       /**
        * @param dir 缓存文件夹
@@ -75,55 +76,12 @@ public class JsonLoader<V> {
 
             mJsonConverter = jsonConverter;
             mRetrofitLoader = new RetrofitLoader<>(
-                dir,
-                100 * 1024 * 1024,
                 new JsonRetrofitListConverter()
             );
       }
 
       /**
-       * @param dir 缓存文件夹
-       * @param maxSize 文件夹最大大小
-       * @param jsonConverter 转换流为bean对象
-       */
-      public JsonLoader ( File dir, int maxSize, JsonConverter<V> jsonConverter )
-          throws IOException {
-
-            mMemoryList = new MemoryList<>();
-
-            mFileContainer = new DiskLruLoader<>(
-                dir,
-                maxSize,
-                new JsonFileConverter()
-            );
-
-            mJsonConverter = jsonConverter;
-            mRetrofitLoader = new RetrofitLoader<>(
-                dir,
-                100 * 1024 * 1024,
-                new JsonRetrofitListConverter()
-            );
-      }
-
-      /**
-       * 设置缓存文件过期策略,如果没有设置,默认使用{@link DefaultCacheExpiredStrategy}
-       */
-      public void setCacheExpiredStrategy (
-          CacheExpiredStrategy cacheExpiredStrategy ) {
-
-            mCacheExpiredStrategy = cacheExpiredStrategy;
-      }
-
-      /**
-       * 获取设置的缓存文件过期策略
-       */
-      public CacheExpiredStrategy getCacheExpiredStrategy ( ) {
-
-            return mCacheExpiredStrategy;
-      }
-
-      /**
-       * 从内存和本地缓存文件中测试是否包含该key对应的数据缓存,缓存过期将会认为没有该key缓存
+       * 从内存和本地缓存文件中测试是否包含该key对应的数据缓存
        *
        * @param index index
        *
@@ -135,8 +93,7 @@ public class JsonLoader<V> {
                   return true;
             }
 
-            File file = mFileContainer.getFile( String.valueOf( index ) );
-            return file.exists() && mCacheExpiredStrategy.testCacheFile( file );
+            return mFileContainer.containsOf( String.valueOf( index ) );
       }
 
       /**
@@ -147,22 +104,11 @@ public class JsonLoader<V> {
        */
       public void loadMore ( int index, String url ) {
 
-            /* 如果正在加载该url,那么不加载它 */
-            synchronized(mUrlLoadings) {
-
-                  if( mUrlLoadings.contains( url ) ) {
-                        return;
-                  } else {
-                        mUrlLoadings.add( url );
-                  }
+            if( mLoadingUrls.isLoading( url ) ) {
+                  return;
             }
-
             List<V> list = mRetrofitLoader.load( url );
-
-            /* 加载完成 */
-            synchronized(mUrlLoadings) {
-                  mUrlLoadings.remove( url );
-            }
+            mLoadingUrls.removeLoadingUrl( url );
 
             if( list == null || list.size() == 0 ) {
                   return;
@@ -170,6 +116,21 @@ public class JsonLoader<V> {
             mMemoryList.saveMore( index, list );
 
             mIndexes.updateIndex( index, index + list.size() - 1 );
+
+            notifyMemorySizeListener();
+      }
+
+      private void notifyMemorySizeListener ( ) {
+
+            if( mOnMemorySizeTooLargeListener != null ) {
+
+                  int size = mMemoryList.size();
+                  int maxMemorySize = mOnMemorySizeTooLargeListener.getMaxMemorySize();
+                  if( size >= maxMemorySize ) {
+
+                        mOnMemorySizeTooLargeListener.onMemorySizeTooLarge( size );
+                  }
+            }
       }
 
       /**
@@ -180,6 +141,26 @@ public class JsonLoader<V> {
       public int getCachedCount ( ) {
 
             return mIndexes.count();
+      }
+
+      /**
+       * 获取程序运行期间所有缓存数据中最小的index.{@link #loadMore(int, String)}
+       *
+       * @return index
+       */
+      public int getCachedMin ( ) {
+
+            return mIndexes.getMinIndex();
+      }
+
+      /**
+       * 获取程序运行期间所有缓存数据中最大的index.{@link #loadMore(int, String)}
+       *
+       * @return index
+       */
+      public int getCachedMax ( ) {
+
+            return mIndexes.getMaxIndex();
       }
 
       /**
@@ -204,12 +185,25 @@ public class JsonLoader<V> {
             return mMemoryList.size();
       }
 
+      public void printMemory ( ) {
+
+            int size = mMemoryList.size();
+            ArrayMap<Integer, V> container = mMemoryList.container();
+            for( int i = 0; i < container.size(); i++ ) {
+                  Integer key = container.keyAt( i );
+                  V v = container.valueAt( i );
+                  Log.e( TAG, "printMemory : " + key + " " + v );
+            }
+      }
+
       /**
-       * 压缩内存,将内存中数据缓存到本地缓存
+       * 压缩内存,将内存中数据缓存到本地缓存,同时在内存中删除,
+       * 如果本地已经有缓存文件那么不会覆盖它,清除缓存文件请使用{@link #clearFile(int)}{@link #clearAllFile()}
        *
        * @param start 内存中保留数据最小索引
        * @param end 内存中保留数据最大索引,不包含该索引[start,end)
        */
+      @SuppressWarnings("UnnecessaryLocalVariable")
       public void trimMemory ( int start, int end ) {
 
             ArrayMap<Integer, V> container = mMemoryList.container();
@@ -218,20 +212,34 @@ public class JsonLoader<V> {
             for( int i = 0; i < container.size(); i++ ) {
 
                   Integer key = container.keyAt( i );
-                  if( key >= start && key < end ) {
+                  if( key < start || key >= end ) {
 
                         V v = container.removeAt( i );
                         synchronized(mWillCacheToFile) {
                               willCacheToFile.put( key, v );
                         }
-                  }
-
-                  if( key >= end ) {
-                        return;
+                        i--;
                   }
             }
 
             notifyCacheFile();
+      }
+
+      /**
+       * 压缩内存,将内存中数据缓存到本地缓存,同时在内存中删除
+       *
+       * @param index 需要缓存索引
+       */
+      public void trimMemory ( int index ) {
+
+            V v = mMemoryList.remove( index );
+            if( v != null ) {
+
+                  synchronized(mWillCacheToFile) {
+                        mWillCacheToFile.put( index, v );
+                  }
+                  notifyCacheFile();
+            }
       }
 
       /**
@@ -260,7 +268,7 @@ public class JsonLoader<V> {
 
                   String s = key.toString();
                   File file = fileContainer.getFile( s );
-                  if( mCacheExpiredStrategy.testCacheFile( file ) ) {
+                  if( !file.exists() ) {
                         fileContainer.save( s, v );
                   }
             }
@@ -269,7 +277,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 从缓存文件夹加载缓存,如果缓存过期{@link CacheExpiredStrategy}那么返回null
+       * 从缓存文件夹加载缓存
        *
        * @param index 索引
        *
@@ -278,25 +286,103 @@ public class JsonLoader<V> {
       public V loadFile ( int index ) {
 
             String key = String.valueOf( index );
-            File file = mFileContainer.getFile( key );
+            V v = mFileContainer.load( key );
+            if( v != null ) {
 
-            if( !mCacheExpiredStrategy.testCacheFile( file ) ) {
-                  return mFileContainer.load( key );
+                  mMemoryList.save( index, v );
+                  mIndexes.updateIndex( index, index );
+                  notifyMemorySizeListener();
+                  return v;
             }
-
             return null;
       }
 
       /**
-       * 清除缓存
+       * 清除指定索引缓存
        */
-      public void clearFile ( ) {
+      public void clearFile ( int index ) {
+
+            mFileContainer.remove( String.valueOf( index ) );
+      }
+
+      /**
+       * 清除所有文件缓存
+       */
+      public void clearAllFile ( ) {
 
             try {
                   mFileContainer.clear();
             } catch(IOException e) {
                   e.printStackTrace();
             }
+      }
+
+      /**
+       * 清除所有缓存包括内存/文件
+       */
+      public void clearCache ( ) {
+
+            mMemoryList.clear();
+            try {
+                  mFileContainer.clear();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+            mIndexes.clear();
+      }
+
+      /**
+       * 清除所有缓存,仅保留指定区间数据
+       *
+       * @param start 起始索引
+       * @param end 结束索引
+       */
+      public void clearCache ( int start, int end ) {
+
+            if( start > end ) {
+                  return;
+            }
+
+            CachedIndexes indexes = mIndexes;
+            indexes.clear();
+
+            ArrayMap<Integer, V> temp = new ArrayMap<>();
+            for( int i = start; i < end; i++ ) {
+
+                  V v = loadMemory( i );
+                  if( v != null ) {
+
+                        temp.put( i, v );
+                        indexes.updateIndex( i, i );
+                  } else {
+
+                        v = loadFile( i );
+                        if( v != null ) {
+                              temp.put( i, v );
+                              indexes.updateIndex( i, i );
+                        }
+                  }
+            }
+
+            mMemoryList.clear();
+            try {
+                  mFileContainer.clear();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
+
+            mMemoryList.saveAll( temp );
+      }
+
+      public void setOnMemorySizeTooLargeListener (
+          OnMemorySizeTooLargeListener onMemorySizeTooLargeListener ) {
+
+            mOnMemorySizeTooLargeListener = onMemorySizeTooLargeListener;
+      }
+
+      public OnMemorySizeTooLargeListener getOnMemorySizeTooLargeListener ( ) {
+
+            return mOnMemorySizeTooLargeListener;
       }
 
       // ========================= 辅助转换 =========================
@@ -335,66 +421,6 @@ public class JsonLoader<V> {
             public List<V> onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
                   return mJsonConverter.fromJsonArray( response.byteStream() );
-            }
-      }
-
-// ========================= 缓存策略 =========================
-
-      /**
-       * 缓存过期策略
-       */
-      public interface CacheExpiredStrategy {
-
-            /**
-             * 测试缓存文件是否过期
-             *
-             * @param cache 缓存文件
-             *
-             * @return true 过期了
-             */
-            boolean testCacheFile ( File cache );
-      }
-
-      /**
-       * 文件默认缓存策略,永不过期,如果需要清除缓存,在app启动时
-       */
-      public static class DefaultCacheExpiredStrategy implements CacheExpiredStrategy {
-
-            /**
-             * @param cache 缓存文件
-             */
-            @Override
-            public boolean testCacheFile ( File cache ) {
-
-                  return false;
-            }
-      }
-
-      /**
-       * 文件缓存策略,使用时间
-       */
-      public static class CacheExpiredStrategyTime implements CacheExpiredStrategy {
-
-            /**
-             * 过期时间
-             */
-            private long mExpiredTime;
-
-            public CacheExpiredStrategyTime ( long expiredTime ) {
-
-                  mExpiredTime = expiredTime;
-            }
-
-            /**
-             * @param cache 缓存文件
-             */
-            @Override
-            public boolean testCacheFile ( File cache ) {
-
-                  long l = System.currentTimeMillis();
-                  long lastModified = cache.lastModified();
-
-                  return l - lastModified > mExpiredTime;
             }
       }
 
@@ -482,17 +508,6 @@ public class JsonLoader<V> {
                   mNodes.add( new Node( low, high ) );
             }
 
-            private int count ( ) {
-
-                  ArrayList<Node> nodes = mNodes;
-                  int result = 0;
-                  for( Node node : nodes ) {
-                        result += node.count();
-                  }
-
-                  return result;
-            }
-
             private void reRange ( int starIndex ) {
 
                   ArrayList<Node> nodes = mNodes;
@@ -527,5 +542,59 @@ public class JsonLoader<V> {
                         }
                   }
             }
+
+            private int count ( ) {
+
+                  ArrayList<Node> nodes = mNodes;
+                  int result = 0;
+                  for( Node node : nodes ) {
+                        result += node.count();
+                  }
+
+                  return result;
+            }
+
+            private int getMinIndex ( ) {
+
+                  if( mNodes.size() == 0 ) {
+                        return -1;
+                  }
+
+                  return mNodes.get( 0 ).low;
+            }
+
+            private int getMaxIndex ( ) {
+
+                  if( mNodes.size() == 0 ) {
+                        return -1;
+                  }
+
+                  return mNodes.get( mNodes.size() - 1 ).high;
+            }
+
+            private synchronized void clear ( ) {
+
+                  mNodes.clear();
+            }
+      }
+
+      /**
+       * 内存中数据大小监听
+       */
+      public interface OnMemorySizeTooLargeListener {
+
+            /**
+             * 配置内存中数据最大数量
+             *
+             * @return 内存最大数据
+             */
+            int getMaxMemorySize ( );
+
+            /**
+             * 当内存中数据
+             *
+             * @param memorySize 当前内存中数据大小
+             */
+            void onMemorySizeTooLarge ( int memorySize );
       }
 }

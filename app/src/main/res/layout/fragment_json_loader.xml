@@ -18,23 +18,55 @@
           app:layout_constraintTop_toTopOf="parent"/>
 
       <Button
-          android:id="@+id/memorySize"
+          android:id="@+id/cacheCount"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginStart="8dp"
           android:layout_marginLeft="8dp"
-          android:text="memorySize"
+          android:text="cacheCount"
           app:layout_constraintStart_toEndOf="@+id/loadMore"
           app:layout_constraintTop_toTopOf="parent"/>
-
-      <android.support.v7.widget.RecyclerView
-          android:id="@+id/recycler"
-          android:layout_width="0dp"
-          android:layout_height="0dp"
+      <Button
+          android:id="@+id/cachedMin"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="min"
+          app:layout_constraintStart_toEndOf="@+id/cacheCount"
+          app:layout_constraintTop_toTopOf="parent"/>
+
+      <Button
+          android:id="@+id/cachedMax"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="max"
+          app:layout_constraintStart_toEndOf="@+id/cachedMin"
+          app:layout_constraintTop_toTopOf="parent"/>
+      <Button
+          android:id="@+id/printMemory"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="printMemory"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/loadMore"/>
+      <Button
+          android:id="@+id/trim09"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="trim0-9"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
+
 </android.support.constraint.ConstraintLayout>
