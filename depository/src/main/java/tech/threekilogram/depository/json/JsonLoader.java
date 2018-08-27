@@ -97,6 +97,38 @@ public class JsonLoader<V> {
       }
 
       /**
+       * 从网络加载一组数据
+       *
+       * @param url url
+       *
+       * @return 数据
+       */
+      public List<V> loadMore ( String url ) {
+
+            if( mLoadingUrls.isLoading( url ) ) {
+                  return null;
+            }
+            List<V> list = mRetrofitLoader.load( url );
+            mLoadingUrls.removeLoadingUrl( url );
+            return list;
+      }
+
+      /**
+       * 保存一组数据
+       *
+       * @param index 起始索引
+       * @param list 数据
+       */
+      public void saveMore ( int index, List<V> list ) {
+
+            mMemoryList.saveMore( index, list );
+
+            mIndexes.updateIndex( index, index + list.size() - 1 );
+
+            notifyMemorySizeListener();
+      }
+
+      /**
        * 从网络加载更多数据
        *
        * @param index 加载完成后以该索引为起点保存数据
@@ -104,20 +136,12 @@ public class JsonLoader<V> {
        */
       public void loadMore ( int index, String url ) {
 
-            if( mLoadingUrls.isLoading( url ) ) {
-                  return;
-            }
-            List<V> list = mRetrofitLoader.load( url );
-            mLoadingUrls.removeLoadingUrl( url );
+            List<V> list = loadMore( url );
 
             if( list == null || list.size() == 0 ) {
                   return;
             }
-            mMemoryList.saveMore( index, list );
-
-            mIndexes.updateIndex( index, index + list.size() - 1 );
-
-            notifyMemorySizeListener();
+            saveMore( index, list );
       }
 
       private void notifyMemorySizeListener ( ) {
