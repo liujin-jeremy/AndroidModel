@@ -226,7 +226,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 压缩内存,将内存中数据缓存到本地缓存,同时在内存中删除
+       * 压缩内存,仅将指定索引数据缓存到本地缓存,同时在内存中删除
        *
        * @param index 需要缓存索引
        */
@@ -332,7 +332,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 清除所有缓存,仅保留指定区间数据
+       * 清除所有缓存,仅保留指定区间数据[start,end)
        *
        * @param start 起始索引
        * @param end 结束索引

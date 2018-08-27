@@ -68,5 +68,45 @@
           android:text="trim0-9"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
+      <Button
+          android:id="@+id/trim0"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="trim0"
+          app:layout_constraintStart_toEndOf="@+id/trim09"
+          app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
+      <Button
+          android:id="@+id/load0"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="load0"
+          app:layout_constraintStart_toEndOf="@+id/trim0"
+          app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
+      <Button
+          android:id="@+id/clearCache"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="clearCache"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/trim09"/>
+      <Button
+          android:id="@+id/clearCache1019"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="clearCache1019"
+          app:layout_constraintStart_toEndOf="@+id/clearCache"
+          app:layout_constraintTop_toBottomOf="@+id/trim0"/>
 
 </android.support.constraint.ConstraintLayout>

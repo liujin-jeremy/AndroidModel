@@ -34,6 +34,10 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
       private Button mCachedMax;
       private Button mPrintMemory;
       private Button mTrim09;
+      private Button mTrim0;
+      private Button mLoad0;
+      private Button mClearCache;
+      private Button mClearCache1019;
 
       public static TestJsonLoaderFragment newInstance ( ) {
 
@@ -102,6 +106,14 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             mPrintMemory.setOnClickListener( this );
             mTrim09 = (Button) itemView.findViewById( R.id.trim09 );
             mTrim09.setOnClickListener( this );
+            mTrim0 = (Button) itemView.findViewById( R.id.trim0 );
+            mTrim0.setOnClickListener( this );
+            mLoad0 = (Button) itemView.findViewById( R.id.load0 );
+            mLoad0.setOnClickListener( this );
+            mClearCache = (Button) itemView.findViewById( R.id.clearCache );
+            mClearCache.setOnClickListener( this );
+            mClearCache1019 = (Button) itemView.findViewById( R.id.clearCache1019 );
+            mClearCache1019.setOnClickListener( this );
       }
 
       @Override
@@ -128,7 +140,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                         break;
                   case R.id.cacheCount:
                         int memorySize = mJsonLoader.getCachedCount();
-                        Log.e( TAG, "onClick : memorySize " + memorySize );
+                        Log.e( TAG, "onClick : cachedSize " + memorySize );
                         break;
                   case R.id.cachedMin:
                         int cachedMin = mJsonLoader.getCachedMin();
@@ -144,6 +156,20 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                   case R.id.trim09:
                         mJsonLoader.trimMemory( 0, 10 );
                         Log.e( TAG, "onClick : trim 0-9 finished" );
+                        break;
+                  case R.id.trim0:
+                        mJsonLoader.trimMemory( 0 );
+                        Log.e( TAG, "onClick : trim 0 finished" );
+                        break;
+                  case R.id.load0:
+                        ResultsBean resultsBean = mJsonLoader.loadFile( 0 );
+                        Log.e( TAG, "onClick : load 0 " + resultsBean );
+                        break;
+                  case R.id.clearCache:
+                        mJsonLoader.clearCache();
+                        break;
+                  case R.id.clearCache1019:
+                        mJsonLoader.clearCache( 10, 19 );
                         break;
                   default:
                         break;
