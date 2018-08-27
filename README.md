@@ -271,3 +271,20 @@ Bean bean = loader.load( url );
 
 ### Bitmap缓存
 
+> 该类提供了bitmap三级缓存
+
+```
+private BitmapLoader mLoader;
+
+// 创建
+mLoader = new BitmapLoader(
+    (int) Runtime.getRuntime().maxMemory() >> 3, --> 最大使用内存
+    getContext().getExternalFilesDir( "bitmap" ) --> 缓存文件夹
+);
+
+// 配置图片缩放
+mLoader.configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
+
+// 加载图片
+Bitmap bitmap = mLoader.load(url);
+```

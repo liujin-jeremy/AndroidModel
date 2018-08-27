@@ -33,10 +33,10 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
             return fragment;
       }
 
-      private Loader    mLoader;
-      private Button    mLoad;
-      private ImageView mImage;
-      private int       mUrlIndex;
+      private BitmapLoader mLoader;
+      private Button       mLoad;
+      private ImageView    mImage;
+      private int          mUrlIndex;
       private String[] mBitmaps = {
           "http://ww4.sinaimg.cn/large/610dc034jw1f4vmdn2f5nj20kq0rm755.jpg",
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg",
@@ -75,7 +75,14 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
-            mLoader = new Loader();
+
+            ScreenSize.init( getContext() );
+
+            mLoader = new BitmapLoader(
+                (int) Runtime.getRuntime().maxMemory() >> 3,
+                getContext().getExternalFilesDir( "bitmap" )
+            );
+            mLoader.configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
       }
 
       private void initView ( @NonNull final View itemView ) {
@@ -112,20 +119,6 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
 
             if( what == 11 ) {
                   mImage.setImageBitmap( (Bitmap) extra );
-            }
-      }
-
-      private class Loader extends BitmapLoader {
-
-            Loader ( ) {
-
-                  super(
-                      (int) Runtime.getRuntime().maxMemory() >> 3,
-                      getContext().getExternalFilesDir( "bitmap" )
-                  );
-
-                  ScreenSize.init( getContext() );
-                  configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
             }
       }
 }
