@@ -185,7 +185,10 @@ public class JsonLoader<V> {
             return mMemoryList.size();
       }
 
-      public void printMemory ( ) {
+      /**
+       * 测试方法,开发时没用
+       */
+      private void printMemory ( ) {
 
             int size = mMemoryList.size();
             ArrayMap<Integer, V> container = mMemoryList.container();

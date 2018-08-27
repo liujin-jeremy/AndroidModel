@@ -151,7 +151,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                         Log.e( TAG, "onClick : cachedMax " + cachedMax );
                         break;
                   case R.id.printMemory:
-                        mJsonLoader.printMemory();
+                        //mJsonLoader.printMemory();
                         break;
                   case R.id.trim09:
                         mJsonLoader.trimMemory( 0, 10 );
