@@ -1,6 +1,7 @@
 package tech.threekilogram.depository.json;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,7 +138,17 @@ public class JsonLoader<V> {
 
             List<V> list = loadMore( url );
 
-            if( list == null || list.size() == 0 ) {
+            if( list == null ) {
+                  Log.e(
+                      "Exception",
+                      "you must implements "
+                          + "tech.threekilogram.depository.json.JsonConverter#fromJsonArray( InputStream inputStream ) "
+                          + "to work fine "
+                  );
+                  return;
+            }
+
+            if( list.size() == 0 ) {
                   return;
             }
             saveMore( index, list );
