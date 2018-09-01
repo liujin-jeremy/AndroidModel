@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.List;
 import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.JsonLoader;
+import tech.threekilogram.depository.net.LoadingUrls;
 
 /**
  * @author: Liujin
@@ -26,12 +27,20 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
       private static final String TAG = TestJsonLoaderFragment.class.getSimpleName();
 
+      private int         mDayIndex;
+      private LoadingUrls mLoadingUrls;
+
       private Button mHistory;
       private Button mHistorySize;
       private Button mMore10Bean;
-
-      private int    mDayIndex;
       private Button mLoad1More;
+      private Button mAddIndex;
+      private Button mSubIndex;
+      private Button mIndexUrl;
+      private Button mMemoryContains;
+      private Button mMemoryLoad;
+      private Button mFileContains;
+      private Button mFileLoad;
 
       public static TestJsonLoaderFragment newInstance ( ) {
 
@@ -69,6 +78,8 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                 jsonFile,
                 new GsonConverter<GankDayBean>( GankDayBean.class )
             );
+
+            mLoadingUrls = new LoadingUrls();
       }
 
       private void initView ( @NonNull final View itemView ) {
@@ -81,6 +92,20 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             mMore10Bean.setOnClickListener( this );
             mLoad1More = (Button) itemView.findViewById( R.id.load1More );
             mLoad1More.setOnClickListener( this );
+            mAddIndex = (Button) itemView.findViewById( R.id.addIndex );
+            mAddIndex.setOnClickListener( this );
+            mSubIndex = (Button) itemView.findViewById( R.id.subIndex );
+            mSubIndex.setOnClickListener( this );
+            mIndexUrl = (Button) itemView.findViewById( R.id.indexUrl );
+            mIndexUrl.setOnClickListener( this );
+            mMemoryContains = (Button) itemView.findViewById( R.id.memoryContains );
+            mMemoryContains.setOnClickListener( this );
+            mMemoryLoad = (Button) itemView.findViewById( R.id.memoryLoad );
+            mMemoryLoad.setOnClickListener( this );
+            mFileContains = (Button) itemView.findViewById( R.id.fileContains );
+            mFileContains.setOnClickListener( this );
+            mFileLoad = (Button) itemView.findViewById( R.id.fileLoad );
+            mFileLoad.setOnClickListener( this );
       }
 
       @Override
@@ -100,9 +125,112 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                   case R.id.load1More:
                         load1More();
                         break;
+                  case R.id.addIndex:
+                        addIndex();
+                        break;
+                  case R.id.subIndex:
+                        subIndex();
+                        break;
+                  case R.id.indexUrl:
+                        indexUrl();
+                        break;
+                  case R.id.memoryContains:
+                        memoryContainsOf();
+                        break;
+                  case R.id.memoryLoad:
+                        memoryLoad();
+                        break;
+                  case R.id.fileContains:
+                        fileContainsOf();
+                        break;
+                  case R.id.fileLoad:
+                        fileLoad();
+                        break;
                   default:
                         break;
             }
+      }
+
+      private void fileLoad ( ) {
+
+            String dayUrl = getDayUrl();
+            GankDayBean dayBean = mDayLoader.loadFile( dayUrl );
+            if( dayBean != null ) {
+                  mDayLoader.save( dayUrl, dayBean );
+                  Log.e( TAG, "fileLoad : " + dayUrl + " " + dayBean.getResults().get福利().get( 0 )
+                                                                    .getUrl() );
+            } else {
+
+                  Log.e( TAG, "fileLoad : " + "without in file ;" + dayUrl );
+            }
+      }
+
+      private void fileContainsOf ( ) {
+
+            String url = getDayUrl();
+            boolean b = mDayLoader.containsOfFile( url );
+
+            Log.e( TAG, "fileContainsOf : " + url + " " + b );
+      }
+
+      private void memoryLoad ( ) {
+
+            String dayUrl = getDayUrl();
+            GankDayBean dayBean = mDayLoader.loadMemory( dayUrl );
+            if( dayBean != null ) {
+
+                  Log.e( TAG, "memoryLoad : " + dayUrl + " " + dayBean.getResults().get福利().get( 0 )
+                                                                      .getUrl() );
+            } else {
+
+                  Log.e( TAG, "memoryLoad : without in memory ;" + dayUrl );
+            }
+      }
+
+      private void memoryContainsOf ( ) {
+
+            String dayUrl = getDayUrl();
+            boolean b = mDayLoader.containsOfMemory( dayUrl );
+
+            Log.e( TAG, "memoryContainsOf : " + dayUrl + " " + b );
+      }
+
+      private void indexUrl ( ) {
+
+            int size = getSize();
+            if( size == 0 ) {
+                  Log.e( TAG, "indexUrl : without history" );
+                  return;
+            }
+
+            String url = getDayUrl();
+            Log.e( TAG, "indexUrl : " + url );
+      }
+
+      private String getDayUrl ( ) {
+
+            GankHistoryBean load = mHistoryLoader.load( GankUrl.historyUrl() );
+            String history = load.getResults().get( mDayIndex );
+            return GankUrl.dayUrl( history );
+      }
+
+      private void subIndex ( ) {
+
+            mDayIndex--;
+            if( mDayIndex < 0 ) {
+                  mDayIndex = 0;
+            }
+            Log.e( TAG, "subIndex : " + mDayIndex );
+      }
+
+      private void addIndex ( ) {
+
+            mDayIndex++;
+            int size = getSize();
+            if( mDayIndex > size - 1 ) {
+                  mDayIndex = 0;
+            }
+            Log.e( TAG, "addIndex : " + mDayIndex );
       }
 
       private void load1More ( ) {
@@ -130,7 +258,11 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     Log.e( TAG, "run : containsOf " + containsOf + " " + url );
 
                                     if( !containsOf ) {
+                                          if( mLoadingUrls.isLoading( url ) ) {
+                                                return;
+                                          }
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
+                                          mLoadingUrls.removeLoadingUrl( url );
                                           if( dayBean != null ) {
                                                 mDayLoader.save( url, dayBean );
                                                 return;
@@ -171,7 +303,11 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     Log.e( TAG, "run : containsOf " + containsOf + " " + url );
 
                                     if( !containsOf ) {
+                                          if( mLoadingUrls.isLoading( url ) ) {
+                                                return;
+                                          }
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
+                                          mLoadingUrls.removeLoadingUrl( url );
                                           if( dayBean != null ) {
                                                 mDayLoader.save( url, dayBean );
                                                 count++;
@@ -211,11 +347,16 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                   @Override
                   public void run ( ) {
 
+                        String url = GankUrl.historyUrl();
+                        if( mLoadingUrls.isLoading( url ) ) {
+                              return;
+                        }
                         GankHistoryBean gankHistoryBean = mHistoryLoader
-                            .loadFromNet( GankUrl.historyUrl() );
+                            .loadFromNet( url );
+                        mLoadingUrls.removeLoadingUrl( url );
 
                         mHistoryLoader
-                            .saveToMemory( GankUrl.historyUrl(), gankHistoryBean );
+                            .saveToMemory( url, gankHistoryBean );
 
                         boolean error = gankHistoryBean.isError();
                         Log.e( TAG, "run : error: " + error );

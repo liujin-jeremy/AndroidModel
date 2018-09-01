@@ -47,5 +47,76 @@
           android:text="load1More"
           app:layout_constraintStart_toEndOf="@+id/more10Bean"
           app:layout_constraintTop_toBottomOf="@+id/historySize"/>
+      <Button
+          android:id="@+id/addIndex"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="addIndex"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/more10Bean"/>
+      <Button
+          android:id="@+id/subIndex"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="subIndex"
+          app:layout_constraintStart_toEndOf="@+id/addIndex"
+          app:layout_constraintTop_toBottomOf="@+id/load1More"/>
+
+      <Button
+          android:id="@+id/indexUrl"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="indexUrl"
+          app:layout_constraintStart_toEndOf="@+id/subIndex"
+          app:layout_constraintTop_toBottomOf="@+id/load1More"/>
+      <Button
+          android:id="@+id/memoryContains"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="memoryContains"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/addIndex"/>
+      <Button
+          android:id="@+id/memoryLoad"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="memoryLoad"
+          app:layout_constraintStart_toEndOf="@+id/memoryContains"
+          app:layout_constraintTop_toBottomOf="@+id/subIndex"/>
+      <Button
+          android:id="@+id/fileContains"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="fileContains"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/memoryContains"/>
+      <Button
+          android:id="@+id/fileLoad"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="fileLoad"
+          app:layout_constraintStart_toEndOf="@+id/fileContains"
+          app:layout_constraintTop_toBottomOf="@+id/memoryLoad"/>
 
 </android.support.constraint.ConstraintLayout>
