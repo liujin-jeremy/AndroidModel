@@ -211,7 +211,7 @@ public class BitmapLoader {
       public Bitmap loadNet ( String url ) {
 
             File file = mDowner.load( url );
-            if( file != null ) {
+            if( file != null && file.exists() ) {
 
                   Bitmap bitmap = mBitmapConverter.read( file );
                   if( bitmap != null ) {
@@ -220,6 +220,16 @@ public class BitmapLoader {
                   }
             }
             return null;
+      }
+
+      /**
+       * 仅从网络下载文件,之后可以使用{@link #getFile(String)}获取改文件
+       *
+       * @param url 图片url
+       */
+      public void downLoad ( String url ) {
+
+            mDowner.load( url );
       }
 
       /**

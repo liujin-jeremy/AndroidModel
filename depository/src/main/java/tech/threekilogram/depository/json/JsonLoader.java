@@ -1,7 +1,6 @@
 package tech.threekilogram.depository.json;
 
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +22,6 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
  */
 @SuppressWarnings("WeakerAccess")
 public class JsonLoader<V> {
-
-      private static final String TAG = JsonLoader.class.getSimpleName();
 
       /**
        * 内存
@@ -58,7 +55,9 @@ public class JsonLoader<V> {
        * true : 正在缓存文件
        */
       protected final AtomicBoolean        mIsCacheToFile   = new AtomicBoolean();
-
+      /**
+       * 内存中数据多少监听,当达到阈值时回调
+       */
       protected OnMemorySizeTooLargeListener mOnMemorySizeTooLargeListener;
 
       /**
@@ -219,7 +218,6 @@ public class JsonLoader<V> {
             for( int i = 0; i < container.size(); i++ ) {
                   Integer key = container.keyAt( i );
                   V v = container.valueAt( i );
-                  Log.e( TAG, "printMemory : " + key + " " + v );
             }
       }
 
