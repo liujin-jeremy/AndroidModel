@@ -1,5 +1,7 @@
 package tech.threekilogram.androidmodellib;
 
+import java.util.Locale;
+
 /**
  * @author: Liujin
  * @version: V1.0
@@ -10,30 +12,22 @@ public class GankUrl {
 
       /* http://gank.io/api/data/数据类型/请求个数/第几页 */
 
-      public static final String BASE_CATEGORY = "http://gank.io/api/data/";
-      public static final String BEAUTY        = "福利/";
-      public static final String ANDROID       = "Android/";
+      public static final String HISTORY       = "https://gank.io/api/day/history";
+      public static final String DAY           = "https://gank.io/api/day/%s/%s/%s";
       public static final int    DEFAULT_COUNT = 10;
 
-      private static final String BASE_BEAUTY_URL =
-          BASE_CATEGORY
-              + BEAUTY
-              + DEFAULT_COUNT
-              + "/";
+      public static String historyUrl ( ) {
 
-      private static final String BASE_ANDROID_URL =
-          BASE_CATEGORY
-              + ANDROID
-              + DEFAULT_COUNT
-              + "/";
-
-      public static String getBeautyPageUrl ( int page ) {
-
-            return BASE_BEAUTY_URL + page;
+            return HISTORY;
       }
 
-      public static String getAndroidPageUrl ( int page ) {
+      public static String dayUrl ( String history ) {
 
-            return BASE_ANDROID_URL + page;
+            //"2015-07-17"
+            String year = history.substring( 0, 4 );
+            String month = history.substring( 5, 7 );
+            String day = history.substring( 8, 10 );
+
+            return String.format( Locale.ENGLISH, DAY, year, month, day );
       }
 }

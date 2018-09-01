@@ -12,12 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.JsonLoader;
-import tech.threekilogram.depository.json.JsonLoader.OnMemorySizeTooLargeListener;
 
 /**
  * @author: Liujin
@@ -29,16 +26,12 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
       private static final String TAG = TestJsonLoaderFragment.class.getSimpleName();
 
-      private Button mLoadMore;
-      private Button mCacheCount;
-      private Button mCachedMin;
-      private Button mCachedMax;
-      private Button mPrintMemory;
-      private Button mTrim09;
-      private Button mTrim0;
-      private Button mLoad0;
-      private Button mClearCache;
-      private Button mClearCache1019;
+      private Button mHistory;
+      private Button mHistorySize;
+      private Button mMore10Bean;
+
+      private int    mDayIndex;
+      private Button mLoad1More;
 
       public static TestJsonLoaderFragment newInstance ( ) {
 
@@ -49,7 +42,8 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             return fragment;
       }
 
-      private JsonLoader<ResultsBean> mJsonLoader;
+      private JsonLoader<GankHistoryBean> mHistoryLoader;
+      private JsonLoader<GankDayBean>     mDayLoader;
 
       @Nullable
       @Override
@@ -66,131 +60,172 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
 
+            mHistoryLoader = new JsonLoader<>(
+                new GsonConverter<GankHistoryBean>( GankHistoryBean.class )
+            );
+
             File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
-            GankGsonConverter gankGsonConverter = new GankGsonConverter( ResultsBean.class );
-            mJsonLoader = new JsonLoader<>( jsonFile, gankGsonConverter );
-
-            PoolExecutor.execute( new Runnable() {
-
-                  @Override
-                  public void run ( ) {
-
-                        mJsonLoader.clearAllFile();
-                  }
-            } );
-            mJsonLoader.setOnMemorySizeTooLargeListener( new OnMemorySizeTooLargeListener() {
-
-                  @Override
-                  public int getMaxMemorySize ( ) {
-
-                        return 50;
-                  }
-
-                  @Override
-                  public void onMemorySizeTooLarge ( int memorySize ) {
-
-                        Log.e( TAG, "onMemorySizeTooLarge : " + memorySize );
-                  }
-            } );
+            mDayLoader = new JsonLoader<>(
+                jsonFile,
+                new GsonConverter<GankDayBean>( GankDayBean.class )
+            );
       }
 
       private void initView ( @NonNull final View itemView ) {
 
-            mLoadMore = (Button) itemView.findViewById( R.id.loadMore );
-            mLoadMore.setOnClickListener( this );
-            mCacheCount = (Button) itemView.findViewById( R.id.cacheCount );
-            mCacheCount.setOnClickListener( this );
-            mCachedMin = (Button) itemView.findViewById( R.id.cachedMin );
-            mCachedMin.setOnClickListener( this );
-            mCachedMax = (Button) itemView.findViewById( R.id.cachedMax );
-            mCachedMax.setOnClickListener( this );
-            mPrintMemory = (Button) itemView.findViewById( R.id.printMemory );
-            mPrintMemory.setOnClickListener( this );
-            mTrim09 = (Button) itemView.findViewById( R.id.trim09 );
-            mTrim09.setOnClickListener( this );
-            mTrim0 = (Button) itemView.findViewById( R.id.trim0 );
-            mTrim0.setOnClickListener( this );
-            mLoad0 = (Button) itemView.findViewById( R.id.load0 );
-            mLoad0.setOnClickListener( this );
-            mClearCache = (Button) itemView.findViewById( R.id.clearCache );
-            mClearCache.setOnClickListener( this );
-            mClearCache1019 = (Button) itemView.findViewById( R.id.clearCache1019 );
-            mClearCache1019.setOnClickListener( this );
+            mHistory = (Button) itemView.findViewById( R.id.history );
+            mHistory.setOnClickListener( this );
+            mHistorySize = (Button) itemView.findViewById( R.id.historySize );
+            mHistorySize.setOnClickListener( this );
+            mMore10Bean = (Button) itemView.findViewById( R.id.more10Bean );
+            mMore10Bean.setOnClickListener( this );
+            mLoad1More = (Button) itemView.findViewById( R.id.load1More );
+            mLoad1More.setOnClickListener( this );
       }
 
       @Override
       public void onClick ( View v ) {
 
             switch( v.getId() ) {
-                  case R.id.loadMore:
 
-                        PoolExecutor.execute( new Runnable() {
-
-                              @Override
-                              public void run ( ) {
-
-                                    int cachedCount = mJsonLoader.getCachedCount();
-                                    int index = cachedCount / 10 + 1;
-                                    final String url =
-                                        "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/" + index;
-
-                                    mJsonLoader.loadMore( cachedCount, url );
-                                    Log.e( TAG, "run : load more finished " + mJsonLoader
-                                        .getCachedCount() );
-                              }
-                        } );
+                  case R.id.history:
+                        loadHistory();
                         break;
-                  case R.id.cacheCount:
-                        int memorySize = mJsonLoader.getCachedCount();
-                        Log.e( TAG, "onClick : cachedSize " + memorySize );
+                  case R.id.historySize:
+                        historySize();
                         break;
-                  case R.id.cachedMin:
-                        int cachedMin = mJsonLoader.getCachedMin();
-                        Log.e( TAG, "onClick : cachedMin " + cachedMin );
+                  case R.id.more10Bean:
+                        loadMore10Days();
                         break;
-                  case R.id.cachedMax:
-                        int cachedMax = mJsonLoader.getCachedMax();
-                        Log.e( TAG, "onClick : cachedMax " + cachedMax );
-                        break;
-                  case R.id.printMemory:
-                        //mJsonLoader.printMemory();
-                        break;
-                  case R.id.trim09:
-                        mJsonLoader.trimMemory( 0, 10 );
-                        Log.e( TAG, "onClick : trim 0-9 finished" );
-                        break;
-                  case R.id.trim0:
-                        mJsonLoader.trimMemory( 0 );
-                        Log.e( TAG, "onClick : trim 0 finished" );
-                        break;
-                  case R.id.load0:
-                        ResultsBean resultsBean = mJsonLoader.loadFile( 0 );
-                        Log.e( TAG, "onClick : load 0 " + resultsBean );
-                        break;
-                  case R.id.clearCache:
-                        mJsonLoader.clearCache();
-                        break;
-                  case R.id.clearCache1019:
-                        mJsonLoader.clearCache( 10, 19 );
+                  case R.id.load1More:
+                        load1More();
                         break;
                   default:
                         break;
             }
       }
 
-      private class GankGsonConverter extends GsonConverter<ResultsBean> {
+      private void load1More ( ) {
 
-            public GankGsonConverter ( Class<ResultsBean> valueType ) {
+            PoolExecutor.execute( new Runnable() {
 
-                  super( valueType );
-            }
+                  @Override
+                  public void run ( ) {
 
-            @Override
-            public List<ResultsBean> fromJsonArray ( InputStream inputStream ) {
+                        int size = getSize();
+                        if( size > 0 ) {
 
-                  GankCategoryBean bean = sGson
-                      .fromJson( new InputStreamReader( inputStream ), GankCategoryBean.class );
-                  return bean.getResults();
-            }
+                              GankHistoryBean historyBean = mHistoryLoader
+                                  .loadMemory( GankUrl.historyUrl() );
+
+                              List<String> histories = historyBean.getResults();
+                              int index = 0;
+                              while( index < histories.size() ) {
+
+                                    String history = histories.get( index );
+                                    String url = GankUrl.dayUrl( history );
+
+                                    boolean containsOf = mDayLoader.containsOf( url );
+
+                                    Log.e( TAG, "run : containsOf " + containsOf + " " + url );
+
+                                    if( !containsOf ) {
+                                          GankDayBean dayBean = mDayLoader.loadFromNet( url );
+                                          if( dayBean != null ) {
+                                                mDayLoader.save( url, dayBean );
+                                                return;
+                                          }
+                                    }
+                                    index++;
+                              }
+
+                              Log.e( TAG, "run : load 1 more finished" );
+                        }
+                  }
+            } );
+      }
+
+      private void loadMore10Days ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        int size = getSize();
+                        if( size > 0 ) {
+
+                              GankHistoryBean historyBean = mHistoryLoader
+                                  .loadMemory( GankUrl.historyUrl() );
+
+                              List<String> histories = historyBean.getResults();
+                              int index = 0;
+                              int count = 0;
+                              while( index < histories.size() ) {
+
+                                    String history = histories.get( index );
+                                    String url = GankUrl.dayUrl( history );
+
+                                    boolean containsOf = mDayLoader.containsOf( url );
+
+                                    Log.e( TAG, "run : containsOf " + containsOf + " " + url );
+
+                                    if( !containsOf ) {
+                                          GankDayBean dayBean = mDayLoader.loadFromNet( url );
+                                          if( dayBean != null ) {
+                                                mDayLoader.save( url, dayBean );
+                                                count++;
+
+                                                if( count >= 10 ) {
+                                                      return;
+                                                }
+                                          }
+                                    }
+                                    index++;
+                              }
+
+                              Log.e( TAG, "run : load 10 more finished" );
+                        }
+                  }
+            } );
+      }
+
+      private void historySize ( ) {
+
+            int size = getSize();
+            Log.e( TAG, "historySize : " + size );
+      }
+
+      private int getSize ( ) {
+
+            GankHistoryBean gankHistoryBean = mHistoryLoader
+                .loadMemory( GankUrl.historyUrl() );
+
+            return gankHistoryBean == null ? 0 : gankHistoryBean.getResults().size();
+      }
+
+      private void loadHistory ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        GankHistoryBean gankHistoryBean = mHistoryLoader
+                            .loadFromNet( GankUrl.historyUrl() );
+
+                        mHistoryLoader
+                            .saveToMemory( GankUrl.historyUrl(), gankHistoryBean );
+
+                        boolean error = gankHistoryBean.isError();
+                        Log.e( TAG, "run : error: " + error );
+                        List<String> results = gankHistoryBean.getResults();
+                        Log.e(
+                            TAG,
+                            "run : results: " + results.size() + " " + results.get( 0 ) + " "
+                                + results.get( results.size() - 1 )
+                        );
+                  }
+            } );
       }
 }

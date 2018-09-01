@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import com.threekilogram.objectbus.executor.PoolThreadExecutor;
+import com.threekilogram.objectbus.executor.PoolExecutor;
 import tech.threekilogram.depository.bitmap.BitmapLoader;
 import tech.threekilogram.messengers.Messengers;
 import tech.threekilogram.messengers.OnMessageReceiveListener;
@@ -105,7 +105,7 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                               return;
                         }
 
-                        PoolThreadExecutor.execute( new Runnable() {
+                        PoolExecutor.execute( new Runnable() {
 
                               @Override
                               public void run ( ) {

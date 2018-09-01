@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.threekilogram.objectbus.executor.PoolThreadExecutor;
+import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -145,7 +145,7 @@ public class TestDownFragment extends Fragment implements OnClickListener {
 
             mIsRunning.set( true );
 
-            PoolThreadExecutor.execute( new Runnable() {
+            PoolExecutor.execute( new Runnable() {
 
                   @Override
                   public void run ( ) {
@@ -182,7 +182,7 @@ public class TestDownFragment extends Fragment implements OnClickListener {
 
             mIsRunning.set( true );
 
-            PoolThreadExecutor.execute( new Runnable() {
+            PoolExecutor.execute( new Runnable() {
 
                   @Override
                   public void run ( ) {

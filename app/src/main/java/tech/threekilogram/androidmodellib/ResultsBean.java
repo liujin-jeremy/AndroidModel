@@ -1,126 +1,63 @@
 package tech.threekilogram.androidmodellib;
 
+import java.util.List;
+
 /**
  * @author: Liujin
  * @version: V1.0
- * @date: 2018-08-20
- * @time: 9:45
+ * @date: 2018-09-01
+ * @time: 13:53
  */
 public class ResultsBean {
 
-      private String  _id;
-      private String  createdAt;
-      private String  desc;
-      private String  publishedAt;
-      private String  source;
-      private String  type;
-      private String  url;
-      private boolean used;
-      private String  who;
+      private String       _id;
+      private String       createdAt;
+      private String       desc;
+      private String       publishedAt;
+      private String       source;
+      private String       type;
+      private String       url;
+      private boolean      used;
+      private String       who;
+      private List<String> images;
 
-      public String get_id ( ) {
+      public String get_id ( ) { return _id;}
 
-            return _id;
-      }
+      public void set_id ( String _id ) { this._id = _id;}
 
-      public void set_id ( String _id ) {
+      public String getCreatedAt ( ) { return createdAt;}
 
-            this._id = _id;
-      }
+      public void setCreatedAt ( String createdAt ) { this.createdAt = createdAt;}
 
-      public String getCreatedAt ( ) {
+      public String getDesc ( ) { return desc;}
 
-            return createdAt;
-      }
+      public void setDesc ( String desc ) { this.desc = desc;}
 
-      public void setCreatedAt ( String createdAt ) {
+      public String getPublishedAt ( ) { return publishedAt;}
 
-            this.createdAt = createdAt;
-      }
+      public void setPublishedAt ( String publishedAt ) { this.publishedAt = publishedAt;}
 
-      public String getDesc ( ) {
+      public String getSource ( ) { return source;}
 
-            return desc;
-      }
+      public void setSource ( String source ) { this.source = source;}
 
-      public void setDesc ( String desc ) {
+      public String getType ( ) { return type;}
 
-            this.desc = desc;
-      }
+      public void setType ( String type ) { this.type = type;}
 
-      public String getPublishedAt ( ) {
+      public String getUrl ( ) { return url;}
 
-            return publishedAt;
-      }
+      public void setUrl ( String url ) { this.url = url;}
 
-      public void setPublishedAt ( String publishedAt ) {
+      public boolean isUsed ( ) { return used;}
 
-            this.publishedAt = publishedAt;
-      }
+      public void setUsed ( boolean used ) { this.used = used;}
 
-      public String getSource ( ) {
+      public String getWho ( ) { return who;}
 
-            return source;
-      }
+      public void setWho ( String who ) { this.who = who;}
 
-      public void setSource ( String source ) {
+      public List<String> getImages ( ) { return images;}
 
-            this.source = source;
-      }
-
-      public String getType ( ) {
-
-            return type;
-      }
-
-      public void setType ( String type ) {
-
-            this.type = type;
-      }
-
-      public String getUrl ( ) {
-
-            return url;
-      }
-
-      public void setUrl ( String url ) {
-
-            this.url = url;
-      }
-
-      public boolean isUsed ( ) {
-
-            return used;
-      }
-
-      public void setUsed ( boolean used ) {
-
-            this.used = used;
-      }
-
-      public String getWho ( ) {
-
-            return who;
-      }
-
-      public void setWho ( String who ) {
-
-            this.who = who;
-      }
-
-      @Override
-      public String toString ( ) {
-
-            return "ResultsBean{" +
-                "_id='" + _id + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", desc='" + desc + '\'' +
-                ", publishedAt='" + publishedAt + '\'' +
-                ", source='" + source + '\'' +
-                ", type='" + type + '\'' +
-                ", url='" + url + '\'' +
-                ", used=" + used +
-                ", who='" + who + '\'' +
-                '}';
-      }
+      public void setImages ( List<String> images ) { this.images = images;}
 }

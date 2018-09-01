@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.threekilogram.objectbus.executor.PoolThreadExecutor;
+import com.threekilogram.objectbus.executor.PoolExecutor;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitGsonConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
@@ -94,7 +94,7 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
       private void loadString ( ) {
 
-            PoolThreadExecutor.execute( new Runnable() {
+            PoolExecutor.execute( new Runnable() {
 
                   @Override
                   public void run ( ) {
@@ -109,7 +109,7 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
       private void loadJson ( ) {
 
-            PoolThreadExecutor.execute( new Runnable() {
+            PoolExecutor.execute( new Runnable() {
 
                   @Override
                   public void run ( ) {
@@ -124,7 +124,7 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
       private void loadBitmap ( ) {
 
-            PoolThreadExecutor.execute( new Runnable() {
+            PoolExecutor.execute( new Runnable() {
 
                   @Override
                   public void run ( ) {

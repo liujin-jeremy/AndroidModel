@@ -7,106 +7,45 @@
 
 
       <Button
-          android:id="@+id/loadMore"
+          android:id="@+id/history"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginStart="8dp"
           android:layout_marginLeft="8dp"
-          android:text="loadMore"
+          android:text="history"
           app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
+      <Button
+          android:id="@+id/historySize"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginLeft="16dp"
+          android:text="historySize"
+          app:layout_constraintStart_toEndOf="@+id/history"
           app:layout_constraintTop_toTopOf="parent"/>
 
       <Button
-          android:id="@+id/cacheCount"
+          android:id="@+id/more10Bean"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginStart="8dp"
           android:layout_marginLeft="8dp"
-          android:text="cacheCount"
-          app:layout_constraintStart_toEndOf="@+id/loadMore"
-          app:layout_constraintTop_toTopOf="parent"/>
-      <Button
-          android:id="@+id/cachedMin"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="min"
-          app:layout_constraintStart_toEndOf="@+id/cacheCount"
-          app:layout_constraintTop_toTopOf="parent"/>
-
-      <Button
-          android:id="@+id/cachedMax"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="max"
-          app:layout_constraintStart_toEndOf="@+id/cachedMin"
-          app:layout_constraintTop_toTopOf="parent"/>
-      <Button
-          android:id="@+id/printMemory"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="printMemory"
+          android:text="more10Bean"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/loadMore"/>
+          app:layout_constraintTop_toBottomOf="@+id/history"/>
       <Button
-          android:id="@+id/trim09"
+          android:id="@+id/load1More"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginStart="8dp"
           android:layout_marginLeft="8dp"
-          android:text="trim0-9"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
-      <Button
-          android:id="@+id/trim0"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="trim0"
-          app:layout_constraintStart_toEndOf="@+id/trim09"
-          app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
-      <Button
-          android:id="@+id/load0"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="load0"
-          app:layout_constraintStart_toEndOf="@+id/trim0"
-          app:layout_constraintTop_toBottomOf="@+id/printMemory"/>
-      <Button
-          android:id="@+id/clearCache"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="clearCache"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/trim09"/>
-      <Button
-          android:id="@+id/clearCache1019"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="clearCache1019"
-          app:layout_constraintStart_toEndOf="@+id/clearCache"
-          app:layout_constraintTop_toBottomOf="@+id/trim0"/>
+          android:text="load1More"
+          app:layout_constraintStart_toEndOf="@+id/more10Bean"
+          app:layout_constraintTop_toBottomOf="@+id/historySize"/>
 
 </android.support.constraint.ConstraintLayout>
