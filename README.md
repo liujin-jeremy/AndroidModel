@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	         implementation 'com.github.threekilogram:AndroidCache:1.5'
+	          implementation 'com.github.threekilogram:AndroidModel:1.7.1'
 	}
 ```
 
