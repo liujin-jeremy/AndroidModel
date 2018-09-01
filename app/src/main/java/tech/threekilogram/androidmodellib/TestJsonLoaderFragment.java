@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.threekilogram.objectbus.executor.PoolThreadExecutor;
+import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +28,7 @@ import tech.threekilogram.depository.json.JsonLoader.OnMemorySizeTooLargeListene
 public class TestJsonLoaderFragment extends Fragment implements OnClickListener {
 
       private static final String TAG = TestJsonLoaderFragment.class.getSimpleName();
+
       private Button mLoadMore;
       private Button mCacheCount;
       private Button mCachedMin;
@@ -66,9 +67,10 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             initView( view );
 
             File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
-            mJsonLoader = new JsonLoader<>( jsonFile, new GankGsonConverter( ResultsBean.class ) );
+            GankGsonConverter gankGsonConverter = new GankGsonConverter( ResultsBean.class );
+            mJsonLoader = new JsonLoader<>( jsonFile, gankGsonConverter );
 
-            PoolThreadExecutor.execute( new Runnable() {
+            PoolExecutor.execute( new Runnable() {
 
                   @Override
                   public void run ( ) {
@@ -122,7 +124,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             switch( v.getId() ) {
                   case R.id.loadMore:
 
-                        PoolThreadExecutor.execute( new Runnable() {
+                        PoolExecutor.execute( new Runnable() {
 
                               @Override
                               public void run ( ) {

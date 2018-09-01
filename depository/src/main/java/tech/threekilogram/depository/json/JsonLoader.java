@@ -1,20 +1,19 @@
 package tech.threekilogram.depository.json;
 
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
+import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
-import tech.threekilogram.depository.memory.map.MemoryList;
-import tech.threekilogram.depository.net.LoadingUrls;
+import tech.threekilogram.depository.memory.map.MemoryMap;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
@@ -27,73 +26,83 @@ public class JsonLoader<V> {
       /**
        * 内存
        */
-      protected MemoryList<V>           mMemoryList;
+      protected MemoryMap<String, V>    mMemoryList;
       /**
        * 文件
        */
+      @Nullable
       protected BaseFileLoader<V>       mFileContainer;
       /**
-       * 网络
+       * 网络list
        */
-      protected RetrofitLoader<List<V>> mRetrofitLoader;
+      protected RetrofitLoader<List<V>> mRetrofitListLoader;
+      /**
+       * 网络bean
+       */
+      protected RetrofitLoader<V>       mRetrofitLoader;
       /**
        * 辅助将流转换为json bean
        */
       protected JsonConverter<V>        mJsonConverter;
       /**
-       * 记录所有正在加载的url
-       */
-      protected       LoadingUrls          mLoadingUrls     = new LoadingUrls();
-      /**
-       * 管理APP运行期间所有缓存的索引
-       */
-      protected       CachedIndexes        mIndexes         = new CachedIndexes();
-      /**
        * 临时保存需要需要写入文件的bean
        */
-      protected final ArrayMap<Integer, V> mWillCacheToFile = new ArrayMap<>();
+      protected final ArrayMap<String, V> mWillCacheToFile = new ArrayMap<>();
       /**
        * true : 正在缓存文件
        */
-      protected final AtomicBoolean        mIsCacheToFile   = new AtomicBoolean();
-      /**
-       * 内存中数据多少监听,当达到阈值时回调
-       */
-      protected OnMemorySizeTooLargeListener mOnMemorySizeTooLargeListener;
+      protected final AtomicBoolean       mIsCacheToFile   = new AtomicBoolean();
 
       /**
+       * 创建一个内存/网络缓存的loader
+       *
+       * @param jsonConverter 转换流为bean对象
+       */
+      public JsonLoader ( JsonConverter<V> jsonConverter ) {
+
+            mMemoryList = new MemoryMap<>();
+
+            mJsonConverter = jsonConverter;
+
+            mRetrofitListLoader = new RetrofitLoader<>(
+                new JsonRetrofitListConverter()
+            );
+
+            mRetrofitLoader = new RetrofitLoader<>(
+                new JsonRetrofitConverter()
+            );
+      }
+
+      /**
+       * 创建一个内存/文件/网络缓存的loader
+       *
        * @param dir 缓存文件夹
        * @param jsonConverter 转换流为bean对象
        */
       public JsonLoader ( File dir, JsonConverter<V> jsonConverter ) {
 
-            mMemoryList = new MemoryList<>();
-
+            this( jsonConverter );
             mFileContainer = new FileLoader<>(
                 dir,
                 new JsonFileConverter()
             );
-
-            mJsonConverter = jsonConverter;
-            mRetrofitLoader = new RetrofitLoader<>(
-                new JsonRetrofitListConverter()
-            );
       }
 
       /**
-       * 从内存和本地缓存文件中测试是否包含该key对应的数据缓存
+       * 创建一个内存/文件/网络缓存的loader
        *
-       * @param index index
-       *
-       * @return true:有该key对应的缓存,否则没有
+       * @param dir 缓存文件夹
+       * @param jsonConverter 转换流为bean对象
        */
-      public boolean containsOf ( int index ) {
+      public JsonLoader ( File dir, long maxFileSize, JsonConverter<V> jsonConverter )
+          throws IOException {
 
-            if( mMemoryList.containsOf( index ) ) {
-                  return true;
-            }
-
-            return mFileContainer.containsOf( String.valueOf( index ) );
+            this( jsonConverter );
+            mFileContainer = new DiskLruLoader<>(
+                dir,
+                maxFileSize,
+                new JsonFileConverter()
+            );
       }
 
       /**
@@ -101,112 +110,66 @@ public class JsonLoader<V> {
        *
        * @param url url
        *
+       * @return 一组数据
+       */
+      public List<V> loadListFromNet ( String url ) {
+
+            return mRetrofitListLoader.load( url );
+      }
+
+      /**
+       * 从网络加载一个数据
+       *
+       * @param url url
+       *
        * @return 数据
        */
-      public List<V> loadMore ( String url ) {
+      public V loadFromNet ( String url ) {
 
-            if( mLoadingUrls.isLoading( url ) ) {
-                  return null;
-            }
-            List<V> list = mRetrofitLoader.load( url );
-            mLoadingUrls.removeLoadingUrl( url );
-            return list;
+            return mRetrofitLoader.load( url );
       }
 
       /**
-       * 保存一组数据
+       * 保存数据到内存中
        *
-       * @param index 起始索引
-       * @param list 数据
+       * @param key value key
+       * @param v value
        */
-      public void saveMore ( int index, List<V> list ) {
+      public void saveToMemory ( String key, V v ) {
 
-            mMemoryList.saveMore( index, list );
-
-            mIndexes.updateIndex( index, index + list.size() - 1 );
-
-            notifyMemorySizeListener();
+            mMemoryList.save( key, v );
       }
 
       /**
-       * 从网络加载更多数据
+       * 测试该key对应的value是否存在与内存中
        *
-       * @param index 加载完成后以该索引为起点保存数据
-       * @param url url
+       * @param key key
+       *
+       * @return true :存在于内存中
        */
-      public void loadMore ( int index, String url ) {
+      public boolean containsOfMemory ( String key ) {
 
-            List<V> list = loadMore( url );
-
-            if( list == null ) {
-                  Log.e(
-                      "Exception",
-                      "you must implements "
-                          + "tech.threekilogram.depository.json.JsonConverter#fromJsonArray( InputStream inputStream ) "
-                          + "to work fine "
-                  );
-                  return;
-            }
-
-            if( list.size() == 0 ) {
-                  return;
-            }
-            saveMore( index, list );
-      }
-
-      private void notifyMemorySizeListener ( ) {
-
-            if( mOnMemorySizeTooLargeListener != null ) {
-
-                  int size = mMemoryList.size();
-                  int maxMemorySize = mOnMemorySizeTooLargeListener.getMaxMemorySize();
-                  if( size >= maxMemorySize ) {
-
-                        mOnMemorySizeTooLargeListener.onMemorySizeTooLarge( size );
-                  }
-            }
+            return mMemoryList.containsOf( key );
       }
 
       /**
-       * 获取所有缓存数据数量
+       * 从内存中删除
        *
-       * @return 缓存数据数量
+       * @return 值
        */
-      public int getCachedCount ( ) {
+      public V removeMemory ( String key ) {
 
-            return mIndexes.count();
-      }
-
-      /**
-       * 获取程序运行期间所有缓存数据中最小的index.{@link #loadMore(int, String)}
-       *
-       * @return index
-       */
-      public int getCachedMin ( ) {
-
-            return mIndexes.getMinIndex();
-      }
-
-      /**
-       * 获取程序运行期间所有缓存数据中最大的index.{@link #loadMore(int, String)}
-       *
-       * @return index
-       */
-      public int getCachedMax ( ) {
-
-            return mIndexes.getMaxIndex();
+            return mMemoryList.remove( key );
       }
 
       /**
        * 从内存中读取
        *
-       * @param index 索引
-       *
-       * @return 值
+       * @return 该key对应的值 or null (if not in memory)
        */
-      public V loadMemory ( int index ) {
+      public V loadMemory ( String key ) {
 
-            return mMemoryList.load( index );
+            return mMemoryList.load( key );
       }
 
       /**
@@ -220,59 +183,115 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 测试方法,开发时没用
+       * 清除所有内存中数据
        */
-      private void printMemory ( ) {
+      public void clearMemory ( ) {
 
-            int size = mMemoryList.size();
-            ArrayMap<Integer, V> container = mMemoryList.container();
-            for( int i = 0; i < container.size(); i++ ) {
-                  Integer key = container.keyAt( i );
-                  V v = container.valueAt( i );
+            mMemoryList.clear();
+      }
+
+      /**
+       * 测试该key对应的value是否存在于本地文件中
+       *
+       * @param key key
+       *
+       * @return true:存在于本地文件中
+       */
+      public boolean containsOfFile ( String key ) {
+
+            return mFileContainer != null && mFileContainer.containsOf( key );
+      }
+
+      /**
+       * 保存一个json对象到本地文件,如果本地已经有缓存那么不会覆盖它,如果需要覆盖它请使用{@link #removeFile(String)}先删除
+       * 或者使用{@link #saveToFileForce(String, Object)}
+       *
+       * @param key key
+       * @param v value
+       */
+      public void saveToFile ( String key, V v ) {
+
+            if( mFileContainer == null ) {
+                  return;
+            }
+            if( mFileContainer.getFile( key ).exists() ) {
+                  return;
+            }
+            /* 只有本地没有缓存时才保存到文件 */
+            mFileContainer.save( key, v );
+      }
+
+      /**
+       * 保存一个json对象到本地文件,如果本地已经有缓存那么直接覆盖它
+       *
+       * @param key key
+       * @param v value
+       */
+      public void saveToFileForce ( String key, V v ) {
+
+            if( mFileContainer == null ) {
+                  return;
+            }
+            /* 强制保存到文件,无论是否有缓存文件 */
+            mFileContainer.save( key, v );
+      }
+
+      /**
+       * 删除该key对应的缓存文件
+       *
+       * @param key key
+       */
+      public void removeFile ( String key ) {
+
+            if( mFileContainer == null ) {
+                  return;
+            }
+            mFileContainer.remove( key );
+      }
+
+      /**
+       * 从本地文件加载json对象
+       *
+       * @param key key
+       *
+       * @return 该key对应json对象
+       */
+      public V loadFile ( String key ) {
+
+            if( mFileContainer == null ) {
+                  return null;
+            }
+            return mFileContainer.load( key );
+      }
+
+      /**
+       * 清除所有文件
+       */
+      public void clearFile ( ) {
+
+            if( mFileContainer == null ) {
+                  return;
+            }
+
+            try {
+                  mFileContainer.clear();
+            } catch(IOException e) {
+                  e.printStackTrace();
             }
       }
 
       /**
-       * 压缩内存,将内存中数据缓存到本地缓存,同时在内存中删除,
-       * 如果本地已经有缓存文件那么不会覆盖它,清除缓存文件请使用{@link #clearFile(int)}{@link #clearAllFile()}
+       * 压缩内存,将指定数据缓存到本地缓存,同时在内存中删除
        *
-       * @param start 内存中保留数据最小索引
-       * @param end 内存中保留数据最大索引,不包含该索引[start,end)
+       * @param key 需要缓存索引
        */
-      @SuppressWarnings("UnnecessaryLocalVariable")
-      public void trimMemory ( int start, int end ) {
+      public void trimMemory ( String key ) {
 
-            ArrayMap<Integer, V> container = mMemoryList.container();
-            ArrayMap<Integer, V> willCacheToFile = mWillCacheToFile;
-
-            for( int i = 0; i < container.size(); i++ ) {
-
-                  Integer key = container.keyAt( i );
-                  if( key < start || key >= end ) {
-
-                        V v = container.removeAt( i );
-                        synchronized(mWillCacheToFile) {
-                              willCacheToFile.put( key, v );
-                        }
-                        i--;
-                  }
-            }
-
-            notifyCacheFile();
-      }
-
-      /**
-       * 压缩内存,仅将指定索引数据缓存到本地缓存,同时在内存中删除
-       *
-       * @param index 需要缓存索引
-       */
-      public void trimMemory ( int index ) {
-
-            V v = mMemoryList.remove( index );
+            V v = mMemoryList.remove( key );
             if( v != null ) {
 
                   synchronized(mWillCacheToFile) {
-                        mWillCacheToFile.put( index, v );
+                        mWillCacheToFile.put( key, v );
                   }
                   notifyCacheFile();
             }
@@ -288,12 +307,12 @@ public class JsonLoader<V> {
             }
 
             mIsCacheToFile.set( true );
-            ArrayMap<Integer, V> willCacheToFile = mWillCacheToFile;
+            ArrayMap<String, V> willCacheToFile = mWillCacheToFile;
             BaseFileLoader<V> fileContainer = mFileContainer;
 
             while( willCacheToFile.size() > 0 ) {
 
-                  Integer key = null;
+                  String key = null;
                   V v = null;
 
                   synchronized(mWillCacheToFile) {
@@ -302,10 +321,14 @@ public class JsonLoader<V> {
                         v = willCacheToFile.removeAt( 0 );
                   }
 
-                  String s = key.toString();
-                  File file = fileContainer.getFile( s );
+                  if( fileContainer == null ) {
+                        willCacheToFile.clear();
+                        continue;
+                  }
+
+                  File file = fileContainer.getFile( key );
                   if( !file.exists() ) {
-                        fileContainer.save( s, v );
+                        fileContainer.save( key, v );
                   }
             }
 
@@ -313,112 +336,54 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 从缓存文件夹加载缓存
+       * 同时保存到内存和本地文件中,因为涉及到io操作最好异步执行,或者分别调用调用{@link #saveToMemory(String, Object)}和{@link
+       * #saveToFile(String, Object)}
        *
-       * @param index 索引
+       * @param key key
+       * @param v value
+       */
+      public void save ( String key, V v ) {
+
+            saveToMemory( key, v );
+            saveToFile( key, v );
+      }
+
+      /**
+       * 从内存和本地缓存文件中测试是否包含该key对应的数据缓存
+       */
+      public boolean containsOf ( String key ) {
+
+            return containsOfMemory( key ) || containsOfFile( key );
+      }
+
+      /**
+       * 同时从内存本地缓存删除该key对应的缓存
        *
-       * @return 缓存值
+       * @param key key
        */
-      public V loadFile ( int index ) {
+      public void remove ( String key ) {
 
-            String key = String.valueOf( index );
-            V v = mFileContainer.load( key );
-            if( v != null ) {
-
-                  mMemoryList.save( index, v );
-                  mIndexes.updateIndex( index, index );
-                  notifyMemorySizeListener();
-                  return v;
-            }
-            return null;
+            removeMemory( key );
+            removeFile( key );
       }
 
       /**
-       * 清除指定索引缓存
-       */
-      public void clearFile ( int index ) {
-
-            mFileContainer.remove( String.valueOf( index ) );
-      }
-
-      /**
-       * 清除所有文件缓存
-       */
-      public void clearAllFile ( ) {
-
-            try {
-                  mFileContainer.clear();
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-      }
-
-      /**
-       * 清除所有缓存包括内存/文件
-       */
-      public void clearCache ( ) {
-
-            mMemoryList.clear();
-            try {
-                  mFileContainer.clear();
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-            mIndexes.clear();
-      }
-
-      /**
-       * 清除所有缓存,仅保留指定区间数据[start,end)
+       * 尝试从内存本地文件读取缓存,如果均没有缓存返回null
        *
-       * @param start 起始索引
-       * @param end 结束索引
+       * @param key key
+       *
+       * @return 该key对应的value or null
        */
-      public void clearCache ( int start, int end ) {
+      public V load ( String key ) {
 
-            if( start > end ) {
-                  return;
-            }
-
-            CachedIndexes indexes = mIndexes;
-            indexes.clear();
-
-            ArrayMap<Integer, V> temp = new ArrayMap<>();
-            for( int i = start; i < end; i++ ) {
-
-                  V v = loadMemory( i );
+            V v = loadMemory( key );
+            if( v == null ) {
+                  v = loadFile( key );
                   if( v != null ) {
-
-                        temp.put( i, v );
-                        indexes.updateIndex( i, i );
-                  } else {
-
-                        v = loadFile( i );
-                        if( v != null ) {
-                              temp.put( i, v );
-                              indexes.updateIndex( i, i );
-                        }
+                        saveToMemory( key, v );
                   }
             }
-
-            mMemoryList.clear();
-            try {
-                  mFileContainer.clear();
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
-
-            mMemoryList.saveAll( temp );
-      }
-
-      public void setOnMemorySizeTooLargeListener (
-          OnMemorySizeTooLargeListener onMemorySizeTooLargeListener ) {
-
-            mOnMemorySizeTooLargeListener = onMemorySizeTooLargeListener;
-      }
-
-      public OnMemorySizeTooLargeListener getOnMemorySizeTooLargeListener ( ) {
-
-            return mOnMemorySizeTooLargeListener;
+            return v;
       }
 
       // ========================= 辅助转换 =========================
@@ -431,7 +396,7 @@ public class JsonLoader<V> {
             @Override
             public String fileName ( String key ) {
 
-                  return key;
+                  return mKeyNameConverter.encodeToName( key );
             }
 
             @Override
@@ -460,177 +425,15 @@ public class JsonLoader<V> {
             }
       }
 
-      // ========================= 记录所有已缓存数据索引 =========================
-
-      private static class CachedIndexes {
-
-            private ArrayList<Node> mNodes = new ArrayList<>();
-
-            private class Node {
-
-                  int low;
-                  int high;
-
-                  Node ( int low, int high ) {
-
-                        this.low = low;
-                        this.high = high;
-                  }
-
-                  int count ( ) {
-
-                        return high - low + 1;
-                  }
-            }
-
-            private synchronized void updateIndex ( int low, int high ) {
-
-                  if( high < low ) {
-                        int temp = high;
-                        high = low;
-                        low = temp;
-                  }
-
-                  ArrayList<Node> nodes = mNodes;
-
-                  if( nodes.size() == 0 ) {
-                        nodes.add( new Node( low, high ) );
-                        return;
-                  }
-
-                  for( int i = 0; i < nodes.size(); i++ ) {
-
-                        Node node = nodes.get( i );
-                        int nodeLow = node.low;
-                        int nodeHigh = node.high;
-
-                        if( high < nodeLow ) {
-                              mNodes.add( i, new Node( low, high ) );
-                              return;
-                        }
-
-                        if( high <= nodeHigh ) {
-
-                              if( low < nodeLow ) {
-                                    node.low = low;
-                                    reRange( i );
-                                    return;
-                              } else {
-                                    return;
-                              }
-                        }
-
-                        /* 以下high>nodeHigh恒为true */
-
-                        if( low < nodeLow ) {
-                              node.low = low;
-                              if( high > nodeHigh ) {
-                                    node.high = high;
-                              }
-                              reRange( i );
-                        }
-
-                        if( low <= nodeHigh ) {
-                              if( high > nodeHigh ) {
-                                    node.high = high;
-                                    reRange( i );
-                                    return;
-                              } else {
-                                    return;
-                              }
-                        }
-                  }
-
-                  mNodes.add( new Node( low, high ) );
-            }
-
-            private void reRange ( int starIndex ) {
-
-                  ArrayList<Node> nodes = mNodes;
-
-                  if( starIndex == 0 ) {
-                        return;
-                  }
-
-                  for( int i = starIndex; i < nodes.size(); i++ ) {
-
-                        Node prev = nodes.get( i - 1 );
-                        Node node = nodes.get( i );
-
-                        if( node.low <= prev.high + 1 ) {
-
-                              if( prev.high < node.high ) {
-                                    prev.high = node.high;
-                              }
-                              nodes.remove( i );
-                              i--;
-                        }
-
-                        try {
-                              node = nodes.get( i );
-                              Node next = nodes.get( i + 1 );
-                              if( node.high + 1 < next.low ) {
-                                    break;
-                              }
-                        } catch(Exception e) {
-
-                              /* do nothing */
-                        }
-                  }
-            }
-
-            private int count ( ) {
-
-                  ArrayList<Node> nodes = mNodes;
-                  int result = 0;
-                  for( Node node : nodes ) {
-                        result += node.count();
-                  }
-
-                  return result;
-            }
-
-            private int getMinIndex ( ) {
-
-                  if( mNodes.size() == 0 ) {
-                        return -1;
-                  }
-
-                  return mNodes.get( 0 ).low;
-            }
-
-            private int getMaxIndex ( ) {
-
-                  if( mNodes.size() == 0 ) {
-                        return -1;
-                  }
-
-                  return mNodes.get( mNodes.size() - 1 ).high;
-            }
-
-            private synchronized void clear ( ) {
-
-                  mNodes.clear();
-            }
-      }
-
       /**
-       * 内存中数据大小监听
+       * 辅助将网络资源流转为json bean
        */
-      public interface OnMemorySizeTooLargeListener {
+      private class JsonRetrofitConverter extends BaseRetrofitConverter<V> {
 
-            /**
-             * 配置内存中数据最大数量
-             *
-             * @return 内存最大数据
-             */
-            int getMaxMemorySize ( );
+            @Override
+            public V onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
-            /**
-             * 当内存中数据
-             *
-             * @param memorySize 当前内存中数据大小
-             */
-            void onMemorySizeTooLarge ( int memorySize );
+                  return mJsonConverter.fromJson( response.byteStream() );
+            }
       }
 }

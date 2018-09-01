@@ -3,7 +3,7 @@ package tech.threekilogram.depository.net;
 import android.support.v4.util.ArraySet;
 
 /**
- * 记录正在加载的url
+ * 记录正在加载的url,防止重复加载该url
  *
  * @author: Liujin
  * @version: V1.0
@@ -17,6 +17,13 @@ public class LoadingUrls {
        */
       private final ArraySet<String> mUrlLoadings = new ArraySet<>();
 
+      /**
+       * 测试是否正在加载该url,当加载完成后记得删除{@link #removeLoadingUrl(String)}
+       *
+       * @param url 需要测试的url
+       *
+       * @return true:正在加载url
+       */
       public boolean isLoading ( String url ) {
 
             /* 如果正在加载该url,那么不加载它 */
