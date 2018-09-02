@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,23 +43,14 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg",
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz6g6wppj20ms0xp13n.jpg",
           "http://ww3.sinaimg.cn/mw690/81309c56jw1f4sx4ybttdj20ku0vd0ym.jpg",
-          "http://ww4.sinaimg.cn/mw690/9844520fjw1f4fqrpw1fvj21911wlb2b.jpg",
-          "http://ww4.sinaimg.cn/mw690/9844520fjw1f4fqribdg1j21911w0kjn.jpg",
-          "http://ww4.sinaimg.cn/large/610dc034jw1f4nog8tjfrj20eg0mgab7.jpg",
           "http://ww2.sinaimg.cn/large/610dc034jw1f4mi70ns1bj20i20vedkh.jpg",
           "http://ww1.sinaimg.cn/large/610dc034jw1f4kron1wqaj20ia0rf436.jpg",
           "http://ww2.sinaimg.cn/large/610dc034gw1f4hvgpjjapj20ia0ur0vr.jpg",
-          "http://ac-OLWHHM4o.clouddn.com/4063qegYjlC8nx6uEqxV0kT3hn6hdqJqVWPKpdrS",
           "http://ww3.sinaimg.cn/large/610dc034gw1f4fkmatcvdj20hs0qo78s.jpg",
-          "http://ac-OLWHHM4o.clouddn.com/DPCY44vIYPjVPKNzfHjMdXd9bk27q0i1X2nIaO8Z",
           "http://ww1.sinaimg.cn/large/610dc034jw1f4d4iji38kj20sg0izdl1.jpg",
-          "http://ww4.sinaimg.cn/large/610dc034jw1f49s6i5pg7j20go0p043b.jpg",
           "http://ww3.sinaimg.cn/large/610dc034jw1f48mxqcvkvj20lt0pyaed.jpg",
-          "http://ww4.sinaimg.cn/large/610dc034jw1f47gspphiyj20ia0rf76w.jpg",
-          "http://ww4.sinaimg.cn/large/610dc034jw1f46bsdcls2j20sg0izac0.jpg",
           "http://ww2.sinaimg.cn/large/610dc034jw1f454lcdekoj20dw0kumzj.jpg",
-          "http://ww4.sinaimg.cn/large/610dc034jw1f41lxgc3x3j20jh0tcn14.jpg"
-      };
+          };
 
       @Nullable
       @Override
@@ -102,6 +94,8 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                         Bitmap bitmap = mLoader.loadFromMemory( mBitmaps[ i ] );
                         if( bitmap != null ) {
                               mImage.setImageBitmap( bitmap );
+                              mUrlIndex++;
+                              Log.e( TAG, "onClick : load from net " + mBitmaps[ i ] );
                               return;
                         }
 
@@ -113,6 +107,9 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                                     Bitmap bitmap = mLoader.loadFromFile( mBitmaps[ i ] );
                                     if( bitmap == null ) {
                                           bitmap = mLoader.loadFromNet( mBitmaps[ i ] );
+                                          Log.e( TAG, "run : load from net " + mBitmaps[ i ] );
+                                    } else {
+                                          Log.e( TAG, "run : load from file " + mBitmaps[ i ] );
                                     }
                                     mUrlIndex++;
                                     Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
