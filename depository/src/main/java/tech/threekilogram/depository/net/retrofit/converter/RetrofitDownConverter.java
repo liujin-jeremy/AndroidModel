@@ -69,26 +69,9 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
             return mDir;
       }
 
-      /**
-       * 获取该key对应的文件,文件可能不存在{@link File#exists()}可能返回false
-       *
-       * @param key key
-       *
-       * @return 该key对应文件
-       */
-      public File getFile ( String key ) {
+      public BaseFileLoader<InputStream> getFileLoader ( ) {
 
-            return mFileLoader.getFile( key );
-      }
-
-      /**
-       * 删除key对应文件
-       *
-       * @param key key
-       */
-      public void removeFile ( String key ) {
-
-            mFileLoader.remove( key );
+            return mFileLoader;
       }
 
       /**

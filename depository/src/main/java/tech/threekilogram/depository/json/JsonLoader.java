@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.ResponseBody;
+import tech.threekilogram.depository.CacheLoader;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
@@ -21,7 +22,7 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
  * @author liujin
  */
 @SuppressWarnings("WeakerAccess")
-public class JsonLoader<V> {
+public class JsonLoader<V> implements CacheLoader<V> {
 
       /**
        * 内存
@@ -124,9 +125,14 @@ public class JsonLoader<V> {
        *
        * @return 数据
        */
+      @Override
       public V loadFromNet ( String url ) {
 
-            return mRetrofitLoader.load( url );
+            V v = mRetrofitLoader.load( url );
+            if( v != null ) {
+                  saveToMemory( url, v );
+            }
+            return v;
       }
 
       /**
@@ -135,6 +141,7 @@ public class JsonLoader<V> {
        * @param key value key
        * @param v value
        */
+      @Override
       public void saveToMemory ( String key, V v ) {
 
             mMemoryList.save( key, v );
@@ -147,6 +154,7 @@ public class JsonLoader<V> {
        *
        * @return true :存在于内存中
        */
+      @Override
       public boolean containsOfMemory ( String key ) {
 
             return mMemoryList.containsOf( key );
@@ -157,6 +165,7 @@ public class JsonLoader<V> {
        *
        * @return 值
        */
+      @Override
       public V removeFromMemory ( String key ) {
 
             return mMemoryList.remove( key );
@@ -167,6 +176,7 @@ public class JsonLoader<V> {
        *
        * @return 该key对应的值 or null (if not in memory)
        */
+      @Override
       public V loadFromMemory ( String key ) {
 
             return mMemoryList.load( key );
@@ -177,6 +187,7 @@ public class JsonLoader<V> {
        *
        * @return 数据量
        */
+      @Override
       public int memorySize ( ) {
 
             return mMemoryList.size();
@@ -185,6 +196,7 @@ public class JsonLoader<V> {
       /**
        * 清除所有内存中数据
        */
+      @Override
       public void clearMemory ( ) {
 
             mMemoryList.clear();
@@ -197,6 +209,7 @@ public class JsonLoader<V> {
        *
        * @return true:存在于本地文件中
        */
+      @Override
       public boolean containsOfFile ( String key ) {
 
             return mFileContainer != null && mFileContainer.containsOf( key );
@@ -209,6 +222,7 @@ public class JsonLoader<V> {
        * @param key key
        * @param v value
        */
+      @Override
       public void saveToFile ( String key, V v ) {
 
             if( mFileContainer == null ) {
@@ -241,6 +255,7 @@ public class JsonLoader<V> {
        *
        * @param key key
        */
+      @Override
       public void removeFromFile ( String key ) {
 
             if( mFileContainer == null ) {
@@ -256,17 +271,23 @@ public class JsonLoader<V> {
        *
        * @return 该key对应json对象
        */
+      @Override
       public V loadFromFile ( String key ) {
 
             if( mFileContainer == null ) {
                   return null;
             }
-            return mFileContainer.load( key );
+            V v = mFileContainer.load( key );
+            if( v != null ) {
+                  saveToMemory( key, v );
+            }
+            return v;
       }
 
       /**
        * 清除所有文件
        */
+      @Override
       public void clearFile ( ) {
 
             if( mFileContainer == null ) {
@@ -333,57 +354,6 @@ public class JsonLoader<V> {
             }
 
             mIsCacheToFile.set( false );
-      }
-
-      /**
-       * 同时保存到内存和本地文件中,因为涉及到io操作最好异步执行,或者分别调用调用{@link #saveToMemory(String, Object)}和{@link
-       * #saveToFile(String, Object)}
-       *
-       * @param key key
-       * @param v value
-       */
-      public void save ( String key, V v ) {
-
-            saveToMemory( key, v );
-            saveToFile( key, v );
-      }
-
-      /**
-       * 从内存和本地缓存文件中测试是否包含该key对应的数据缓存
-       */
-      public boolean containsOf ( String key ) {
-
-            return containsOfMemory( key ) || containsOfFile( key );
-      }
-
-      /**
-       * 同时从内存本地缓存删除该key对应的缓存
-       *
-       * @param key key
-       */
-      public void remove ( String key ) {
-
-            removeFromMemory( key );
-            removeFromFile( key );
-      }
-
-      /**
-       * 尝试从内存本地文件读取缓存,如果均没有缓存返回null
-       *
-       * @param key key
-       *
-       * @return 该key对应的value or null
-       */
-      public V load ( String key ) {
-
-            V v = loadFromMemory( key );
-            if( v == null ) {
-                  v = loadFromFile( key );
-                  if( v != null ) {
-                        saveToMemory( key, v );
-                  }
-            }
-            return v;
       }
 
       // ========================= 辅助转换 =========================

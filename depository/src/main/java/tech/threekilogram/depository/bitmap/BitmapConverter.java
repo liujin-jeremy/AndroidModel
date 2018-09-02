@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory.Options;
 import android.support.annotation.IntDef;
 import com.example.bitmapreader.BitmapReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -232,6 +234,22 @@ public class BitmapConverter {
       public void write ( OutputStream stream, Bitmap value ) {
 
             value.compress( CompressFormat.PNG, 100, stream );
+      }
+
+      /**
+       * save bitmap to outputStream
+       *
+       * @param file file
+       * @param value bitmap
+       */
+      public void write ( File file, Bitmap value ) {
+
+            try {
+                  FileOutputStream outputStream = new FileOutputStream( file );
+                  write( outputStream, value );
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            }
       }
 
       /**

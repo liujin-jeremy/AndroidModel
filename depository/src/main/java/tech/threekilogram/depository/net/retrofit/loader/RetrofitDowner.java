@@ -43,7 +43,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        */
       public File getFile ( String url ) {
 
-            return getConverter().getFile( url );
+            return getConverter().getFileLoader().getFile( url );
       }
 
       /**
@@ -61,7 +61,16 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        */
       public void removeFile ( String url ) {
 
-            getConverter().removeFile( url );
+            getConverter().getFileLoader().remove( url );
+      }
+
+      public void clearFile ( ) {
+
+            try {
+                  getConverter().getFileLoader().clear();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
       }
 
       /**
@@ -75,7 +84,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
       public File load ( String url ) {
 
             RetrofitDownConverter converter = getConverter();
-            File file = converter.getFile( url );
+            File file = converter.getFileLoader().getFile( url );
 
             if( file != null && file.exists() ) {
 

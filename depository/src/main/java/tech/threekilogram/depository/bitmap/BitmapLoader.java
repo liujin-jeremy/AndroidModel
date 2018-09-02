@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import java.io.File;
 import java.io.IOException;
+import tech.threekilogram.depository.CacheLoader;
 import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter.OnProgressUpdateListener;
@@ -20,7 +21,7 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
  * @time: 21:44
  */
 @SuppressWarnings("WeakerAccess")
-public class BitmapLoader {
+public class BitmapLoader implements CacheLoader<Bitmap> {
 
       /**
        * 内存缓存
@@ -88,25 +89,39 @@ public class BitmapLoader {
       }
 
       /**
-       * 从文件网络加载该url对应的图片
+       * 仅从网络读取
+       *
+       * @param url mUrl
+       *
+       * @return bitmap or null
+       */
+      @Override
+      public Bitmap loadFromNet ( String url ) {
+
+            File file = mDowner.load( url );
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.read( file );
+                  if( bitmap != null ) {
+                        saveToMemory( url, bitmap );
+                        return bitmap;
+                  }
+            }
+            return null;
+      }
+
+      /**
+       * 仅从网络下载文件,之后可以使用{@link #getFile(String)}获取改文件
        *
        * @param url 图片url
        */
-      public Bitmap loadFromFileNet ( String url ) {
+      public void downLoad ( String url ) {
 
-            Bitmap fromFile = loadFromFile( url );
-            if( fromFile == null ) {
-
-                  Bitmap fromNet = loadFromNet( url );
-                  if( fromNet == null ) {
-                        return null;
-                  } else {
-                        return fromNet;
-                  }
-            } else {
-
-                  return fromFile;
+            File file = getFile( url );
+            if( file.exists() ) {
+                  return;
             }
+            mDowner.load( url );
       }
 
       /**
@@ -116,14 +131,39 @@ public class BitmapLoader {
        *
        * @return bitmap or null
        */
+      @Override
       public Bitmap loadFromMemory ( String url ) {
 
             return mMemory.load( url );
       }
 
       /**
+       * 删除内存中对应bitmap
+       *
+       * @param url url
+       */
+      @Override
+      public Bitmap removeFromMemory ( String url ) {
+
+            return mMemory.remove( url );
+      }
+
+      @Override
+      public void saveToMemory ( String key, Bitmap bitmap ) {
+
+            mMemory.save( key, bitmap );
+      }
+
+      @Override
+      public boolean containsOfMemory ( String key ) {
+
+            return mMemory.containsOf( key );
+      }
+
+      /**
        * @return 当前使用内存大小
        */
+      @Override
       public int memorySize ( ) {
 
             return mMemory.size();
@@ -132,51 +172,10 @@ public class BitmapLoader {
       /**
        * 清空内存
        */
+      @Override
       public void clearMemory ( ) {
 
             mMemory.clear();
-      }
-
-      /**
-       * 删除内存中对应bitmap
-       *
-       * @param url url
-       */
-      public void removeFromMemory ( String url ) {
-
-            mMemory.remove( url );
-      }
-
-      /**
-       * 仅从本地文件读取
-       *
-       * @param url mUrl
-       *
-       * @return bitmap or null
-       */
-      public Bitmap loadFromFile ( String url ) {
-
-            File file = mDowner.getFile( url );
-            if( file != null && file.exists() ) {
-
-                  Bitmap bitmap = mBitmapConverter.read( file );
-
-                  if( bitmap != null ) {
-                        mMemory.save( url, bitmap );
-                        return bitmap;
-                  }
-            }
-            return null;
-      }
-
-      /**
-       * 删除对应bitmap文件
-       *
-       * @param url url
-       */
-      public void removeFile ( String url ) {
-
-            mDowner.removeFile( url );
       }
 
       /**
@@ -201,16 +200,36 @@ public class BitmapLoader {
             return mDowner.getDir();
       }
 
+      @Override
+      public boolean containsOfFile ( String key ) {
+
+            return getFile( key ).exists();
+      }
+
+      @Override
+      public void saveToFile ( String key, Bitmap bitmap ) {
+
+            File file = getFile( key );
+            mBitmapConverter.write( file, bitmap );
+      }
+
+      @Override
+      public void removeFromFile ( String key ) {
+
+            boolean delete = getFile( key ).delete();
+      }
+
       /**
-       * 仅从网络读取
+       * 从本地文件读取
        *
        * @param url mUrl
        *
        * @return bitmap or null
        */
-      public Bitmap loadFromNet ( String url ) {
+      @Override
+      public Bitmap loadFromFile ( String url ) {
 
-            File file = mDowner.load( url );
+            File file = mDowner.getFile( url );
             if( file != null && file.exists() ) {
 
                   Bitmap bitmap = mBitmapConverter.read( file );
@@ -219,17 +238,14 @@ public class BitmapLoader {
                         return bitmap;
                   }
             }
+
             return null;
       }
 
-      /**
-       * 仅从网络下载文件,之后可以使用{@link #getFile(String)}获取改文件
-       *
-       * @param url 图片url
-       */
-      public void downLoad ( String url ) {
+      @Override
+      public void clearFile ( ) {
 
-            mDowner.load( url );
+            mDowner.clearFile();
       }
 
       /**
