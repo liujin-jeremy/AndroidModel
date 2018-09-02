@@ -3,6 +3,7 @@ package tech.threekilogram.depository.bitmap;
 import static tech.threekilogram.depository.bitmap.BitmapConverter.MATCH_SIZE;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import java.io.File;
 import java.io.IOException;
@@ -82,10 +83,18 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        */
       public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
 
-            mBitmapConverter.setWidth( width );
-            mBitmapConverter.setHeight( height );
-            mBitmapConverter.setMode( scaleMode );
-            mBitmapConverter.setBitmapConfig( config );
+            mBitmapConverter.configBitmap( width, height, scaleMode, config );
+      }
+
+      /**
+       * 配置图片保存方式
+       *
+       * @param compressFormat 保存格式
+       * @param compressQuality 保存质量
+       */
+      public void configCompress ( CompressFormat compressFormat, int compressQuality ) {
+
+            mBitmapConverter.configCompress( compressFormat, compressQuality );
       }
 
       /**
@@ -270,6 +279,42 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             }
 
             return loadFromFile( key );
+      }
+
+      public int getConfigWidth ( ) {
+
+            return mBitmapConverter.getWidth();
+      }
+
+      public int getConfigHeight ( ) {
+
+            return mBitmapConverter.getHeight();
+      }
+
+      public int getConfigMode ( ) {
+
+            return mBitmapConverter.getMode();
+      }
+
+      public Config getBitmapConfig ( ) {
+
+            return mBitmapConverter.getBitmapConfig();
+      }
+
+      /**
+       * 获取设置的图片保存质量
+       */
+      public int getCompressQuality ( ) {
+
+            return mBitmapConverter.getCompressQuality();
+      }
+
+      /**
+       * 获取设置的图片保存格式
+       */
+      public CompressFormat getCompressFormat ( ) {
+
+            return mBitmapConverter.getCompressFormat();
       }
 
       /**

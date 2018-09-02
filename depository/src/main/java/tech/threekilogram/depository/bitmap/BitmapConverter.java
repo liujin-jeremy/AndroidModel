@@ -185,6 +185,18 @@ public class BitmapConverter {
       }
 
       /**
+       * 配置图片保存方式
+       *
+       * @param compressFormat 保存格式
+       * @param compressQuality 保存质量
+       */
+      public void configCompress ( CompressFormat compressFormat, int compressQuality ) {
+
+            setCompressFormat( compressFormat );
+            setCompressQuality( compressQuality );
+      }
+
+      /**
        * read a bitmap
        *
        * @param file file bitmap
