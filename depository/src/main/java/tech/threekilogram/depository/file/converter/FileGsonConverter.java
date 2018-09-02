@@ -34,12 +34,12 @@ public class FileGsonConverter<T> extends BaseFileConverter<T> {
       @Override
       public T toValue ( String key, InputStream stream ) throws Exception {
 
-            return mGsonConverter.fromJson( stream );
+            return mGsonConverter.from( stream );
       }
 
       @Override
       public void saveValue ( String key, OutputStream stream, T value ) throws IOException {
 
-            mGsonConverter.toJson( stream, value );
+            mGsonConverter.to( stream, value );
       }
 }

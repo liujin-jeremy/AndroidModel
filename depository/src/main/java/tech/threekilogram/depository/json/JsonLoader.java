@@ -157,7 +157,7 @@ public class JsonLoader<V> {
        *
        * @return 值
        */
-      public V removeMemory ( String key ) {
+      public V removeFromMemory ( String key ) {
 
             return mMemoryList.remove( key );
       }
@@ -167,7 +167,7 @@ public class JsonLoader<V> {
        *
        * @return 该key对应的值 or null (if not in memory)
        */
-      public V loadMemory ( String key ) {
+      public V loadFromMemory ( String key ) {
 
             return mMemoryList.load( key );
       }
@@ -177,7 +177,7 @@ public class JsonLoader<V> {
        *
        * @return 数据量
        */
-      public int getMemorySize ( ) {
+      public int memorySize ( ) {
 
             return mMemoryList.size();
       }
@@ -203,7 +203,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 保存一个json对象到本地文件,如果本地已经有缓存那么不会覆盖它,如果需要覆盖它请使用{@link #removeFile(String)}先删除
+       * 保存一个json对象到本地文件,如果本地已经有缓存那么不会覆盖它,如果需要覆盖它请使用{@link #removeFromFile(String)}先删除
        * 或者使用{@link #saveToFileForce(String, Object)}
        *
        * @param key key
@@ -241,7 +241,7 @@ public class JsonLoader<V> {
        *
        * @param key key
        */
-      public void removeFile ( String key ) {
+      public void removeFromFile ( String key ) {
 
             if( mFileContainer == null ) {
                   return;
@@ -256,7 +256,7 @@ public class JsonLoader<V> {
        *
        * @return 该key对应json对象
        */
-      public V loadFile ( String key ) {
+      public V loadFromFile ( String key ) {
 
             if( mFileContainer == null ) {
                   return null;
@@ -363,8 +363,8 @@ public class JsonLoader<V> {
        */
       public void remove ( String key ) {
 
-            removeMemory( key );
-            removeFile( key );
+            removeFromMemory( key );
+            removeFromFile( key );
       }
 
       /**
@@ -376,9 +376,9 @@ public class JsonLoader<V> {
        */
       public V load ( String key ) {
 
-            V v = loadMemory( key );
+            V v = loadFromMemory( key );
             if( v == null ) {
-                  v = loadFile( key );
+                  v = loadFromFile( key );
                   if( v != null ) {
                         saveToMemory( key, v );
                   }
@@ -402,14 +402,14 @@ public class JsonLoader<V> {
             @Override
             public V toValue ( String key, InputStream stream ) throws Exception {
 
-                  return mJsonConverter.fromJson( stream );
+                  return mJsonConverter.from( stream );
             }
 
             @Override
             public void saveValue ( String key, OutputStream outputStream, V value )
                 throws IOException {
 
-                  mJsonConverter.toJson( outputStream, value );
+                  mJsonConverter.to( outputStream, value );
             }
       }
 
@@ -421,7 +421,7 @@ public class JsonLoader<V> {
             @Override
             public List<V> onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
-                  return mJsonConverter.fromJsonArray( response.byteStream() );
+                  return mJsonConverter.fromArray( response.byteStream() );
             }
       }
 
@@ -433,7 +433,7 @@ public class JsonLoader<V> {
             @Override
             public V onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
-                  return mJsonConverter.fromJson( response.byteStream() );
+                  return mJsonConverter.from( response.byteStream() );
             }
       }
 }

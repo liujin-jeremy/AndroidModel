@@ -40,13 +40,13 @@ public class GsonConverter<V> implements JsonConverter<V> {
        * @param inputStream stream
        */
       @Override
-      public List<V> fromJsonArray ( InputStream inputStream ) {
+      public List<V> fromArray ( InputStream inputStream ) {
 
             return null;
       }
 
       @Override
-      public V fromJson ( InputStream inputStream ) {
+      public V from ( InputStream inputStream ) {
 
             Reader reader = null;
             try {
@@ -61,7 +61,7 @@ public class GsonConverter<V> implements JsonConverter<V> {
       }
 
       @Override
-      public void toJson ( OutputStream outputStream, V value ) {
+      public void to ( OutputStream outputStream, V value ) {
 
             Writer writer = null;
             JsonWriter jsonWriter = null;

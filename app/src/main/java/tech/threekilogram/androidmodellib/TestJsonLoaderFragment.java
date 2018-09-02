@@ -154,7 +154,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
       private void fileLoad ( ) {
 
             String dayUrl = getDayUrl();
-            GankDayBean dayBean = mDayLoader.loadFile( dayUrl );
+            GankDayBean dayBean = mDayLoader.loadFromFile( dayUrl );
             if( dayBean != null ) {
                   mDayLoader.save( dayUrl, dayBean );
                   Log.e( TAG, "fileLoad : " + dayUrl + " " + dayBean.getResults().get福利().get( 0 )
@@ -176,7 +176,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
       private void memoryLoad ( ) {
 
             String dayUrl = getDayUrl();
-            GankDayBean dayBean = mDayLoader.loadMemory( dayUrl );
+            GankDayBean dayBean = mDayLoader.loadFromMemory( dayUrl );
             if( dayBean != null ) {
 
                   Log.e( TAG, "memoryLoad : " + dayUrl + " " + dayBean.getResults().get福利().get( 0 )
@@ -244,7 +244,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                         if( size > 0 ) {
 
                               GankHistoryBean historyBean = mHistoryLoader
-                                  .loadMemory( GankUrl.historyUrl() );
+                                  .loadFromMemory( GankUrl.historyUrl() );
 
                               List<String> histories = historyBean.getResults();
                               int index = 0;
@@ -288,7 +288,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                         if( size > 0 ) {
 
                               GankHistoryBean historyBean = mHistoryLoader
-                                  .loadMemory( GankUrl.historyUrl() );
+                                  .loadFromMemory( GankUrl.historyUrl() );
 
                               List<String> histories = historyBean.getResults();
                               int index = 0;
@@ -335,7 +335,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
       private int getSize ( ) {
 
             GankHistoryBean gankHistoryBean = mHistoryLoader
-                .loadMemory( GankUrl.historyUrl() );
+                .loadFromMemory( GankUrl.historyUrl() );
 
             return gankHistoryBean == null ? 0 : gankHistoryBean.getResults().size();
       }

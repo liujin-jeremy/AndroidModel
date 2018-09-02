@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- * json 转换为bean对象接口,一般可以使用{@link GsonConverter},但是需要实现{@link GsonConverter#fromJsonArray(InputStream)}
+ * json 转换为bean对象接口,一般可以使用{@link GsonConverter},但是需要实现{@link GsonConverter#fromArray(InputStream)}
  *
  * @author: Liujin
  * @version: V1.0
@@ -21,7 +21,7 @@ public interface JsonConverter<V> {
        *
        * @return json bean
        */
-      List<V> fromJsonArray ( InputStream inputStream );
+      List<V> fromArray ( InputStream inputStream );
 
       /**
        * 将一个流转换为json bean
@@ -30,7 +30,7 @@ public interface JsonConverter<V> {
        *
        * @return json bean
        */
-      V fromJson ( InputStream inputStream );
+      V from ( InputStream inputStream );
 
       /**
        * 将一个json bean 对象保存到数据流中
@@ -38,5 +38,5 @@ public interface JsonConverter<V> {
        * @param outputStream 数据流
        * @param value json bean
        */
-      void toJson ( OutputStream outputStream, V value );
+      void to ( OutputStream outputStream, V value );
 }

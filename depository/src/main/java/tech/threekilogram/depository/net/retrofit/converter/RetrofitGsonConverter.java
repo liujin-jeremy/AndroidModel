@@ -22,6 +22,6 @@ public class RetrofitGsonConverter<V> extends BaseRetrofitConverter<V> {
       @Override
       public V onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
-            return mGsonConverter.fromJson( response.byteStream() );
+            return mGsonConverter.from( response.byteStream() );
       }
 }
