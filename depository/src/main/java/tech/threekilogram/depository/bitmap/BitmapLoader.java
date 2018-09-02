@@ -92,12 +92,12 @@ public class BitmapLoader {
        *
        * @param url 图片url
        */
-      public Bitmap loadFileNet ( String url ) {
+      public Bitmap loadFromFileNet ( String url ) {
 
-            Bitmap fromFile = loadFile( url );
+            Bitmap fromFile = loadFromFile( url );
             if( fromFile == null ) {
 
-                  Bitmap fromNet = loadNet( url );
+                  Bitmap fromNet = loadFromNet( url );
                   if( fromNet == null ) {
                         return null;
                   } else {
@@ -116,7 +116,7 @@ public class BitmapLoader {
        *
        * @return bitmap or null
        */
-      public Bitmap loadMemory ( String url ) {
+      public Bitmap loadFromMemory ( String url ) {
 
             return mMemory.load( url );
       }
@@ -142,7 +142,7 @@ public class BitmapLoader {
        *
        * @param url url
        */
-      public void removeMemory ( String url ) {
+      public void removeFromMemory ( String url ) {
 
             mMemory.remove( url );
       }
@@ -154,7 +154,7 @@ public class BitmapLoader {
        *
        * @return bitmap or null
        */
-      public Bitmap loadFile ( String url ) {
+      public Bitmap loadFromFile ( String url ) {
 
             File file = mDowner.getFile( url );
             if( file != null && file.exists() ) {
@@ -208,7 +208,7 @@ public class BitmapLoader {
        *
        * @return bitmap or null
        */
-      public Bitmap loadNet ( String url ) {
+      public Bitmap loadFromNet ( String url ) {
 
             File file = mDowner.load( url );
             if( file != null && file.exists() ) {

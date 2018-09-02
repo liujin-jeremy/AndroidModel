@@ -99,7 +99,7 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                   case R.id.load:
 
                         final int i = mUrlIndex % mBitmaps.length;
-                        Bitmap bitmap = mLoader.loadMemory( mBitmaps[ i ] );
+                        Bitmap bitmap = mLoader.loadFromMemory( mBitmaps[ i ] );
                         if( bitmap != null ) {
                               mImage.setImageBitmap( bitmap );
                               return;
@@ -110,7 +110,7 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                               @Override
                               public void run ( ) {
 
-                                    Bitmap bitmap = mLoader.loadFileNet( mBitmaps[ i ] );
+                                    Bitmap bitmap = mLoader.loadFromFileNet( mBitmaps[ i ] );
                                     mUrlIndex++;
                                     Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
                               }

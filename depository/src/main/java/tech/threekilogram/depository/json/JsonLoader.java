@@ -106,7 +106,7 @@ public class JsonLoader<V> {
       }
 
       /**
-       * 从网络加载一组数据
+       * 从网络加载一组数据,该方法需要实现{@link JsonConverter#fromArray(InputStream)},才能正常工作
        *
        * @param url url
        *
