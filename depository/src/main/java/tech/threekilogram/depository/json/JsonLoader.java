@@ -301,6 +301,31 @@ public class JsonLoader<V> implements CacheLoader<V> {
             }
       }
 
+      @Override
+      public boolean containsOf ( String key ) {
+
+            return containsOfMemory( key ) || containsOfFile( key );
+      }
+
+      @Override
+      public void save ( String key, V v ) {
+
+            saveToMemory( key, v );
+            saveToFile( key, v );
+      }
+
+      @Override
+      public V load ( String key ) {
+
+            V v = loadFromMemory( key );
+            if( v != null ) {
+
+                  return v;
+            }
+
+            return loadFromFile( key );
+      }
+
       /**
        * 压缩内存,将指定数据缓存到本地缓存,同时在内存中删除,该方法线程安全
        *

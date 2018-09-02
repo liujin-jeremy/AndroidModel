@@ -156,7 +156,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             String dayUrl = getDayUrl();
             GankDayBean dayBean = mDayLoader.loadFromFile( dayUrl );
             if( dayBean != null ) {
-                  mDayLoader.save( dayUrl, dayBean );
+                  mDayLoader.saveToMemory( dayUrl, dayBean );
                   Log.e( TAG, "fileLoad : " + dayUrl + " " + dayBean.getResults().get福利().get( 0 )
                                                                     .getUrl() );
             } else {
@@ -209,7 +209,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
       private String getDayUrl ( ) {
 
-            GankHistoryBean load = mHistoryLoader.load( GankUrl.historyUrl() );
+            GankHistoryBean load = mHistoryLoader.loadFromMemory( GankUrl.historyUrl() );
             String history = load.getResults().get( mDayIndex );
             return GankUrl.dayUrl( history );
       }
@@ -264,7 +264,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
                                           mLoadingUrls.removeLoadingUrl( url );
                                           if( dayBean != null ) {
-                                                mDayLoader.save( url, dayBean );
+                                                mDayLoader.saveToMemory( url, dayBean );
                                                 return;
                                           }
                                     }
@@ -309,7 +309,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
                                           mLoadingUrls.removeLoadingUrl( url );
                                           if( dayBean != null ) {
-                                                mDayLoader.save( url, dayBean );
+                                                mDayLoader.saveToMemory( url, dayBean );
                                                 count++;
 
                                                 if( count >= 10 ) {

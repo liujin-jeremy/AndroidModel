@@ -110,7 +110,10 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                               @Override
                               public void run ( ) {
 
-                                    Bitmap bitmap = mLoader.loadFromFileNet( mBitmaps[ i ] );
+                                    Bitmap bitmap = mLoader.loadFromFile( mBitmaps[ i ] );
+                                    if( bitmap == null ) {
+                                          bitmap = mLoader.loadFromNet( mBitmaps[ i ] );
+                                    }
                                     mUrlIndex++;
                                     Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
                               }

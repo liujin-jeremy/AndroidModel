@@ -248,6 +248,30 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             mDowner.clearFile();
       }
 
+      @Override
+      public boolean containsOf ( String key ) {
+
+            return containsOfMemory( key ) || containsOfFile( key );
+      }
+
+      @Override
+      public void save ( String key, Bitmap bitmap ) {
+
+            saveToMemory( key, bitmap );
+            saveToFile( key, bitmap );
+      }
+
+      @Override
+      public Bitmap load ( String key ) {
+
+            Bitmap bitmap = loadFromMemory( key );
+            if( bitmap != null ) {
+                  return bitmap;
+            }
+
+            return loadFromFile( key );
+      }
+
       /**
        * 获取设置的下载进度监听
        *

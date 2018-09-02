@@ -98,4 +98,30 @@ public interface CacheLoader<V> {
        * 清除所有文件
        */
       void clearFile ( );
+
+      /**
+       * 同时测试内存和本地文件是否包含该缓存
+       *
+       * @param key key
+       *
+       * @return true:包含该缓存
+       */
+      boolean containsOf ( String key );
+
+      /**
+       * 同时保存到内存和本地文件
+       *
+       * @param key key
+       * @param v value
+       */
+      void save ( String key, V v );
+
+      /**
+       * 依次从内存本地缓存读取该值
+       *
+       * @param key key
+       *
+       * @return 该key对应的值
+       */
+      V load ( String key );
 }
