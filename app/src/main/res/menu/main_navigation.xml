@@ -33,5 +33,9 @@
           android:id="@+id/menu07"
           android:title="testJsonLoader"/>
 
+      <item
+          android:id="@+id/menu08"
+          android:title="testDownLoader"/>
+
 
 </menu>

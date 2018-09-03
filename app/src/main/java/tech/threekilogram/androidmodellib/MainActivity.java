@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
                               changeFragment( TestJsonLoaderFragment.newInstance() );
                               break;
 
+                        case R.id.menu08:
+                              changeFragment( TestDownLoadFragment.newInstance() );
+                              break;
                         default:
                               break;
                   }

@@ -209,6 +209,17 @@ public class DownLoader {
             return file;
       }
 
+      public static File getFile ( File dir, String url ) {
+
+            File file = sFileCache.get( url );
+            if( file == null ) {
+                  String name = sNameConverter.encodeToName( url );
+                  file = new File( dir, name );
+                  sFileCache.put( url, file );
+            }
+            return file;
+      }
+
       /**
        * 监听下载进度
        */
