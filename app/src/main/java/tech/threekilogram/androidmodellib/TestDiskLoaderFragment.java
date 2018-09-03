@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.file.converter.FileBitmapConverter;
-import tech.threekilogram.depository.file.converter.FileGsonConverter;
+import tech.threekilogram.depository.file.converter.FileJsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.instance.GsonClient;
@@ -100,7 +100,7 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
                   mJsonFileLoader = new DiskLruLoader<>(
                       file,
                       10 * 1024 * 1024,
-                      new FileGsonConverter<>( GankCategoryBean.class )
+                      new FileJsonConverter<>( GankCategoryBean.class )
                   );
             } catch(IOException e) {
                   e.printStackTrace();

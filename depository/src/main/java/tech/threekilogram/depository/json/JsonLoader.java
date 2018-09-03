@@ -57,6 +57,16 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 创建一个内存/网络缓存的loader
        *
+       * @param type bean 类型
+       */
+      public JsonLoader ( Class<V> type ) {
+
+            this( new GsonConverter<V>( type ) );
+      }
+
+      /**
+       * 创建一个内存/网络缓存的loader
+       *
        * @param jsonConverter 转换流为bean对象
        */
       public JsonLoader ( JsonConverter<V> jsonConverter ) {
@@ -78,6 +88,17 @@ public class JsonLoader<V> implements CacheLoader<V> {
        * 创建一个内存/文件/网络缓存的loader
        *
        * @param dir 缓存文件夹
+       * @param type json bean type
+       */
+      public JsonLoader ( File dir, Class<V> type ) {
+
+            this( dir, new GsonConverter<V>( type ) );
+      }
+
+      /**
+       * 创建一个内存/文件/网络缓存的loader
+       *
+       * @param dir 缓存文件夹
        * @param jsonConverter 转换流为bean对象
        */
       public JsonLoader ( File dir, JsonConverter<V> jsonConverter ) {
@@ -87,6 +108,21 @@ public class JsonLoader<V> implements CacheLoader<V> {
                 dir,
                 new JsonFileConverter()
             );
+      }
+
+      /**
+       * 创建一个内存/文件/网络缓存的loader
+       *
+       * @param dir 缓存文件夹
+       * @param maxFileSize max file size
+       * @param type bean type
+       *
+       * @throws IOException cont create
+       */
+      public JsonLoader ( File dir, long maxFileSize, Class<V> type )
+          throws IOException {
+
+            this( dir, maxFileSize, new GsonConverter<V>( type ) );
       }
 
       /**

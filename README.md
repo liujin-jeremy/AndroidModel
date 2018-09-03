@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	          implementation 'com.github.threekilogram:AndroidModel:1.8.1'
+	          implementation 'com.github.threekilogram:AndroidModel:1.8.2'
 	}
 ```
 
@@ -286,10 +286,11 @@ mLoader = new BitmapLoader(
 mLoader.configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
 
 // 内存加载图片
-Bitmap bitmap = mLoader.loadMemory(url);
-
-// 从文件/网络加载图片
-Bitmap bitmap = mLoader.loadFileNet(url);
+Bitmap bitmap = mLoader.loadFromMemory( url );
+// 文件加载图片
+Bitmap bitmap = mLoader.loadFromFile( url );
+// 网络加载图片
+Bitmap bitmap = mLoader.loadFromNet( url );
 ```
 
 > 将内存/文件网络加载分开是因为,文件网络加载需要异步操作

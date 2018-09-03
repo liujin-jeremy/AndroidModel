@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import tech.threekilogram.depository.file.converter.FileGsonConverter;
+import tech.threekilogram.depository.file.converter.FileJsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
@@ -14,7 +14,7 @@ import tech.threekilogram.depository.instance.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCache;
 import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.memory.map.MemoryMap;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitGsonConverter;
+import tech.threekilogram.depository.net.retrofit.converter.RetrofitJsonConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
@@ -108,7 +108,7 @@ class Test {
       private static void testRetrofitJson ( ) {
 
             RetrofitLoader<Bean> loader = new RetrofitLoader<>(
-                new RetrofitGsonConverter<Bean>( Bean.class ) );
+                new RetrofitJsonConverter<Bean>( Bean.class ) );
 
             final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
 
@@ -148,7 +148,7 @@ class Test {
                   DiskLruLoader<Bean> loader = new DiskLruLoader<>(
                       TEMP,
                       MAX_SIZE,
-                      new FileGsonConverter<Bean>( Bean.class )
+                      new FileJsonConverter<Bean>( Bean.class )
                   );
 
                   String key = "json";
@@ -177,7 +177,7 @@ class Test {
 
             FileLoader<Bean> loader = new FileLoader<>(
                 TEMP,
-                new FileGsonConverter<Bean>( Bean.class )
+                new FileJsonConverter<Bean>( Bean.class )
             );
 
             String key = "json";

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.json.GsonConverter;
+import tech.threekilogram.depository.json.JsonConverter;
 
 /**
  * {@link FileConverter} 的一种实现
@@ -17,29 +18,39 @@ import tech.threekilogram.depository.json.GsonConverter;
  *
  * @author liujin
  */
-public class FileGsonConverter<T> extends BaseFileConverter<T> {
+public class FileJsonConverter<T> extends BaseFileConverter<T> {
 
-      private GsonConverter<T> mGsonConverter;
+      private JsonConverter<T> mConverter;
 
       /**
        * 传入value类型
        *
        * @param valueType type of value
        */
-      public FileGsonConverter ( Class<T> valueType ) {
+      public FileJsonConverter ( Class<T> valueType ) {
 
-            mGsonConverter = new GsonConverter<>( valueType );
+            mConverter = new GsonConverter<>( valueType );
+      }
+
+      /**
+       * 传入value类型
+       *
+       * @param converter converter
+       */
+      public FileJsonConverter ( JsonConverter<T> converter ) {
+
+            mConverter = converter;
       }
 
       @Override
       public T toValue ( String key, InputStream stream ) throws Exception {
 
-            return mGsonConverter.from( stream );
+            return mConverter.from( stream );
       }
 
       @Override
       public void saveValue ( String key, OutputStream stream, T value ) throws IOException {
 
-            mGsonConverter.to( stream, value );
+            mConverter.to( stream, value );
       }
 }

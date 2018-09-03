@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- * json 转换为bean对象接口,一般可以使用{@link GsonConverter},但是需要实现{@link GsonConverter#fromArray(InputStream)}
+ * json 转换为bean对象接口,一般可以使用{@link GsonConverter},根据需要实现{@link GsonConverter#fromArray(InputStream)}
  *
  * @author: Liujin
  * @version: V1.0

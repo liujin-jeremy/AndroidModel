@@ -14,7 +14,6 @@ import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
 import java.util.List;
 import tech.threekilogram.depository.function.Doing;
-import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.JsonLoader;
 
 /**
@@ -70,13 +69,13 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             initView( view );
 
             mHistoryLoader = new JsonLoader<>(
-                new GsonConverter<GankHistoryBean>( GankHistoryBean.class )
+                GankHistoryBean.class
             );
 
             File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
             mDayLoader = new JsonLoader<>(
                 jsonFile,
-                new GsonConverter<GankDayBean>( GankDayBean.class )
+                GankDayBean.class
             );
 
             mDoing = new Doing();

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import java.io.File;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.file.converter.FileBitmapConverter;
-import tech.threekilogram.depository.file.converter.FileGsonConverter;
+import tech.threekilogram.depository.file.converter.FileJsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.instance.GsonClient;
@@ -92,7 +92,7 @@ public class TestFileLoaderFragment extends Fragment implements OnClickListener 
 
             mJsonFileLoader = new FileLoader<>(
                 file,
-                new FileGsonConverter<>( GankCategoryBean.class )
+                new FileJsonConverter<>( GankCategoryBean.class )
             );
 
             ScreenSize.init( getContext() );
