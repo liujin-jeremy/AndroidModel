@@ -262,10 +262,6 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                           }
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
                                           mDoing.remove( url );
-                                          if( dayBean != null ) {
-                                                mDayLoader.saveToMemory( url, dayBean );
-                                                return;
-                                          }
                                     }
                                     index++;
                               }
@@ -308,9 +304,8 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
                                           mDoing.remove( url );
                                           if( dayBean != null ) {
-                                                mDayLoader.saveToMemory( url, dayBean );
-                                                count++;
 
+                                                count++;
                                                 if( count >= 10 ) {
                                                       return;
                                                 }

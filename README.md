@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	          implementation 'com.github.threekilogram:AndroidModel:1.8.2'
+	          implementation 'com.github.threekilogram:AndroidModel:1.8.3'
 	}
 ```
 
@@ -180,10 +180,10 @@ DiskLruLoader<String> loader = new DiskLruLoader<>(
 * Json对象
 
 ```
-// FileGsonConverter 会将文件流转为指定bean对象,底层使用Gson
+// FileJsonConverter 会将文件流转为指定bean对象,底层使用Gson
 FileLoader<Bean> loader = new FileLoader<>(
     TEMP,
-    new FileGsonConverter<Bean>( Bean.class )
+    new FileJsonConverter<Bean>( Bean.class )
 );
 
 String key = "json";
@@ -213,7 +213,7 @@ boolean containsOf = loader.containsOf( key );
 DiskLruLoader<Bean> loader = new DiskLruLoader<>(
     TEMP,
     MAX_SIZE,
-    new FileGsonConverter<Bean>( Bean.class )
+    new FileJsonConverter<Bean>( Bean.class )
 );
 ```
 
@@ -260,7 +260,7 @@ String load = loader.load( url );
 
 ```
 // json
-RetrofitLoader<Bean> loader = new RetrofitLoader<>( new RetrofitGsonConverter<Bean>(Bean.class) );
+RetrofitLoader<Bean> loader = new RetrofitLoader<>( new RetrofitJsonConverter<Bean>(Bean.class) );
 
 // url
 final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
@@ -299,3 +299,53 @@ Bitmap bitmap = mLoader.loadFromNet( url );
 
 > 该类提供了json三级缓存
 
+* 创建
+
+```
+private JsonLoader<GankDayBean>     mDayLoader;
+
+// 指定缓存文件夹,如果不需要文件缓存,那么可以不指定
+File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
+mDayLoader = new JsonLoader<>(
+    jsonFile,
+    GankDayBean.class	//--> json bean 对象
+);
+```
+
+* 内存
+
+```
+GankDayBean dayBean = mDayLoader.loadFromMemory( dayUrl );
+boolean b = mDayLoader.containsOfMemory( dayUrl );
+```
+
+* 文件
+
+```
+GankDayBean dayBean = mDayLoader.loadFromFile( dayUrl );
+boolean b = mDayLoader.containsOfFile( url );
+```
+
+* 网络
+
+```
+// 测试内存/文件中是否包含该url对应的缓存
+boolean containsOf = mDayLoader.containsOf( url );
+GankDayBean dayBean = mDayLoader.loadFromNet( url );
+```
+
+## DownLoader下载
+
+> 该类提供静态下载方式
+
+* 下载
+
+```
+File down = DownLoader.down( dir, url );
+```
+
+* 获取文件
+
+```
+File file = DownLoader.getFile( dir, url ); //改文件可能并不存在,需要自己判断一下
+```

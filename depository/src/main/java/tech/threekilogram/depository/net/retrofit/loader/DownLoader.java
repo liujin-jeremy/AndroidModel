@@ -56,39 +56,60 @@ public class DownLoader {
        */
       private static OnNoResourceListener     sOnNoResourceListener;
 
+      /**
+       * 设置下载进度监听
+       */
       public static void setOnDownLoadUpdateListener (
           OnDownLoadUpdateListener onDownLoadUpdateListener ) {
 
             sOnDownLoadUpdateListener = onDownLoadUpdateListener;
       }
 
+      /**
+       * 获取设置的下载进度监听
+       */
       public static OnDownLoadUpdateListener getOnDownLoadUpdateListener ( ) {
 
             return sOnDownLoadUpdateListener;
       }
 
+      /**
+       * 获取设置的异常监听
+       */
       public static OnExceptionListener getOnExceptionListener ( ) {
 
             return sOnExceptionListener;
       }
 
+      /**
+       * 设置异常监听
+       */
       public static void setOnExceptionListener (
           OnExceptionListener onExceptionListener ) {
 
             sOnExceptionListener = onExceptionListener;
       }
 
+      /**
+       * 获取设置的没有资源监听
+       */
       public static OnNoResourceListener getOnNoResourceListener ( ) {
 
             return sOnNoResourceListener;
       }
 
+      /**
+       * 设置没有资源监听
+       */
       public static void setOnNoResourceListener (
           OnNoResourceListener onNoResourceListener ) {
 
             sOnNoResourceListener = onNoResourceListener;
       }
 
+      /**
+       * 设置文件保存名字采用较短的还是较长的
+       */
       public static void setShortFileName ( boolean shortFileName ) {
 
             if( shortFileName ) {
