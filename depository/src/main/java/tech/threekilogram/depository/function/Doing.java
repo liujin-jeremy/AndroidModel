@@ -18,7 +18,8 @@ public class Doing {
       private final ArraySet<String> mRunning = new ArraySet<>();
 
       /**
-       * 测试是否正在执行该任务,当执行完成后记得删除{@link #remove(String)}
+       * 测试是否正在执行该任务,如果没有执行那么添加该任务到执行列表,当下次调用时返回true,
+       * 当执行完成后记得删除{@link #remove(String)}
        *
        * @param url 需要测试的任务
        *
@@ -34,6 +35,21 @@ public class Doing {
                         mRunning.add( url );
                         return false;
                   }
+            }
+      }
+
+      /**
+       * 测试是否该任务包含在任务列表中,并不会添加到任务列表中
+       *
+       * @param url 需要测试任务
+       *
+       * @return true:该任务正在执行
+       */
+      public boolean containsOf ( String url ) {
+
+            synchronized(mRunning) {
+
+                  return mRunning.contains( url );
             }
       }
 
