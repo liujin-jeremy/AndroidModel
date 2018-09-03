@@ -12,7 +12,7 @@ import java.util.List;
  * @date: 2018-08-17
  * @time: 14:16
  */
-public interface JsonConverter<V> {
+public interface JsonConverter<V> extends StreamConverter<V> {
 
       /**
        * 将一个stream转换为json对象
@@ -22,15 +22,6 @@ public interface JsonConverter<V> {
        * @return json bean
        */
       List<V> fromArray ( InputStream inputStream );
-
-      /**
-       * 将一个流转换为json bean
-       *
-       * @param inputStream stream
-       *
-       * @return json bean
-       */
-      V from ( InputStream inputStream );
 
       /**
        * 将一个json bean 对象保存到数据流中
