@@ -170,15 +170,6 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
-       * @return 当前使用内存大小
-       */
-      @Override
-      public int memorySize ( ) {
-
-            return mMemory.size();
-      }
-
-      /**
        * 清空内存
        */
       @Override

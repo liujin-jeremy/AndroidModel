@@ -1,6 +1,8 @@
 package tech.threekilogram.depository.memory.map;
 
 import android.support.v4.util.ArrayMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import tech.threekilogram.depository.memory.Memory;
 
 /**
@@ -16,29 +18,17 @@ import tech.threekilogram.depository.memory.Memory;
 
 public class MemoryMap<K, V> implements Memory<K, V> {
 
-      protected ArrayMap<K, V> mContainer;
+      protected HashMap<K, V> mContainer;
 
       @SuppressWarnings("WeakerAccess")
       public MemoryMap ( ) {
 
-            mContainer = new ArrayMap<>();
+            mContainer = new HashMap<>( 32, 0.96f );
       }
 
       public MemoryMap ( int size ) {
 
-            mContainer = new ArrayMap<>( size );
-      }
-
-      @Override
-      public ArrayMap<K, V> container ( ) {
-
-            return mContainer;
-      }
-
-      @Override
-      public int size ( ) {
-
-            return mContainer.size();
+            mContainer = new LinkedHashMap<>( size );
       }
 
       @Override
@@ -51,18 +41,6 @@ public class MemoryMap<K, V> implements Memory<K, V> {
       public V save ( K key, V value ) {
 
             return mContainer.put( key, value );
-      }
-
-      public void saveAll ( ArrayMap<K, V> map ) {
-
-            ArrayMap<K, V> container = mContainer;
-
-            int size = map.size();
-            for( int i = 0; i < size; i++ ) {
-                  K key = map.keyAt( i );
-                  V v = map.valueAt( i );
-                  container.put( key, v );
-            }
       }
 
       @Override

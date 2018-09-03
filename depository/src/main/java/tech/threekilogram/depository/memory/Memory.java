@@ -15,23 +15,7 @@ import tech.threekilogram.depository.Container;
 public interface Memory<K, V> extends Container<K, V> {
 
       /**
-       * 已经保存数据数量
-       * <p>
-       * size of this container
-       *
-       * @return size of container
-       */
-      int size ( );
-
-      /**
        * 清空
        */
       void clear ( );
-
-      /**
-       * return value container
-       *
-       * @return what contains value
-       */
-      Object container ( );
 }

@@ -219,17 +219,6 @@ public class JsonLoader<V> implements CacheLoader<V> {
       }
 
       /**
-       * 返回内存中数据数量
-       *
-       * @return 数据量
-       */
-      @Override
-      public int memorySize ( ) {
-
-            return mMemoryList.size();
-      }
-
-      /**
        * 清除所有内存中数据
        */
       @Override

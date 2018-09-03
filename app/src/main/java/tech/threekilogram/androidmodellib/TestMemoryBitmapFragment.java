@@ -113,7 +113,5 @@ public class TestMemoryBitmapFragment extends Fragment implements OnClickListene
                   Bitmap load = mMemoryBitmap.load( String.valueOf( index % resources.length ) );
                   mImageView.setImageBitmap( load );
             }
-
-            mMemorySize.setText( "memory size: " + mMemoryBitmap.size() );
       }
 }

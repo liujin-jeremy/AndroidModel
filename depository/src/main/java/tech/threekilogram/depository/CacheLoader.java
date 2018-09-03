@@ -50,13 +50,6 @@ public interface CacheLoader<V> {
       V loadFromMemory ( String key );
 
       /**
-       * 返回内存中数据数量
-       *
-       * @return 数据量
-       */
-      int memorySize ( );
-
-      /**
        * 清除所有内存中数据
        */
       void clearMemory ( );

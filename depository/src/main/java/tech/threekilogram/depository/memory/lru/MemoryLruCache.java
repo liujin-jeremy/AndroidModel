@@ -24,17 +24,17 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
       /**
        * 创建一个默认50条数据的缓存
        */
-      public MemoryLruCache () {
+      public MemoryLruCache ( ) {
 
-            this(50, new SimpleValueSize<K, V>());
+            this( 50, new SimpleValueSize<K, V>() );
       }
 
       /**
        * 创建一个指定最大数量的缓存
        */
-      public MemoryLruCache ( int maxSize) {
+      public MemoryLruCache ( int maxSize ) {
 
-            this(maxSize, new SimpleValueSize<K, V>());
+            this( maxSize, new SimpleValueSize<K, V>() );
       }
 
       /**
@@ -45,51 +45,39 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
        */
       public MemoryLruCache (
           int maxSize,
-          ValueSize<K, V> valueSize) {
+          ValueSize<K, V> valueSize ) {
 
-            mContainer = new ConstructLruCache(maxSize, valueSize);
+            mContainer = new ConstructLruCache( maxSize, valueSize );
       }
 
       @Override
-      public LruCache<K, V> container () {
-
-            return mContainer;
-      }
-
-      @Override
-      public int size () {
-
-            return mContainer.size();
-      }
-
-      @Override
-      public void clear () {
+      public void clear ( ) {
 
             mContainer.evictAll();
       }
 
       @Override
-      public V save (K key, V v) {
+      public V save ( K key, V v ) {
 
-            return mContainer.put(key, v);
+            return mContainer.put( key, v );
       }
 
       @Override
-      public V load (K key) {
+      public V load ( K key ) {
 
-            return mContainer.get(key);
+            return mContainer.get( key );
       }
 
       @Override
-      public V remove (K key) {
+      public V remove ( K key ) {
 
-            return mContainer.remove(key);
+            return mContainer.remove( key );
       }
 
       @Override
-      public boolean containsOf (K key) {
+      public boolean containsOf ( K key ) {
 
-            return mContainer.get(key) != null;
+            return mContainer.get( key ) != null;
       }
 
       // ========================= lru cache =========================
@@ -105,16 +93,16 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
              *     the
              *     sizes of the entries in this cache.
              */
-            public ConstructLruCache (int maxSize, ValueSize<K, V> valueSize) {
+            public ConstructLruCache ( int maxSize, ValueSize<K, V> valueSize ) {
 
-                  super(maxSize);
+                  super( maxSize );
                   mValueSize = valueSize;
             }
 
             @Override
-            protected int sizeOf (K key, V value) {
+            protected int sizeOf ( K key, V value ) {
 
-                  return mValueSize.sizeOf(key, value);
+                  return mValueSize.sizeOf( key, value );
             }
       }
 }
