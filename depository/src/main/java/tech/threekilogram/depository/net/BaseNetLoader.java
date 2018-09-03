@@ -16,22 +16,22 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       /**
        * 异常处理助手
        */
-      protected NetExceptionHandler<String> mExceptionHandler;
+      protected OnNetExceptionListener<String> mExceptionHandler;
       /**
        * 没有该资源助手
        */
-      protected NoResourceHandler           mNoResourceHandler;
+      protected OnNoResourceListener           mNoResourceHandler;
       /**
        * 辅助完成响应到value的转换
        */
-      protected NetConverter<V, P>          mNetConverter;
+      protected NetConverter<V, P>             mNetConverter;
 
       /**
        * 获取设置的异常处理类
        *
        * @return 设置的异常处理类
        */
-      public NetExceptionHandler<String> getExceptionHandler ( ) {
+      public OnNetExceptionListener<String> getExceptionHandler ( ) {
 
             return mExceptionHandler;
       }
@@ -42,7 +42,7 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
        * @param exceptionHandler 异常处理类
        */
       public void setExceptionHandler (
-          NetExceptionHandler<String> exceptionHandler ) {
+          OnNetExceptionListener<String> exceptionHandler ) {
 
             mExceptionHandler = exceptionHandler;
       }
@@ -50,7 +50,7 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       /**
        * 获取设置的没有该资源处理器
        */
-      public NoResourceHandler getNoResourceHandler ( ) {
+      public OnNoResourceListener getNoResourceHandler ( ) {
 
             return mNoResourceHandler;
       }
@@ -61,7 +61,7 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
        * @param noResourceHandler 没有该资源处理器
        */
       public void setNoResourceHandler (
-          NoResourceHandler noResourceHandler ) {
+          OnNoResourceListener noResourceHandler ) {
 
             mNoResourceHandler = noResourceHandler;
       }
@@ -69,7 +69,7 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       /**
        * 使用该类处理网络异常
        */
-      public interface NetExceptionHandler<K> {
+      public interface OnNetExceptionListener<K> {
 
             /**
              * 当从网络下载的文件转换时的异常{@link NetConverter#onExecuteSuccess(String, Object)}
@@ -91,7 +91,7 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       /**
        * 当从网络获取资源响应码不在{200~300}之间时的处理
        */
-      public interface NoResourceHandler {
+      public interface OnNoResourceListener {
 
             /**
              * 没有成功获取数据的回调

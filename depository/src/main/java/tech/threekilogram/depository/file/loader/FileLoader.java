@@ -7,6 +7,7 @@ import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.FileCache;
 import tech.threekilogram.depository.function.FileClear;
 
 /**
@@ -25,7 +26,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       /**
        * 缓存创建的file
        */
-      private KeyFileCache<String> mFileLoader = new KeyFileCache<>();
+      private FileCache mFileLoader = new FileCache();
 
       /**
        * @param dir 保存文件的文件夹

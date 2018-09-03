@@ -391,7 +391,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
             @Override
             public String fileName ( String key ) {
 
-                  return mKeyNameConverter.encodeToName( key );
+                  return mNameConverter.encodeToName( key );
             }
 
             @Override

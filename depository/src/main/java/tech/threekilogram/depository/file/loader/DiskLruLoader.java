@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
 import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.FileCache;
 
 /**
  * 底层使用{@link DiskLruCache}缓存数据到文件夹
@@ -31,7 +32,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       /**
        * 缓存file
        */
-      private KeyFileCache<String> mFileLoader = new KeyFileCache<>();
+      private FileCache mFileLoader = new FileCache();
 
       /**
        * @param folder which dir to save data

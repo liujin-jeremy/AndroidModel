@@ -12,6 +12,7 @@ import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
+import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner.OnProgressUpdateListener;
 
 /**
  * 辅助{@link RetrofitDowner}将一个响应流保存到文件系统
@@ -23,15 +24,17 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
       /**
        * 下载文件夹
        */
-      private File                        mDir;
+      protected File                        mDir;
       /**
        * 保存文件
        */
-      private BaseFileLoader<InputStream> mFileLoader;
+      protected BaseFileLoader<InputStream> mFileLoader;
       /**
        * converter
        */
-      private FileStreamConverter         mFileStreamConverter;
+      protected FileStreamConverter         mFileStreamConverter;
+
+      protected RetrofitDownConverter ( ) {}
 
       /**
        * @param dir 指定保存文件夹
@@ -97,7 +100,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
       /**
        * 辅助将流保存到文件
        */
-      private class FileStreamConverter extends BaseFileConverter<InputStream> {
+      private static class FileStreamConverter extends BaseFileConverter<InputStream> {
 
             /**
              * 监听下载进度
@@ -119,7 +122,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
             @Override
             public String fileName ( String key ) {
 
-                  return mKeyNameConverter.encodeToName( key );
+                  return mNameConverter.encodeToName( key );
             }
 
             /**
@@ -163,21 +166,5 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
                         Close.close( outputStream );
                   }
             }
-      }
-
-      /**
-       * 监视下载进度
-       */
-      @SuppressWarnings("AlibabaAbstractClassShouldStartWithAbstractNaming")
-      public interface OnProgressUpdateListener {
-
-            /**
-             * 回调监听
-             *
-             * @param key key
-             * @param total 数据总长
-             * @param current 当前下载长度
-             */
-            void onProgressUpdate ( String key, long total, long current );
       }
 }

@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.file;
 
-import tech.threekilogram.depository.key.KeyNameConverter;
-import tech.threekilogram.depository.key.KeyNameConverter.EncodeMode;
+import tech.threekilogram.depository.key.NameConverter;
+import tech.threekilogram.depository.key.NameConverter.EncodeMode;
 
 /**
  * @author: Liujin
@@ -11,19 +11,19 @@ import tech.threekilogram.depository.key.KeyNameConverter.EncodeMode;
  */
 public abstract class BaseFileConverter<V> implements FileConverter<V> {
 
-      protected KeyNameConverter mKeyNameConverter = new KeyNameConverter();
+      protected NameConverter mNameConverter = new NameConverter();
 
       /**
        * 设置{@link #fileName(String)}采用较短名字还是长名字
        */
       public void setMode ( @EncodeMode int mode ) {
 
-            mKeyNameConverter.setMode( mode );
+            mNameConverter.setMode( mode );
       }
 
       @Override
       public String fileName ( String key ) {
 
-            return mKeyNameConverter.encodeToName( key );
+            return mNameConverter.encodeToName( key );
       }
 }

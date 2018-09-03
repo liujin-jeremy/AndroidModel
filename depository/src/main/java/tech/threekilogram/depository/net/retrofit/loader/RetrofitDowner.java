@@ -3,7 +3,6 @@ package tech.threekilogram.depository.net.retrofit.loader;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter.OnProgressUpdateListener;
 
 /**
  * 使用 retrofit 从网络下载文件,保存到指定文件夹
@@ -31,7 +30,12 @@ public class RetrofitDowner extends RetrofitLoader<File> {
             super( new RetrofitDownConverter( dir, maxSize ) );
       }
 
-      private RetrofitDownConverter getConverter ( ) {
+      public RetrofitDowner ( RetrofitDownConverter converter ) {
+
+            super( converter );
+      }
+
+      RetrofitDownConverter getConverter ( ) {
 
             return (RetrofitDownConverter) mNetConverter;
       }
@@ -115,5 +119,21 @@ public class RetrofitDowner extends RetrofitLoader<File> {
           OnProgressUpdateListener onProgressUpdateListener ) {
 
             getConverter().setOnProgressUpdateListener( onProgressUpdateListener );
+      }
+
+      /**
+       * 监视下载进度
+       */
+      @SuppressWarnings("AlibabaAbstractClassShouldStartWithAbstractNaming")
+      public interface OnProgressUpdateListener {
+
+            /**
+             * 回调监听
+             *
+             * @param key key
+             * @param total 数据总长
+             * @param current 当前下载长度
+             */
+            void onProgressUpdate ( String key, long total, long current );
       }
 }

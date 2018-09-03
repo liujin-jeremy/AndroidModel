@@ -13,9 +13,9 @@ import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
 import java.util.List;
+import tech.threekilogram.depository.function.Doing;
 import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.JsonLoader;
-import tech.threekilogram.depository.net.LoadingUrls;
 
 /**
  * @author: Liujin
@@ -27,8 +27,8 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
       private static final String TAG = TestJsonLoaderFragment.class.getSimpleName();
 
-      private int         mDayIndex;
-      private LoadingUrls mLoadingUrls;
+      private int   mDayIndex;
+      private Doing mDoing;
 
       private Button mHistory;
       private Button mHistorySize;
@@ -79,7 +79,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                 new GsonConverter<GankDayBean>( GankDayBean.class )
             );
 
-            mLoadingUrls = new LoadingUrls();
+            mDoing = new Doing();
       }
 
       private void initView ( @NonNull final View itemView ) {
@@ -258,11 +258,11 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     Log.e( TAG, "run : containsOf " + containsOf + " " + url );
 
                                     if( !containsOf ) {
-                                          if( mLoadingUrls.isLoading( url ) ) {
+                                          if( mDoing.isRunning( url ) ) {
                                                 return;
                                           }
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
-                                          mLoadingUrls.removeLoadingUrl( url );
+                                          mDoing.remove( url );
                                           if( dayBean != null ) {
                                                 mDayLoader.saveToMemory( url, dayBean );
                                                 return;
@@ -303,11 +303,11 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     Log.e( TAG, "run : containsOf " + containsOf + " " + url );
 
                                     if( !containsOf ) {
-                                          if( mLoadingUrls.isLoading( url ) ) {
+                                          if( mDoing.isRunning( url ) ) {
                                                 return;
                                           }
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
-                                          mLoadingUrls.removeLoadingUrl( url );
+                                          mDoing.remove( url );
                                           if( dayBean != null ) {
                                                 mDayLoader.saveToMemory( url, dayBean );
                                                 count++;
@@ -348,12 +348,12 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                   public void run ( ) {
 
                         String url = GankUrl.historyUrl();
-                        if( mLoadingUrls.isLoading( url ) ) {
+                        if( mDoing.isRunning( url ) ) {
                               return;
                         }
                         GankHistoryBean gankHistoryBean = mHistoryLoader
                             .loadFromNet( url );
-                        mLoadingUrls.removeLoadingUrl( url );
+                        mDoing.remove( url );
 
                         mHistoryLoader
                             .saveToMemory( url, gankHistoryBean );

@@ -10,8 +10,8 @@ import java.io.IOException;
 import tech.threekilogram.depository.CacheLoader;
 import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitDownConverter.OnProgressUpdateListener;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
+import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner.OnProgressUpdateListener;
 
 /**
  * 缓存bitmap对象
