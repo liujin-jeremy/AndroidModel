@@ -37,5 +37,8 @@
           android:id="@+id/menu08"
           android:title="testDownLoader"/>
 
+      <item
+          android:id="@+id/menu09"
+          android:title="testObjectLoader"/>
 
 </menu>
