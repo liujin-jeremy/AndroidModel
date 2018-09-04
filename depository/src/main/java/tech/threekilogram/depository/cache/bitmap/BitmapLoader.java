@@ -10,8 +10,7 @@ import java.io.IOException;
 import tech.threekilogram.depository.CacheLoader;
 import tech.threekilogram.depository.cache.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner.OnProgressUpdateListener;
+import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner;
 
 /**
  * 缓存bitmap对象
@@ -312,26 +311,5 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       public CompressFormat getCompressFormat ( ) {
 
             return mBitmapConverter.getCompressFormat();
-      }
-
-      /**
-       * 获取设置的下载进度监听
-       *
-       * @return 监听
-       */
-      public OnProgressUpdateListener getOnProgressUpdateListener ( ) {
-
-            return mDowner.getOnProgressUpdateListener();
-      }
-
-      /**
-       * 设置下载进度监听
-       *
-       * @param onProgressUpdateListener 监听
-       */
-      public void setOnProgressUpdateListener (
-          OnProgressUpdateListener onProgressUpdateListener ) {
-
-            mDowner.setOnProgressUpdateListener( onProgressUpdateListener );
       }
 }

@@ -16,7 +16,7 @@ import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.memory.map.MemoryMap;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitJsonConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
+import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**

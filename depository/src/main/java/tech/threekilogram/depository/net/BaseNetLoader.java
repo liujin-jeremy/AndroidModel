@@ -4,70 +4,91 @@ import java.io.IOException;
 import tech.threekilogram.depository.Loader;
 
 /**
- * 网络加载接口
+ * 网络加载接口,给接口发送一个网络请求,然后使用{@link NetConverter}将网络请求转换为需要的数据类型
  *
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-17
- * @time: 14:40
+ * @param <V> 期望获取的数据类型
+ * @param <P> 网络响应类型
+ *
+ * @author liujin
  */
 public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
 
       /**
        * 异常处理助手
        */
-      protected OnNetExceptionListener<String> mExceptionHandler;
+      protected OnNetExceptionListener<String> mOnNetExceptionListener;
       /**
        * 没有该资源助手
        */
-      protected OnNoResourceListener           mNoResourceHandler;
+      protected OnNoResourceListener           mOnNoResourceListener;
       /**
        * 辅助完成响应到value的转换
        */
       protected NetConverter<V, P>             mNetConverter;
 
       /**
+       * 构建一个加载器
+       *
+       * @param netConverter 辅助完成网络响应到值的转换
+       */
+      protected BaseNetLoader ( NetConverter<V, P> netConverter ) {
+
+            mNetConverter = netConverter;
+      }
+
+      /**
        * 获取设置的异常处理类
        *
        * @return 设置的异常处理类
        */
-      public OnNetExceptionListener<String> getExceptionHandler ( ) {
+      public OnNetExceptionListener<String> getOnNetExceptionListener ( ) {
 
-            return mExceptionHandler;
+            return mOnNetExceptionListener;
       }
 
       /**
        * 设置异常处理类
        *
-       * @param exceptionHandler 异常处理类
+       * @param onNetExceptionListener 异常处理类
        */
-      public void setExceptionHandler (
-          OnNetExceptionListener<String> exceptionHandler ) {
+      public void setOnNetExceptionListener (
+          OnNetExceptionListener<String> onNetExceptionListener ) {
 
-            mExceptionHandler = exceptionHandler;
+            mOnNetExceptionListener = onNetExceptionListener;
       }
 
       /**
        * 获取设置的没有该资源处理器
        */
-      public OnNoResourceListener getNoResourceHandler ( ) {
+      public OnNoResourceListener getOnNoResourceListener ( ) {
 
-            return mNoResourceHandler;
+            return mOnNoResourceListener;
       }
 
       /**
        * 设置没有该资源处理类
        *
-       * @param noResourceHandler 没有该资源处理器
+       * @param onNoResourceListener 没有该资源处理器
        */
-      public void setNoResourceHandler (
-          OnNoResourceListener noResourceHandler ) {
+      public void setOnNoResourceListener (
+          OnNoResourceListener onNoResourceListener ) {
 
-            mNoResourceHandler = noResourceHandler;
+            mOnNoResourceListener = onNoResourceListener;
       }
 
       /**
        * 使用该类处理网络异常
+       */
+      /**
+       * 当从网络获取资源响应码不在{200~300}之间时的处理
+       */
+      protected NetConverter<V, P> getNetConverter ( ) {
+
+            return mNetConverter;
+      }
+
+      /**
+       * 当网络异常时的监听
        */
       public interface OnNetExceptionListener<K> {
 
@@ -89,7 +110,7 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       }
 
       /**
-       * 当从网络获取资源响应码不在{200~300}之间时的处理
+       * 当没有资源时的监听
        */
       public interface OnNoResourceListener {
 
@@ -102,10 +123,5 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
              * @param httpCode http code
              */
             void onExecuteFailed ( String key, int httpCode );
-      }
-
-      public NetConverter<V, P> getNetConverter ( ) {
-
-            return mNetConverter;
       }
 }

@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitJsonConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;

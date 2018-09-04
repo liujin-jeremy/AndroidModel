@@ -15,7 +15,7 @@ import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.map.MemoryMap;
-import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
+import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
@@ -325,11 +325,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
                   return;
             }
 
-            try {
-                  mFileContainer.clear();
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
+            mFileContainer.clear();
       }
 
       @Override
@@ -441,10 +437,10 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 辅助将网络资源流转为json bean list
        */
-      private class JsonRetrofitListConverter extends BaseRetrofitConverter<List<V>> {
+      private class JsonRetrofitListConverter implements ResponseBodyConverter<List<V>> {
 
             @Override
-            public List<V> onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
+            public List<V> onExecuteSuccess ( String url, ResponseBody response ) throws Exception {
 
                   return mJsonConverter.fromArray( response.byteStream() );
             }
@@ -453,10 +449,10 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 辅助将网络资源流转为json bean
        */
-      private class JsonRetrofitConverter extends BaseRetrofitConverter<V> {
+      private class JsonRetrofitConverter implements ResponseBodyConverter<V> {
 
             @Override
-            public V onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
+            public V onExecuteSuccess ( String url, ResponseBody response ) throws Exception {
 
                   return mJsonConverter.from( response.byteStream() );
             }

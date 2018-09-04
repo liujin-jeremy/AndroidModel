@@ -14,8 +14,8 @@ import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner.OnProgressUpdateListener;
+import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner;
+import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner.OnProgressUpdateListener;
 
 /**
  * @author: Liujin

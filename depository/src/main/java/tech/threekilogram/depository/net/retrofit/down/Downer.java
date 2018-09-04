@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.loader;
+package tech.threekilogram.depository.net.retrofit.down;
 
 import static tech.threekilogram.depository.function.encode.StringEncoder.HASH;
 import static tech.threekilogram.depository.function.encode.StringEncoder.MD5;
@@ -16,6 +16,7 @@ import tech.threekilogram.depository.function.encode.StringEncoder;
 import tech.threekilogram.depository.function.instance.RetrofitClient;
 import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.function.io.FileCache;
+import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
  * 下载器
@@ -25,7 +26,7 @@ import tech.threekilogram.depository.function.io.FileCache;
  * @date: 2018-09-03
  * @time: 10:11
  */
-public class DownLoader {
+public class Downer {
 
       /**
        * retrofit 客户端

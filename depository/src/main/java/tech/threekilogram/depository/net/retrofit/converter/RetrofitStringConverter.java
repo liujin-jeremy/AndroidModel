@@ -5,17 +5,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.function.io.Close;
-import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
 /**
- * 辅助完成转换工作,适用于使用一个Url作为key的情况
+ * 将网络响应转换为string对象
  *
  * @author liujin
  */
-public class RetrofitStringConverter extends BaseRetrofitConverter<String> {
+public class RetrofitStringConverter implements ResponseBodyConverter<String> {
 
       @Override
-      public String onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
+      public String onExecuteSuccess (
+          String url, ResponseBody response )
+          throws Exception {
 
             InputStream inputStream = null;
             try {

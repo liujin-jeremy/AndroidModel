@@ -1,9 +1,7 @@
 package tech.threekilogram.depository.net;
 
-import okhttp3.ResponseBody;
-
 /**
- * 使用 {@link String} 类型向网络发送请求,收到 {@link P} 类型响应数据,转为 {@link V} 类型结果
+ * 用于转换网络响应为需要的对象
  *
  * @param <V> value 类型
  * @param <P> 网络响应类型
@@ -14,16 +12,15 @@ public interface NetConverter<V, P> {
 
       /**
        * 当网络响应成功之后的回调,需要完成从响应到value的变换
-       * <p>
-       * get a success response then convert it to value
        *
-       * @param key key
+       * @param url url
        * @param response response
        *
        * @return value
        *
-       * @throws Exception when convert  {@link ResponseBody} to {@link V} may occur a exception
-       *                   {@see #onConvertException(Object, String, Exception)}
+       * @throws Exception 转换时可能发生异常
        */
-      V onExecuteSuccess ( String key, P response ) throws Exception;
+      V onExecuteSuccess (
+          String url,
+          P response ) throws Exception;
 }
