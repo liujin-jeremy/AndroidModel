@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.net.retrofit.loader;
 
-import static tech.threekilogram.depository.key.NameConverter.HASH;
-import static tech.threekilogram.depository.key.NameConverter.MD5;
+import static tech.threekilogram.depository.function.StringEncoder.HASH;
+import static tech.threekilogram.depository.function.StringEncoder.MD5;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,8 +14,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.function.Close;
 import tech.threekilogram.depository.function.FileCache;
+import tech.threekilogram.depository.function.StringEncoder;
 import tech.threekilogram.depository.instance.RetrofitClient;
-import tech.threekilogram.depository.key.NameConverter;
 
 /**
  * 下载器
@@ -38,7 +38,7 @@ public class DownLoader {
       /**
        * 辅助将url转为file name
        */
-      private static NameConverter sNameConverter = new NameConverter();
+      private static StringEncoder sNameConverter = new StringEncoder();
       /**
        * 缓存file对象
        */
@@ -180,7 +180,7 @@ public class DownLoader {
 
             File file = sFileCache.get( url );
             if( file == null ) {
-                  String name = sNameConverter.encodeToName( url );
+                  String name = sNameConverter.encode( url );
                   file = new File( dir, name );
                   sFileCache.put( url, file );
             }
@@ -234,7 +234,7 @@ public class DownLoader {
 
             File file = sFileCache.get( url );
             if( file == null ) {
-                  String name = sNameConverter.encodeToName( url );
+                  String name = sNameConverter.encode( url );
                   file = new File( dir, name );
                   sFileCache.put( url, file );
             }

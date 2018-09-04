@@ -85,9 +85,9 @@ public class TestObjectLoaderFragment extends Fragment implements OnClickListene
                   @Override
                   public void run ( ) {
 
-                        GankCategoryBean categoryBean = ObjectLoader.load(
+                        GankCategoryBean categoryBean = ObjectLoader.loadFromNet(
                             "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1",
-                            new GsonConverter<>( GankCategoryBean.class )
+                            GankCategoryBean.class
                         );
 
                         Log.e( TAG, "run : " + categoryBean.getResults().size() + " " + categoryBean
@@ -103,9 +103,9 @@ public class TestObjectLoaderFragment extends Fragment implements OnClickListene
                   @Override
                   public void run ( ) {
 
-                        GankDayBean dayBean = ObjectLoader.load(
+                        GankDayBean dayBean = ObjectLoader.loadFromNet(
                             "https://gank.io/api/day/2015/08/07",
-                            new GsonConverter<>( GankDayBean.class )
+                            GankDayBean.class
                         );
 
                         String url = dayBean.getResults().get福利().get( 0 ).getUrl();
@@ -121,7 +121,7 @@ public class TestObjectLoaderFragment extends Fragment implements OnClickListene
                   @Override
                   public void run ( ) {
 
-                        GankHistoryBean historyBean = ObjectLoader.load(
+                        GankHistoryBean historyBean = ObjectLoader.loadFromNet(
                             "https://gank.io/api/day/history",
                             new GsonConverter<>( GankHistoryBean.class )
                         );

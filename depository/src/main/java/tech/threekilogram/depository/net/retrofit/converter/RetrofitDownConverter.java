@@ -122,7 +122,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
             @Override
             public String fileName ( String key ) {
 
-                  return mNameConverter.encodeToName( key );
+                  return mNameConverter.encode( key );
             }
 
             /**

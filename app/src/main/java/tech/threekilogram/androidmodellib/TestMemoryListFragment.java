@@ -145,9 +145,9 @@ public class TestMemoryListFragment extends Fragment implements OnClickListener 
             String load = mMemoryList.load( mIndex );
             String load1 = mMemoryList.load( mDeleteIndex );
 
-            String msg = "load --> " + mIndex + " : " + load +
+            String msg = "loadFromNet --> " + mIndex + " : " + load +
                 "\n" +
-                "load --> " + mDeleteIndex + " : " + load1;
+                "loadFromNet --> " + mDeleteIndex + " : " + load1;
 
             setMsgText( msg );
       }

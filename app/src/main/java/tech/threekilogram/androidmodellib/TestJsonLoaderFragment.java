@@ -266,7 +266,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     index++;
                               }
 
-                              Log.e( TAG, "run : load 1 more finished" );
+                              Log.e( TAG, "run : loadFromNet 1 more finished" );
                         }
                   }
             } );
@@ -314,7 +314,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                     index++;
                               }
 
-                              Log.e( TAG, "run : load 10 more finished" );
+                              Log.e( TAG, "run : loadFromNet 10 more finished" );
                         }
                   }
             } );

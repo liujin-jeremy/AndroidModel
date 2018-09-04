@@ -1,10 +1,9 @@
-package tech.threekilogram.depository.key;
+package tech.threekilogram.depository.function;
 
 import android.support.annotation.IntDef;
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import tech.threekilogram.depository.function.Md5;
-import tech.threekilogram.depository.function.StringHash;
 
 /**
  * @author: Liujin
@@ -12,7 +11,7 @@ import tech.threekilogram.depository.function.StringHash;
  * @date: 2018-08-16
  * @time: 21:20
  */
-public class NameConverter {
+public class StringEncoder {
 
       public static final int MD5     = 11;
       public static final int HASH    = 12;
@@ -33,7 +32,7 @@ public class NameConverter {
        *
        * @return string name
        */
-      public String encodeToName ( String key ) {
+      public String encode ( String key ) {
 
             if( mMode == HASH ) {
 
@@ -51,4 +50,17 @@ public class NameConverter {
       @Retention(RetentionPolicy.SOURCE)
       @IntDef(value = { MD5, HASH, DEFAULT })
       public @interface EncodeMode { }
+
+      /**
+       * 根据一个url获取一个文件
+       *
+       * @param dir 文件夹
+       * @param url 文件url,将会转为文件名字
+       *
+       * @return 位于文件夹下的文件
+       */
+      public File getFile ( File dir, String url ) {
+
+            return new File( dir, encode( url ) );
+      }
 }

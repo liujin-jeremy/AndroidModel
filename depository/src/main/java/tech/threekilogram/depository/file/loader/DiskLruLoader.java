@@ -178,7 +178,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
                   e.printStackTrace();
             }
 
-            /* try to load value from snapShot's stream */
+            /* try to loadFromNet value from snapShot's stream */
 
             if( snapshot != null ) {
 

@@ -1,5 +1,6 @@
 package tech.threekilogram.depository.function;
 
+import android.support.v4.util.LruCache;
 import java.io.File;
 
 /**
@@ -10,7 +11,7 @@ import java.io.File;
  * @date: 2018-08-24
  * @time: 16:54
  */
-public class FileCache extends android.support.v4.util.LruCache<String, File> {
+public class FileCache extends LruCache<String, File> {
 
       public FileCache ( ) {
 

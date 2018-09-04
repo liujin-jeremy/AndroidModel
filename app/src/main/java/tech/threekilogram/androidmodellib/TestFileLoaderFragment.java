@@ -184,7 +184,7 @@ public class TestFileLoaderFragment extends Fragment implements OnClickListener 
 
             final String key = "poem";
             String load = mStringFileLoader.load( key );
-            setMsg( "load string: \n" + key + "\n" + load );
+            setMsg( "loadFromNet string: \n" + key + "\n" + load );
       }
 
       private void deleteString ( ) {
@@ -209,7 +209,7 @@ public class TestFileLoaderFragment extends Fragment implements OnClickListener 
 
             final String key = "json";
             GankCategoryBean bean = mJsonFileLoader.load( key );
-            setMsg( "load json: \n" + key + "\n" + bean.getResults().toString() );
+            setMsg( "loadFromNet json: \n" + key + "\n" + bean.getResults().toString() );
       }
 
       private void deleteJson ( ) {
@@ -242,7 +242,7 @@ public class TestFileLoaderFragment extends Fragment implements OnClickListener 
 
             mImageView.setImageBitmap( bitmap );
 
-            setMsg( "load bitmap: " + key + " " + bitmap.getWidth() );
+            setMsg( "loadFromNet bitmap: " + key + " " + bitmap.getWidth() );
       }
 
       private void deleteBitmap ( ) {

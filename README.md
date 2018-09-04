@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	          implementation 'com.github.threekilogram:AndroidModel:1.8.3'
+	          implementation 'com.github.threekilogram:AndroidModel:1.8.6'
 	}
 ```
 
@@ -348,4 +348,16 @@ File down = DownLoader.down( dir, url );
 
 ```
 File file = DownLoader.getFile( dir, url ); //改文件可能并不存在,需要自己判断一下
+```
+
+## ObjectLoader
+
+> 该类提供从数据流静态加载对象方式
+
+```
+// 从网络加载
+GankDayBean dayBean = ObjectLoader.loadFromNet(
+    "https://gank.io/api/day/2015/08/07",
+    GankDayBean.class
+);
 ```

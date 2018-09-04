@@ -95,7 +95,7 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                         if( bitmap != null ) {
                               mImage.setImageBitmap( bitmap );
                               mUrlIndex++;
-                              Log.e( TAG, "onClick : load from net " + mBitmaps[ i ] );
+                              Log.e( TAG, "onClick : loadFromNet from net " + mBitmaps[ i ] );
                               return;
                         }
 
@@ -107,9 +107,11 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
                                     Bitmap bitmap = mLoader.loadFromFile( mBitmaps[ i ] );
                                     if( bitmap == null ) {
                                           bitmap = mLoader.loadFromNet( mBitmaps[ i ] );
-                                          Log.e( TAG, "run : load from net " + mBitmaps[ i ] );
+                                          Log.e(
+                                              TAG, "run : loadFromNet from net " + mBitmaps[ i ] );
                                     } else {
-                                          Log.e( TAG, "run : load from file " + mBitmaps[ i ] );
+                                          Log.e(
+                                              TAG, "run : loadFromNet from file " + mBitmaps[ i ] );
                                     }
                                     mUrlIndex++;
                                     Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );

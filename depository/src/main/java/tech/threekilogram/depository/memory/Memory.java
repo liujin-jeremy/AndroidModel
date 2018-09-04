@@ -5,9 +5,9 @@ import tech.threekilogram.depository.Container;
 /**
  * 这是内存缓存的总接口,所有内存缓存均实现了该接口,
  * <p>
- * this make some Object could load from Memory
+ * this make some Object could loadFromNet from Memory
  *
- * @param <V> value type to load
+ * @param <V> value type to loadFromNet
  * @param <K> identify to value, could use this to get value from container
  *
  * @author liujin

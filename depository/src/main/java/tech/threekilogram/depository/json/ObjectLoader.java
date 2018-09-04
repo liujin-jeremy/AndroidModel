@@ -1,10 +1,15 @@
 package tech.threekilogram.depository.json;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.StringEncoder;
 import tech.threekilogram.depository.instance.RetrofitClient;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNetExceptionListener;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNoResourceListener;
@@ -36,6 +41,10 @@ public class ObjectLoader {
        * 没有该资源助手
        */
       private static OnNoResourceListener           sOnNoResourceListener;
+      /**
+       * encode string
+       */
+      private static StringEncoder                  sEncoder;
 
       /**
        * 设置网络异常监听
@@ -75,12 +84,26 @@ public class ObjectLoader {
        * 从网络加载一个对象
        *
        * @param url url
+       * @param type object type
+       * @param <V> 需要获取的对象类型
+       *
+       * @return 转换后的对象 or null if exception
+       */
+      public static <V> V loadFromNet ( String url, Class<V> type ) {
+
+            return loadFromNet( url, new GsonConverter<>( type ) );
+      }
+
+      /**
+       * 从网络加载一个对象
+       *
+       * @param url url
        * @param converter 辅助将网络流转为对象
        * @param <V> 需要获取的对象类型
        *
        * @return 转换后的对象 or null if exception
        */
-      public static <V> V load ( String url, StreamConverter<V> converter ) {
+      public static <V> V loadFromNet ( String url, JsonConverter<V> converter ) {
 
             /* 制造一个call对象 */
             if( sService == null ) {
@@ -126,5 +149,66 @@ public class ObjectLoader {
             }
 
             return null;
+      }
+
+      /**
+       * 从本地文件加载一个对象
+       *
+       * @param file file
+       * @param type object type
+       * @param <V> 需要获取的对象类型
+       *
+       * @return 转换后的对象 or null if exception
+       */
+      public static <V> V loadFromFile ( File file, Class<V> type ) {
+
+            return loadFromFile( file, new GsonConverter<>( type ) );
+      }
+
+      /**
+       * 从本地文件加载一个对象
+       *
+       * @param file file
+       * @param converter 辅助将文件流转为对象
+       * @param <V> 需要获取的对象类型
+       *
+       * @return 转换后的对象 or null if exception
+       */
+      public static <V> V loadFromFile ( File file, JsonConverter<V> converter ) {
+
+            FileInputStream inputStream = null;
+            try {
+                  inputStream = new FileInputStream( file );
+                  return converter.from( inputStream );
+            } catch(Exception e) {
+                  e.printStackTrace();
+            } finally {
+                  Close.close( inputStream );
+            }
+            return null;
+      }
+
+      /**
+       * 转换对象到文件
+       */
+      public static <V> void toFile ( File file, V v, Class<V> type ) {
+
+            toFile( file, v, new GsonConverter<V>( type ) );
+      }
+
+      /**
+       * 转换对象到文件
+       */
+      public static <V> void toFile ( File file, V v, JsonConverter<V> converter ) {
+
+            FileOutputStream outputStream = null;
+            try {
+                  outputStream = new FileOutputStream( file );
+                  converter.to( outputStream, v );
+            } catch(Exception e) {
+                  e.printStackTrace();
+            } finally {
+                  Close.close( outputStream );
+            }
       }
 }
