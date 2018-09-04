@@ -262,6 +262,7 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                                           }
                                           GankDayBean dayBean = mDayLoader.loadFromNet( url );
                                           mDoing.remove( url );
+                                          return;
                                     }
                                     index++;
                               }

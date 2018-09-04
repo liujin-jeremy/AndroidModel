@@ -20,4 +20,13 @@ public class GankCategoryBean {
       public List<ResultsBean> getResults ( ) { return results;}
 
       public void setResults ( List<ResultsBean> results ) { this.results = results;}
+
+      @Override
+      public String toString ( ) {
+
+            return "GankCategoryBean{" +
+                "error=" + error +
+                ", results=" + results +
+                '}';
+      }
 }

@@ -39,7 +39,6 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
       private ImageView    mImage;
       private int          mUrlIndex;
       private String[] mBitmaps = {
-          "http://ww4.sinaimg.cn/large/610dc034jw1f4vmdn2f5nj20kq0rm755.jpg",
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg",
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz6g6wppj20ms0xp13n.jpg",
           "http://ww3.sinaimg.cn/mw690/81309c56jw1f4sx4ybttdj20ku0vd0ym.jpg",
