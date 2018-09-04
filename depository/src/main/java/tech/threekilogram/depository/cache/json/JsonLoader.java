@@ -19,6 +19,8 @@ import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverte
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
+ * 该类提供json对象三级缓存
+ *
  * @author liujin
  */
 @SuppressWarnings("WeakerAccess")

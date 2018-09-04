@@ -13,6 +13,8 @@ import tech.threekilogram.depository.function.instance.GsonClient;
 import tech.threekilogram.depository.function.io.Close;
 
 /**
+ * {@link JsonConverter}的gson实现版本
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-19

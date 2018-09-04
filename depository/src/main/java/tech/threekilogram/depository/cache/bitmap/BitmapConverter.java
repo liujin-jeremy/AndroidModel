@@ -15,7 +15,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * 用于按照规则读取bitmap从file
+ * 用于按照规则从file读取bitmap
  *
  * @author: Liujin
  * @version: V1.0

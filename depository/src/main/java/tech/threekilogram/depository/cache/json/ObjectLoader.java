@@ -8,6 +8,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import tech.threekilogram.depository.StreamConverter;
 import tech.threekilogram.depository.function.encode.Md5;
 import tech.threekilogram.depository.function.encode.StringHash;
 import tech.threekilogram.depository.function.instance.RetrofitClient;
@@ -17,7 +18,7 @@ import tech.threekilogram.depository.net.BaseNetLoader.OnNoResourceListener;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
- * 静态的从网络加载对象
+ * 简单的的从网络加载对象
  *
  * @author: Liujin
  * @version: V1.0
@@ -100,7 +101,7 @@ public class ObjectLoader {
        *
        * @return 转换后的对象 or null if exception
        */
-      public static <V> V loadFromNet ( String url, JsonConverter<V> converter ) {
+      public static <V> V loadFromNet ( String url, StreamConverter<V> converter ) {
 
             /* 制造一个call对象 */
             if( sService == null ) {
@@ -171,7 +172,7 @@ public class ObjectLoader {
        *
        * @return 转换后的对象 or null if exception
        */
-      public static <V> V loadFromFile ( File file, JsonConverter<V> converter ) {
+      public static <V> V loadFromFile ( File file, StreamConverter<V> converter ) {
 
             FileInputStream inputStream = null;
             try {
@@ -187,6 +188,10 @@ public class ObjectLoader {
 
       /**
        * 转换对象到文件
+       *
+       * @param file 该对象将保存到该文件
+       * @param v 对象
+       * @param type json bean对象
        */
       public static <V> void toFile ( File file, V v, Class<V> type ) {
 
@@ -195,8 +200,12 @@ public class ObjectLoader {
 
       /**
        * 转换对象到文件
+       *
+       * @param file 该对象将保存到该文件
+       * @param v 对象
+       * @param converter 辅助转换
        */
-      public static <V> void toFile ( File file, V v, JsonConverter<V> converter ) {
+      public static <V> void toFile ( File file, V v, StreamConverter<V> converter ) {
 
             FileOutputStream outputStream = null;
             try {

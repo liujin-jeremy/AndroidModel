@@ -13,7 +13,7 @@ import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner;
 
 /**
- * 缓存bitmap对象
+ * 该类提供bitmap三级缓存
  *
  * @author: Liujin
  * @version: V1.0
@@ -28,14 +28,20 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        */
       protected MemoryBitmap<String> mMemory;
       /**
+       * 下载bitmap
+       */
+      protected RetrofitDowner       mDowner;
+      /**
        * bitmap 转换
        */
       protected BitmapConverter      mBitmapConverter;
-      /**
-       * 下载
-       */
-      protected RetrofitDowner       mDowner;
 
+      /**
+       * 创建一个bitmap加载器
+       *
+       * @param maxMemorySize 内存最大缓存数量
+       * @param cacheDir 缓存文件夹,网络图片必须线下再到本地之后在解析成bitmap
+       */
       public BitmapLoader ( int maxMemorySize, File cacheDir ) {
 
             mMemory = new MemoryBitmap<>( maxMemorySize );
@@ -43,6 +49,13 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             mBitmapConverter = new BitmapConverter();
       }
 
+      /**
+       * 创建一个bitmap加载器,文件缓存使用{@link com.jakewharton.disklrucache.DiskLruCache}
+       *
+       * @param maxMemorySize 内存最大可作为缓存大小
+       * @param cacheDir 缓存文件夹
+       * @param maxFileSize 缓存文件夹大小
+       */
       public BitmapLoader ( int maxMemorySize, File cacheDir, int maxFileSize ) throws IOException {
 
             mMemory = new MemoryBitmap<>( maxMemorySize );
@@ -97,16 +110,18 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
-       * 仅从网络读取
+       * 从网络读取该url对应的图片,并缓存到内存中
        *
-       * @param url mUrl
+       * @param url 图片url
        *
        * @return bitmap or null
        */
       @Override
       public Bitmap loadFromNet ( String url ) {
 
+            /* 先下载到本地 */
             File file = mDowner.load( url );
+            /* 解析成bitmap */
             if( file != null && file.exists() ) {
 
                   Bitmap bitmap = mBitmapConverter.from( file );
@@ -119,14 +134,14 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
-       * 仅从网络下载文件,之后可以使用{@link #getFile(String)}获取改文件
+       * 仅从网络下载图片文件,之后可以使用{@link #getFile(String)}获取改文件
        *
        * @param url 图片url
        */
       public void downLoad ( String url ) {
 
             File file = getFile( url );
-            if( file.exists() ) {
+            if( file != null && file.exists() ) {
                   return;
             }
             mDowner.load( url );
@@ -277,21 +292,33 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             return loadFromFile( key );
       }
 
+      /**
+       * 获取设置的宽度
+       */
       public int getConfigWidth ( ) {
 
             return mBitmapConverter.getWidth();
       }
 
+      /**
+       * 获取设置的高度
+       */
       public int getConfigHeight ( ) {
 
             return mBitmapConverter.getHeight();
       }
 
+      /**
+       * 获取设置的加载模式
+       */
       public int getConfigMode ( ) {
 
             return mBitmapConverter.getMode();
       }
 
+      /**
+       * 获取设置的bitmap像素格式
+       */
       public Config getBitmapConfig ( ) {
 
             return mBitmapConverter.getBitmapConfig();

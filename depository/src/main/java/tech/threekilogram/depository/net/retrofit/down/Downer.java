@@ -19,7 +19,7 @@ import tech.threekilogram.depository.function.io.FileCache;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
- * 下载器
+ * 一个通用下载器,相对于{@link RetrofitDowner}使用更直接,可以直接使用静态方法
  *
  * @author: Liujin
  * @version: V1.0
@@ -130,23 +130,33 @@ public class Downer {
        */
       public static File down ( File dir, String url ) {
 
-            /* 2. 制造一个call对象 */
+            /* 本地已经有该文件 */
+            File file = getFile( dir, url );
+            if( file != null && file.exists() ) {
+
+                  if( sOnDownLoadUpdateListener != null ) {
+                        sOnDownLoadUpdateListener.onFinished( dir, url );
+                  }
+                  return file;
+            }
+
+            /* 制造一个call对象 */
             if( sService == null ) {
 
                   sService = mRetrofit.create( StreamService.class );
             }
             Call<ResponseBody> call = sService.toGet( url );
 
-            /* 3. 执行call */
+            /* 执行call */
             try {
                   Response<ResponseBody> response = call.execute();
 
-                  /* 4. 如果成功获得数据 */
+                  /* 如果成功获得数据 */
                   if( response.isSuccessful() ) {
 
                         ResponseBody responseBody = response.body();
 
-                        /* 5. 转换数据 */
+                        /* 转换数据 */
                         assert responseBody != null;
                         return saveToFile(
                             dir,
@@ -156,14 +166,14 @@ public class Downer {
                         );
                   } else {
 
-                        /* 4. 连接到网络,但是没有获取到数据 */
+                        /* 连接到网络,但是没有获取到数据 */
                         if( sOnNoResourceListener != null ) {
                               sOnNoResourceListener.onExecuteFailed( dir, url, response.code() );
                         }
                   }
             } catch(IOException e) {
 
-                  /* 4. 没有连接到网络 */
+                  /* 没有连接到网络 */
                   e.printStackTrace();
                   if( sOnExceptionListener != null ) {
                         sOnExceptionListener.onConnectException( dir, url, e );
@@ -200,7 +210,7 @@ public class Downer {
             try {
 
                   OnDownLoadUpdateListener onProgressUpdateListener = sOnDownLoadUpdateListener;
-                  byte[] bytes = new byte[ 128 ];
+                  byte[] bytes = new byte[ 64 ];
                   int len = 0;
                   long write = 0;
 
@@ -213,6 +223,10 @@ public class Downer {
                               write += len;
                               onProgressUpdateListener.onProgressUpdate( dir, url, length, write );
                         }
+                  }
+
+                  if( onProgressUpdateListener != null ) {
+                        onProgressUpdateListener.onFinished( dir, url );
                   }
             } catch(IOException e) {
                   e.printStackTrace();
@@ -256,6 +270,14 @@ public class Downer {
              * @param current 当前下载长度
              */
             void onProgressUpdate ( File dir, String url, long total, long current );
+
+            /**
+             * 下载完成回调
+             *
+             * @param dir dir
+             * @param url url
+             */
+            void onFinished ( File dir, String url );
       }
 
       /**
