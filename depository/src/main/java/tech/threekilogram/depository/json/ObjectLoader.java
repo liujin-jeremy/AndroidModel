@@ -9,7 +9,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.Md5;
 import tech.threekilogram.depository.function.StringEncoder;
+import tech.threekilogram.depository.function.StringHash;
 import tech.threekilogram.depository.instance.RetrofitClient;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNetExceptionListener;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNoResourceListener;
@@ -210,5 +212,31 @@ public class ObjectLoader {
             } finally {
                   Close.close( outputStream );
             }
+      }
+
+      /**
+       * 根据一个url获取一个文件
+       *
+       * @param dir 文件夹
+       * @param url 文件url,将会转为文件名字
+       *
+       * @return 位于文件夹下的文件
+       */
+      public static File getFileByHash ( File dir, String url ) {
+
+            return new File( dir, StringHash.hash( url ) );
+      }
+
+      /**
+       * 根据一个url获取一个文件
+       *
+       * @param dir 文件夹
+       * @param url 文件url,将会转为文件名字
+       *
+       * @return 位于文件夹下的文件
+       */
+      public static File getFileByMd5 ( File dir, String url ) {
+
+            return new File( dir, Md5.md5( url ) );
       }
 }

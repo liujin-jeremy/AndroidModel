@@ -1,7 +1,6 @@
 package tech.threekilogram.depository.function;
 
 import android.support.annotation.IntDef;
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -50,17 +49,4 @@ public class StringEncoder {
       @Retention(RetentionPolicy.SOURCE)
       @IntDef(value = { MD5, HASH, DEFAULT })
       public @interface EncodeMode { }
-
-      /**
-       * 根据一个url获取一个文件
-       *
-       * @param dir 文件夹
-       * @param url 文件url,将会转为文件名字
-       *
-       * @return 位于文件夹下的文件
-       */
-      public File getFile ( File dir, String url ) {
-
-            return new File( dir, encode( url ) );
-      }
 }

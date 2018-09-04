@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
+import java.io.File;
 import tech.threekilogram.depository.json.GsonConverter;
 import tech.threekilogram.depository.json.ObjectLoader;
 
@@ -27,6 +28,8 @@ public class TestObjectLoaderFragment extends Fragment implements OnClickListene
       private Button mHistory;
       private Button mDay;
       private Button mCategory;
+      private Button mToFile;
+      private Button mFromFile;
 
       public static TestObjectLoaderFragment newInstance ( ) {
 
@@ -58,6 +61,10 @@ public class TestObjectLoaderFragment extends Fragment implements OnClickListene
             mDay.setOnClickListener( this );
             mCategory = (Button) itemView.findViewById( R.id.category );
             mCategory.setOnClickListener( this );
+            mToFile = (Button) itemView.findViewById( R.id.toFile );
+            mToFile.setOnClickListener( this );
+            mFromFile = (Button) itemView.findViewById( R.id.fromFile );
+            mFromFile.setOnClickListener( this );
       }
 
       @Override
@@ -73,9 +80,53 @@ public class TestObjectLoaderFragment extends Fragment implements OnClickListene
                   case R.id.category:
                         category();
                         break;
+                  case R.id.toFile:
+                        toFile();
+                        break;
+                  case R.id.fromFile:
+                        fromFile();
+                        break;
                   default:
                         break;
             }
+      }
+
+      private void fromFile ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
+                        File cache = getContext().getExternalFilesDir( "cache" );
+                        File file = ObjectLoader.getFileByHash( cache, url );
+                        GankCategoryBean bean = ObjectLoader
+                            .loadFromFile( file, GankCategoryBean.class );
+                        Log.e( TAG, "run : " + bean.getResults().get( 0 ).getUrl() );
+                  }
+            } );
+      }
+
+      private void toFile ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
+                        GankCategoryBean categoryBean = ObjectLoader.loadFromNet(
+                            url,
+                            GankCategoryBean.class
+                        );
+
+                        File cache = getContext().getExternalFilesDir( "cache" );
+                        File file = ObjectLoader.getFileByHash( cache, url );
+                        ObjectLoader.toFile( file, categoryBean, GankCategoryBean.class );
+                        Log.e( TAG, "run : " + cache );
+                  }
+            } );
       }
 
       private void category ( ) {
