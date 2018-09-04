@@ -1,6 +1,5 @@
 package tech.threekilogram.androidmodellib;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,19 +25,16 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
       private static final String TAG = TestRetrofitLoaderFragment.class.getSimpleName();
 
-      private Button mJsonLoad;
-      private Button mBitmapLoad;
-
       public static TestRetrofitLoaderFragment newInstance ( ) {
 
             TestRetrofitLoaderFragment fragment = new TestRetrofitLoaderFragment();
             return fragment;
       }
 
+      private Button                           mJsonLoad;
       private Button                           mStringLoad;
       private RetrofitLoader<String>           mStringLoader;
       private RetrofitLoader<GankCategoryBean> mJsonLoader;
-      private RetrofitLoader<Bitmap>           mBitmapLoader;
 
       @Nullable
       @Override
@@ -58,9 +54,6 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
             mJsonLoader = new RetrofitLoader<>(
                 new RetrofitJsonConverter<>( GankCategoryBean.class )
             );
-            mBitmapLoader = new RetrofitLoader<>(
-                new RetrofitBitmapConverter( getActivity().getExternalFilesDir( "bitmap" ) )
-            );
       }
 
       private void initView ( @NonNull final View itemView ) {
@@ -69,8 +62,6 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
             mStringLoad.setOnClickListener( this );
             mJsonLoad = (Button) itemView.findViewById( R.id.jsonLoad );
             mJsonLoad.setOnClickListener( this );
-            mBitmapLoad = (Button) itemView.findViewById( R.id.bitmapLoad );
-            mBitmapLoad.setOnClickListener( this );
       }
 
       @Override
@@ -82,9 +73,6 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
                         break;
                   case R.id.jsonLoad:
                         loadJson();
-                        break;
-                  case R.id.bitmapLoad:
-                        loadBitmap();
                         break;
                   default:
                         break;
@@ -117,21 +105,6 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
                             .load( "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/1/1" );
 
                         Log.e( TAG, "run : " + load.getResults().get( 0 ) );
-                  }
-            } );
-      }
-
-      private void loadBitmap ( ) {
-
-            PoolExecutor.execute( new Runnable() {
-
-                  @Override
-                  public void run ( ) {
-
-                        Bitmap bitmap = mBitmapLoader.load(
-                            "https://ws1.sinaimg.cn/large/0065oQSqly1fuh5fsvlqcj30sg10onjk.jpg" );
-
-                        Log.e( TAG, "run : " + bitmap.getWidth() );
                   }
             } );
       }

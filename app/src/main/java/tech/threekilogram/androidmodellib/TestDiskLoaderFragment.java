@@ -1,8 +1,5 @@
 package tech.threekilogram.androidmodellib;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,11 +9,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
-import tech.threekilogram.depository.bitmap.BitmapConverter;
 import tech.threekilogram.depository.file.converter.FileJsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
@@ -32,7 +27,6 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
 
       private DiskLruLoader<String>           mStringFileLoader;
       private DiskLruLoader<GankCategoryBean> mJsonFileLoader;
-      private DiskLruLoader<Bitmap>           mBitmapFileLoader;
       private Button                          mString;
       private TextView                        mMsg;
       private Button                          mLoadString;
@@ -40,10 +34,6 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
       private Button                          mSaveJson;
       private Button                          mLoadJson;
       private Button                          mRemoveJson;
-      private Button                          mSaveBitmap;
-      private Button                          mLoadBitmap;
-      private Button                          mRemoveBitmap;
-      private ImageView                       mImageView;
 
       private final String JSON = "{\n"
           + "    \"error\": false,\n"
@@ -106,23 +96,6 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
             }
 
             ScreenSize.init( getContext() );
-            try {
-                  FileBitmapConverter converter = new FileBitmapConverter();
-                  mBitmapFileLoader = new DiskLruLoader<>(
-                      file,
-                      10 * 1024 * 1024,
-                      converter
-                  );
-                  converter.configBitmap(
-                      mBitmapFileLoader,
-                      ScreenSize.getWidth(),
-                      ScreenSize.getHeight(),
-                      BitmapConverter.MATCH_WIDTH,
-                      Config.RGB_565
-                  );
-            } catch(IOException e) {
-                  e.printStackTrace();
-            }
       }
 
       private void initView ( @NonNull final View itemView ) {
@@ -140,13 +113,6 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
             mLoadJson.setOnClickListener( this );
             mRemoveJson = (Button) itemView.findViewById( R.id.removeJson );
             mRemoveJson.setOnClickListener( this );
-            mSaveBitmap = (Button) itemView.findViewById( R.id.saveBitmap );
-            mSaveBitmap.setOnClickListener( this );
-            mLoadBitmap = (Button) itemView.findViewById( R.id.loadBitmap );
-            mLoadBitmap.setOnClickListener( this );
-            mRemoveBitmap = (Button) itemView.findViewById( R.id.removeBitmap );
-            mRemoveBitmap.setOnClickListener( this );
-            mImageView = (ImageView) itemView.findViewById( R.id.imageView );
       }
 
       @Override
@@ -170,15 +136,6 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
                         break;
                   case R.id.removeJson:
                         deleteJson();
-                        break;
-                  case R.id.saveBitmap:
-                        saveBitmap();
-                        break;
-                  case R.id.loadBitmap:
-                        loadBitmap();
-                        break;
-                  case R.id.removeBitmap:
-                        deleteBitmap();
                         break;
                   default:
                         break;
@@ -238,33 +195,5 @@ public class TestDiskLoaderFragment extends Fragment implements OnClickListener 
       private void setMsg ( String msg ) {
 
             mMsg.setText( msg );
-      }
-
-      private void saveBitmap ( ) {
-
-            final String key = "bitmap";
-            Bitmap bitmap = BitmapFactory.decodeResource( getResources(), R.drawable.a117 );
-            mBitmapFileLoader.save( key, bitmap );
-
-            setMsg( "save bitmap: " + key + +bitmap.getWidth() );
-      }
-
-      private void loadBitmap ( ) {
-
-            final String key = "bitmap";
-
-            Bitmap bitmap = mBitmapFileLoader.load( key );
-
-            mImageView.setImageBitmap( bitmap );
-
-            setMsg( "loadFromNet bitmap: " + key + " " + bitmap.getWidth() );
-      }
-
-      private void deleteBitmap ( ) {
-
-            final String key = "bitmap";
-            Bitmap remove = mBitmapFileLoader.remove( key );
-            File file = mBitmapFileLoader.getFile( key );
-            setMsg( "delete bitmap: " + key + " " + file.exists() );
       }
 }

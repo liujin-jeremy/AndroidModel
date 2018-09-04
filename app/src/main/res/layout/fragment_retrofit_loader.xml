@@ -25,14 +25,4 @@
           android:text="jsonLoad"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/stringLoad"/>
-      <Button
-          android:id="@+id/bitmapLoad"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="bitmapLoad"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/jsonLoad"/>
 </android.support.constraint.ConstraintLayout>

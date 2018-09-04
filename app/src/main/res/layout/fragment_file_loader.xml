@@ -79,49 +79,4 @@
           android:text="remove json"
           app:layout_constraintStart_toEndOf="@+id/loadJson"
           app:layout_constraintTop_toBottomOf="@+id/removeString"/>
-      <Button
-          android:id="@+id/saveBitmap"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="save bitmap"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/msg"/>
-      <Button
-          android:id="@+id/loadBitmap"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="load bitmap"
-          app:layout_constraintStart_toEndOf="@+id/saveBitmap"
-          app:layout_constraintTop_toBottomOf="@+id/msg"/>
-      <Button
-          android:id="@+id/removeBitmap"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="remove bitmap"
-          app:layout_constraintStart_toEndOf="@+id/loadBitmap"
-          app:layout_constraintTop_toBottomOf="@+id/msg"/>
-      <ImageView
-          android:id="@+id/imageView"
-          android:layout_width="0dp"
-          android:layout_height="0dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginEnd="8dp"
-          android:layout_marginLeft="8dp"
-          android:layout_marginRight="8dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/loadBitmap"
-          app:srcCompat="@drawable/a264"/>
 </android.support.constraint.ConstraintLayout>

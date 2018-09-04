@@ -154,6 +154,8 @@ public class TestMemoryListFragment extends Fragment implements OnClickListener 
 
       private void size ( ) {
 
+            int size = mMemoryList.size();
+            setMsgText( "memory size : " + size );
       }
 
       private void setMsgText ( String msgText ) {

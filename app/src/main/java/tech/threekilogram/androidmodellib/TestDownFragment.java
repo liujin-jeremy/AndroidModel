@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner;
-import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner.OnProgressUpdateListener;
 
 /**
  * @author: Liujin
@@ -58,22 +57,12 @@ public class TestDownFragment extends Fragment implements OnClickListener {
             super.onViewCreated( view, savedInstanceState );
             initView( view );
             mRetrofitDowner = new RetrofitDowner( getActivity().getExternalFilesDir( "down" ) );
-            OnProgressUpdateListener onProgressUpdateListener = new OnProgressUpdateListener() {
-
-                  @Override
-                  public void onProgressUpdate ( String key, long total, long current ) {
-
-                        Log.e( TAG, "onProgressUpdate : " + total + " " + current );
-                  }
-            };
-            mRetrofitDowner.setOnProgressUpdateListener( onProgressUpdateListener );
 
             try {
                   mRetrofitDiskDowner = new RetrofitDowner(
                       getActivity().getExternalFilesDir( "down" ),
                       10 * 1024 * 1024
                   );
-                  mRetrofitDiskDowner.setOnProgressUpdateListener( onProgressUpdateListener );
             } catch(IOException e) {
                   e.printStackTrace();
             }

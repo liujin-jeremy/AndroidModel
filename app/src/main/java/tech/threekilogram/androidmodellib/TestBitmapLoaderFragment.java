@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.objectbus.executor.PoolExecutor;
-import tech.threekilogram.depository.bitmap.BitmapLoader;
+import tech.threekilogram.depository.cache.bitmap.BitmapLoader;
 import tech.threekilogram.messengers.Messengers;
 import tech.threekilogram.messengers.OnMessageReceiveListener;
 

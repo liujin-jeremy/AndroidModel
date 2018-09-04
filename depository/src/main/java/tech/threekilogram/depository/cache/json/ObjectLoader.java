@@ -18,7 +18,7 @@ import tech.threekilogram.depository.net.BaseNetLoader.OnNoResourceListener;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
- * 简单的的从网络加载对象
+ * 简单的从流中加载对象
  *
  * @author: Liujin
  * @version: V1.0
