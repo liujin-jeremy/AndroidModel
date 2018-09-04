@@ -9,11 +9,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.function.FileCache;
+import tech.threekilogram.depository.function.io.Close;
+import tech.threekilogram.depository.function.io.FileCache;
 
 /**
- * 底层使用{@link DiskLruCache}缓存数据到文件夹
+ * 和{@link FileLoader}功能一致,但是底层使用{@link DiskLruCache}缓存数据到文件夹
  *
  * @param <V> value 类型
  *
@@ -35,11 +35,11 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       private FileCache mFileLoader = new FileCache();
 
       /**
-       * @param folder which dir to save data
-       * @param maxSize max data size
-       * @param converter function to do
+       * @param folder 缓存文件夹
+       * @param maxSize 缓存文件最大大小
+       * @param converter 辅助完成转换工作
        *
-       * @throws IOException 创建缓存文件异常
+       * @throws IOException 创建{@link DiskLruCache}时异常
        */
       public DiskLruLoader (
           File folder,
@@ -93,14 +93,14 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             }
             try {
 
-                  mConverter.saveValue( key, outputStream, value );
+                  mConverter.to( outputStream, value );
                   Close.close( outputStream );
                   editor.commit();
             } catch(IOException e) {
                   e.printStackTrace();
                   abortEditor( editor );
-                  if( mExceptionHandler != null ) {
-                        mExceptionHandler.onSaveValueToFile( e, key, value );
+                  if( mOnFileConvertExceptionListener != null ) {
+                        mOnFileConvertExceptionListener.onValueToFile( e, key, value );
                   }
             } finally {
 
@@ -156,9 +156,13 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public void clear ( ) throws IOException {
+      public void clear ( ) {
 
-            mDiskLruCache.delete();
+            try {
+                  mDiskLruCache.delete();
+            } catch(IOException e) {
+                  e.printStackTrace();
+            }
       }
 
       @Override
@@ -186,13 +190,13 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
                   try {
 
-                        return mConverter.toValue( key, inputStream );
+                        return mConverter.from( inputStream );
                   } catch(Exception e) {
 
                         e.printStackTrace();
 
-                        if( mExceptionHandler != null ) {
-                              mExceptionHandler.onConvertToValue( e, key );
+                        if( mOnFileConvertExceptionListener != null ) {
+                              mOnFileConvertExceptionListener.onFileToValue( e, key );
                         }
                   } finally {
 

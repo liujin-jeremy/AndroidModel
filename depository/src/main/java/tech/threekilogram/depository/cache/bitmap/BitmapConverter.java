@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.bitmap;
+package tech.threekilogram.depository.cache.bitmap;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -197,15 +197,13 @@ public class BitmapConverter {
       }
 
       /**
-       * read a bitmap
+       * from a bitmap
        *
        * @param file file bitmap
        *
        * @return bitmap
        */
-      public Bitmap read ( File file ) {
-
-            /* size is 0 */
+      public Bitmap from ( File file ) {
 
             if( mWidth == 0 || mHeight == 0 || mMode == 0 ) {
 
@@ -243,7 +241,7 @@ public class BitmapConverter {
        * @param stream outputStream
        * @param value bitmap
        */
-      public void write ( OutputStream stream, Bitmap value ) {
+      public void to ( OutputStream stream, Bitmap value ) {
 
             value.compress( CompressFormat.PNG, 100, stream );
       }
@@ -254,11 +252,11 @@ public class BitmapConverter {
        * @param file file
        * @param value bitmap
        */
-      public void write ( File file, Bitmap value ) {
+      public void to ( File file, Bitmap value ) {
 
             try {
                   FileOutputStream outputStream = new FileOutputStream( file );
-                  write( outputStream, value );
+                  to( outputStream, value );
             } catch(FileNotFoundException e) {
                   e.printStackTrace();
             }

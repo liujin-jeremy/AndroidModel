@@ -17,11 +17,10 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.bitmap.BitmapConverter;
-import tech.threekilogram.depository.file.converter.FileBitmapConverter;
 import tech.threekilogram.depository.file.converter.FileJsonConverter;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
-import tech.threekilogram.depository.instance.GsonClient;
+import tech.threekilogram.depository.function.instance.GsonClient;
 
 /**
  * @author: Liujin

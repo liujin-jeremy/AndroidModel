@@ -5,7 +5,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import tech.threekilogram.depository.instance.RetrofitClient;
+import tech.threekilogram.depository.function.instance.RetrofitClient;
 import tech.threekilogram.depository.net.BaseNetLoader;
 
 /**

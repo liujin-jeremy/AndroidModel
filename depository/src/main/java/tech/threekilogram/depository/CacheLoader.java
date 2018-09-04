@@ -1,6 +1,8 @@
 package tech.threekilogram.depository;
 
 /**
+ * 三级缓存接口,实现该接口,可以提供三级缓存,内存/文件/网络
+ *
  * @author liujin
  */
 public interface CacheLoader<V> {
@@ -48,6 +50,13 @@ public interface CacheLoader<V> {
        * @return 该key对应的值
        */
       V loadFromMemory ( String key );
+
+      /**
+       * 内存中数据量
+       *
+       * @return 数据量
+       */
+      int memorySize ( );
 
       /**
        * 清除所有内存中数据

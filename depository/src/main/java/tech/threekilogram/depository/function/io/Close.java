@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.function;
+package tech.threekilogram.depository.function.io;
 
 import java.io.Closeable;
 import java.io.IOException;

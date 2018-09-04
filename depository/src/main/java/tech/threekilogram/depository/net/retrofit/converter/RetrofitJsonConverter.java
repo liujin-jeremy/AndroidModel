@@ -1,8 +1,8 @@
 package tech.threekilogram.depository.net.retrofit.converter;
 
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.json.GsonConverter;
-import tech.threekilogram.depository.json.JsonConverter;
+import tech.threekilogram.depository.cache.json.GsonConverter;
+import tech.threekilogram.depository.cache.json.JsonConverter;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
 /**

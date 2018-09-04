@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.function;
+package tech.threekilogram.depository.function.encode;
 
 import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;

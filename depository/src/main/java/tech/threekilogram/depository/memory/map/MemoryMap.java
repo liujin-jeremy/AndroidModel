@@ -1,12 +1,10 @@
 package tech.threekilogram.depository.memory.map;
 
 import android.support.v4.util.ArrayMap;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import tech.threekilogram.depository.memory.Memory;
 
 /**
- * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap}
+ * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap},所以线程不安全
  * <p>
  * use {@link ArrayMap} to save value in memory
  *
@@ -18,23 +16,29 @@ import tech.threekilogram.depository.memory.Memory;
 
 public class MemoryMap<K, V> implements Memory<K, V> {
 
-      protected HashMap<K, V> mContainer;
+      protected ArrayMap<K, V> mContainer;
 
       @SuppressWarnings("WeakerAccess")
       public MemoryMap ( ) {
 
-            mContainer = new HashMap<>( 32, 0.96f );
+            mContainer = new ArrayMap<>();
       }
 
       public MemoryMap ( int size ) {
 
-            mContainer = new LinkedHashMap<>( size );
+            mContainer = new ArrayMap<>( size );
       }
 
       @Override
       public void clear ( ) {
 
             mContainer.clear();
+      }
+
+      @Override
+      public int size ( ) {
+
+            return mContainer.size();
       }
 
       @Override

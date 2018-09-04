@@ -1,20 +1,24 @@
 package tech.threekilogram.depository.file;
 
-import tech.threekilogram.depository.function.StringEncoder;
-import tech.threekilogram.depository.function.StringEncoder.EncodeMode;
+import tech.threekilogram.depository.function.encode.StringEncoder;
+import tech.threekilogram.depository.function.encode.StringEncoder.EncodeMode;
 
 /**
- * @author: Liujin
- * @version: V1.0
- * @date: 2018-08-16
- * @time: 21:30
+ * {@link FileConverter}简单实现,完成key到file name的转换工作
+ *
+ * @param <V> 从文件中获取的数据类型
+ *
+ * @author liujin
  */
 public abstract class BaseFileConverter<V> implements FileConverter<V> {
 
+      /**
+       * 辅助转换{@link #fileName(String)}中的key为合法字符
+       */
       protected StringEncoder mNameConverter = new StringEncoder();
 
       /**
-       * 设置{@link #fileName(String)}采用较短名字还是长名字
+       * 设置{@link #fileName(String)}采用何种转换方式
        */
       public void setMode ( @EncodeMode int mode ) {
 

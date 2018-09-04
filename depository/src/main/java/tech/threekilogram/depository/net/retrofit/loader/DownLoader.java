@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.net.retrofit.loader;
 
-import static tech.threekilogram.depository.function.StringEncoder.HASH;
-import static tech.threekilogram.depository.function.StringEncoder.MD5;
+import static tech.threekilogram.depository.function.encode.StringEncoder.HASH;
+import static tech.threekilogram.depository.function.encode.StringEncoder.MD5;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,10 +12,10 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.function.FileCache;
-import tech.threekilogram.depository.function.StringEncoder;
-import tech.threekilogram.depository.instance.RetrofitClient;
+import tech.threekilogram.depository.function.encode.StringEncoder;
+import tech.threekilogram.depository.function.instance.RetrofitClient;
+import tech.threekilogram.depository.function.io.Close;
+import tech.threekilogram.depository.function.io.FileCache;
 
 /**
  * 下载器

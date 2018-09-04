@@ -87,7 +87,7 @@ public class RetrofitBitmapConverter extends BaseRetrofitConverter<Bitmap> {
       @Override
       public Bitmap onExecuteSuccess ( String key, ResponseBody response ) throws Exception {
 
-            /* save then read */
+            /* save then from */
             File file = mDownConverter.onExecuteSuccess( key, response );
             return mBitmapConverter.read( file );
       }

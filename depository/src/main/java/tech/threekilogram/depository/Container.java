@@ -1,9 +1,7 @@
 package tech.threekilogram.depository;
 
 /**
- * 扩展了 {@link Loader} 接口,当实现内存缓存和本地缓存时实现该接口,可以测试key对应的value是否存在,
- * 而网络缓存没有必要实现测试是否存在该value的需要,网络缓存是获取数据的最后一步如果获取到就获取到了,
- * 如果不能那么没有办法了,只能返回一个null,并且从网络测试是否有文件代价太高了
+ * 容器接口,实现该接口,可以保存key value到一个容器中,例如内存或者本地文件或者数据库中
  *
  * @author: Liujin
  * @version: V1.0

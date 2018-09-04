@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.instance;
+package tech.threekilogram.depository.function.instance;
 
 import java.io.File;
 import okhttp3.Cache;

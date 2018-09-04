@@ -354,10 +354,28 @@ File file = DownLoader.getFile( dir, url ); //改文件可能并不存在,需要
 
 > 该类提供从数据流静态加载对象方式
 
+* 从网络加载
+
 ```
-// 从网络加载
 GankDayBean dayBean = ObjectLoader.loadFromNet(
     "https://gank.io/api/day/2015/08/07",
     GankDayBean.class
 );
+```
+
+* 保存到文件
+
+```
+File cache = getContext().getExternalFilesDir( "cache" );
+File file = ObjectLoader.getFileByHash( cache, url );
+ObjectLoader.toFile( file, categoryBean, GankCategoryBean.class );
+```
+
+* 从文件读取
+
+```
+String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
+File cache = getContext().getExternalFilesDir( "cache" );
+File file = ObjectLoader.getFileByHash( cache, url );
+GankCategoryBean bean = ObjectLoader.loadFromFile( file, GankCategoryBean.class );
 ```

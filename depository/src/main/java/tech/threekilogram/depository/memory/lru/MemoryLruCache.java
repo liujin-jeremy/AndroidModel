@@ -2,8 +2,8 @@ package tech.threekilogram.depository.memory.lru;
 
 import android.support.v4.util.LruCache;
 import tech.threekilogram.depository.memory.Memory;
-import tech.threekilogram.depository.memory.lru.size.SimpleValueSize;
-import tech.threekilogram.depository.memory.lru.size.ValueSize;
+import tech.threekilogram.depository.memory.lru.size.ObjectSize;
+import tech.threekilogram.depository.memory.lru.size.SimpleObjectSize;
 
 /**
  * 使用{@link LruCache}在内存中保存数据
@@ -26,7 +26,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
        */
       public MemoryLruCache ( ) {
 
-            this( 50, new SimpleValueSize<K, V>() );
+            this( 50, new SimpleObjectSize<K, V>() );
       }
 
       /**
@@ -34,7 +34,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
        */
       public MemoryLruCache ( int maxSize ) {
 
-            this( maxSize, new SimpleValueSize<K, V>() );
+            this( maxSize, new SimpleObjectSize<K, V>() );
       }
 
       /**
@@ -45,7 +45,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
        */
       public MemoryLruCache (
           int maxSize,
-          ValueSize<K, V> valueSize ) {
+          ObjectSize<K, V> valueSize ) {
 
             mContainer = new ConstructLruCache( maxSize, valueSize );
       }
@@ -54,6 +54,12 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
       public void clear ( ) {
 
             mContainer.evictAll();
+      }
+
+      @Override
+      public int size ( ) {
+
+            return mContainer.size();
       }
 
       @Override
@@ -84,7 +90,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
 
       private class ConstructLruCache extends LruCache<K, V> {
 
-            private ValueSize<K, V> mValueSize;
+            private ObjectSize<K, V> mValueSize;
 
             /**
              * @param maxSize for caches that do not override {@link #sizeOf}, this is the
@@ -93,7 +99,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
              *     the
              *     sizes of the entries in this cache.
              */
-            public ConstructLruCache ( int maxSize, ValueSize<K, V> valueSize ) {
+            public ConstructLruCache ( int maxSize, ObjectSize<K, V> valueSize ) {
 
                   super( maxSize );
                   mValueSize = valueSize;

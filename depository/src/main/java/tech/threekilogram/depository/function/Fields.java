@@ -1,6 +1,6 @@
-package tech.threekilogram.depository.memory.map;
+package tech.threekilogram.depository.function;
 
-import java.util.HashMap;
+import android.support.v4.util.ArrayMap;
 
 /**
  * 用于全局保存一些临时变量,省去在类中声明这些变量
@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class Fields {
 
-      public static HashMap<String, Object> sMembers = new HashMap<>( 32, 0.96f );
+      public static ArrayMap<String, Object> sMembers = new ArrayMap<>();
 
       /**
        * 保存一个临时变量

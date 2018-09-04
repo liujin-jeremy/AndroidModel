@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import okhttp3.ResponseBody;
-import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 
 /**

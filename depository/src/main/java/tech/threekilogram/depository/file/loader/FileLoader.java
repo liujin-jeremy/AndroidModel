@@ -6,9 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.function.FileCache;
-import tech.threekilogram.depository.function.FileClear;
+import tech.threekilogram.depository.function.io.Close;
+import tech.threekilogram.depository.function.io.FileCache;
+import tech.threekilogram.depository.function.io.FileClear;
 
 /**
  * 从本地文件系统中读取缓存对象,需要一个{@link FileConverter}来辅助将{@link java.io.File}转换为{@link V}
@@ -45,7 +45,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
             V result = null;
 
-            /* to decide how to write a value to file */
+            /* to decide how to to a value to file */
 
             if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
 
@@ -64,15 +64,15 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
                   File file = getFile( key );
                   stream = new FileOutputStream( file );
-                  mConverter.saveValue( key, stream, value );
+                  mConverter.to( stream, value );
             } catch(IOException e) {
 
                   /* maybe can't save */
 
                   e.printStackTrace();
 
-                  if( mExceptionHandler != null ) {
-                        mExceptionHandler.onSaveValueToFile( e, key, value );
+                  if( mOnFileConvertExceptionListener != null ) {
+                        mOnFileConvertExceptionListener.onValueToFile( e, key, value );
                   }
             } finally {
 
@@ -118,15 +118,15 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         /* convert the file to value */
 
                         stream = new FileInputStream( file );
-                        result = mConverter.toValue( key, stream );
+                        result = mConverter.from( stream );
                   } catch(Exception e) {
 
                         /* maybe can't convert */
 
                         e.printStackTrace();
 
-                        if( mExceptionHandler != null ) {
-                              mExceptionHandler.onConvertToValue( e, key );
+                        if( mOnFileConvertExceptionListener != null ) {
+                              mOnFileConvertExceptionListener.onFileToValue( e, key );
                         }
                   } finally {
 
@@ -159,7 +159,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public void clear ( ) throws IOException {
+      public void clear ( ) {
 
             FileClear.clearFile( mDir );
       }

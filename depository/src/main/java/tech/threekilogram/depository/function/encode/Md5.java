@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.function;
+package tech.threekilogram.depository.function.encode;
 
 import android.support.annotation.NonNull;
 import java.security.MessageDigest;

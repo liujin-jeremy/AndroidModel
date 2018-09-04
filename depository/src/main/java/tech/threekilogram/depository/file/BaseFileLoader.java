@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import tech.threekilogram.depository.Container;
 
 /**
- * 辅助类,提供成员变量,及其设置方法
+ * 文件缓存的基本实现类,用于从文件系统中保存恢复对象,需要配合{@link FileConverter}使用
  *
  * @author: Liujin
  * @version: V1.0
@@ -20,12 +20,12 @@ import tech.threekilogram.depository.Container;
 public abstract class BaseFileLoader<V> implements Container<String, V> {
 
       /**
-       * 保存文件策略,会直接覆盖旧的文件,不会读取,如果旧的文件存在的话
+       * 保存文件策略,使用该策略会直接覆盖旧的文件,不会读取已经存在的key对应的文件
        */
       @SuppressWarnings("WeakerAccess")
       public static final int SAVE_STRATEGY_COVER      = 0;
       /**
-       * 保存文件策略,先读取旧的文件之后再覆盖旧的文件,如果旧的文件存在的话
+       * 保存文件策略,使用该策略会先读取key对应的旧的文件之后再覆盖文件
        */
       @SuppressWarnings("WeakerAccess")
       public static final int SAVE_STRATEGY_RETURN_OLD = 1;
@@ -40,11 +40,11 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
       /**
        * 辅助该类完成stream到{@link V}的转换工作
        */
-      protected FileConverter<V>    mConverter;
+      protected FileConverter<V>                  mConverter;
       /**
        * 处理发生的异常
        */
-      protected ExceptionHandler<V> mExceptionHandler;
+      protected OnFileConvertExceptionListener<V> mOnFileConvertExceptionListener;
 
       /**
        * 读取保存策略
@@ -81,19 +81,20 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
       /**
        * @return 异常处理类, 或者null
        */
-      public ExceptionHandler<V> getExceptionHandler ( ) {
+      public OnFileConvertExceptionListener<V> getOnFileConvertExceptionListener ( ) {
 
-            return mExceptionHandler;
+            return mOnFileConvertExceptionListener;
       }
 
       /**
        * 设置异常处理类
        *
-       * @param exceptionHandler 异常处理类
+       * @param onFileConvertExceptionListener 异常处理类
        */
-      public void setExceptionHandler ( ExceptionHandler<V> exceptionHandler ) {
+      public void setOnFileConvertExceptionListener (
+          OnFileConvertExceptionListener<V> onFileConvertExceptionListener ) {
 
-            mExceptionHandler = exceptionHandler;
+            mOnFileConvertExceptionListener = onFileConvertExceptionListener;
       }
 
       /**
@@ -101,16 +102,14 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
        *
        * @param key key
        *
-       * @return 文件(可能不存在)
+       * @return 文件(可能不存在), 需要自己判断一下
        */
       public abstract File getFile ( String key );
 
       /**
        * 清空缓存文件
-       *
-       * @throws IOException 文件异常
        */
-      public abstract void clear ( ) throws IOException;
+      public abstract void clear ( );
 
       /**
        * 获取转换器
@@ -125,19 +124,19 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
       /**
        * handle exception
        */
-      public interface ExceptionHandler<V> {
+      public interface OnFileConvertExceptionListener<V> {
 
             /**
-             * a exception occur at {@link FileConverter#toValue(String, InputStream)} will
+             * a exception occur at {@link FileConverter#from(InputStream)} will
              * call this
              *
              * @param e exception
              * @param key which key occur
              */
-            void onConvertToValue ( Exception e, String key );
+            void onFileToValue ( Exception e, String key );
 
             /**
-             * a exception occur at {@link FileConverter#saveValue(String, OutputStream, Object)}
+             * a exception occur at {@link FileConverter#to(OutputStream, Object)}
              * will call
              * this
              *
@@ -145,6 +144,6 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
              * @param key key
              * @param value to save
              */
-            void onSaveValueToFile ( IOException e, String key, V value );
+            void onValueToFile ( IOException e, String key, V value );
       }
 }

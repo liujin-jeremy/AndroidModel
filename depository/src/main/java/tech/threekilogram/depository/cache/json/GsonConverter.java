@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.json;
+package tech.threekilogram.depository.cache.json;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
@@ -9,8 +9,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.instance.GsonClient;
+import tech.threekilogram.depository.function.instance.GsonClient;
+import tech.threekilogram.depository.function.io.Close;
 
 /**
  * @author: Liujin

@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.instance;
+package tech.threekilogram.depository.function.instance;
 
 import com.google.gson.Gson;
 

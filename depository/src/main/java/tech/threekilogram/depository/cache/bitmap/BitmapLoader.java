@@ -1,6 +1,6 @@
-package tech.threekilogram.depository.bitmap;
+package tech.threekilogram.depository.cache.bitmap;
 
-import static tech.threekilogram.depository.bitmap.BitmapConverter.MATCH_SIZE;
+import static tech.threekilogram.depository.cache.bitmap.BitmapConverter.MATCH_SIZE;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -8,7 +8,7 @@ import android.graphics.Bitmap.Config;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.CacheLoader;
-import tech.threekilogram.depository.bitmap.BitmapConverter.ScaleMode;
+import tech.threekilogram.depository.cache.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner.OnProgressUpdateListener;
@@ -110,7 +110,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             File file = mDowner.load( url );
             if( file != null && file.exists() ) {
 
-                  Bitmap bitmap = mBitmapConverter.read( file );
+                  Bitmap bitmap = mBitmapConverter.from( file );
                   if( bitmap != null ) {
                         saveToMemory( url, bitmap );
                         return bitmap;
@@ -144,6 +144,12 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       public Bitmap loadFromMemory ( String url ) {
 
             return mMemory.load( url );
+      }
+
+      @Override
+      public int memorySize ( ) {
+
+            return mMemory.size();
       }
 
       /**
@@ -210,7 +216,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       public void saveToFile ( String key, Bitmap bitmap ) {
 
             File file = getFile( key );
-            mBitmapConverter.write( file, bitmap );
+            mBitmapConverter.to( file, bitmap );
       }
 
       @Override
@@ -232,7 +238,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             File file = mDowner.getFile( url );
             if( file != null && file.exists() ) {
 
-                  Bitmap bitmap = mBitmapConverter.read( file );
+                  Bitmap bitmap = mBitmapConverter.from( file );
                   if( bitmap != null ) {
                         mMemory.save( url, bitmap );
                         return bitmap;

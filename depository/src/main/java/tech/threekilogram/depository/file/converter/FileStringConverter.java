@@ -5,12 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.file.loader.FileLoader;
-import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.io.Close;
 
 /**
- * {@link FileConverter} 的一种实现,需要和{@link FileLoader}配合使用;
- * 通过一个{@link String}key 从本地文件系统读取成{@link String}类型的实例
+ * {@link FileConverter} 的一种实现,需要和{@link tech.threekilogram.depository.file.BaseFileLoader}配合使用;
+ * 从本地文件系统读取成{@link String}类型的实例
  *
  * @author: Liujin
  * @version: V1.0
@@ -20,14 +19,14 @@ import tech.threekilogram.depository.function.Close;
 public class FileStringConverter extends BaseFileConverter<String> {
 
       @Override
-      public String toValue ( String key, InputStream stream ) throws Exception {
-
-            int length = stream.available();
-            byte[] bytes = new byte[ length ];
+      public String from ( InputStream stream ) {
 
             try {
+
+                  int length = stream.available();
+                  byte[] bytes = new byte[ length ];
                   int read = stream.read( bytes );
-                  return new String( bytes );
+                  return new String( bytes, 0, read );
             } catch(IOException e) {
 
                   e.printStackTrace();
@@ -40,11 +39,14 @@ public class FileStringConverter extends BaseFileConverter<String> {
       }
 
       @Override
-      public void saveValue ( String key, OutputStream outputStream, String value )
-          throws IOException {
+      public void to ( OutputStream outputStream, String value ) {
 
             try {
+
                   outputStream.write( value.getBytes() );
+            } catch(IOException e) {
+
+                  e.printStackTrace();
             } finally {
 
                   Close.close( outputStream );

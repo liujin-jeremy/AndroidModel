@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.json;
+package tech.threekilogram.depository.cache.json;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,11 +8,10 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import tech.threekilogram.depository.function.Close;
-import tech.threekilogram.depository.function.Md5;
-import tech.threekilogram.depository.function.StringEncoder;
-import tech.threekilogram.depository.function.StringHash;
-import tech.threekilogram.depository.instance.RetrofitClient;
+import tech.threekilogram.depository.function.encode.Md5;
+import tech.threekilogram.depository.function.encode.StringHash;
+import tech.threekilogram.depository.function.instance.RetrofitClient;
+import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNetExceptionListener;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNoResourceListener;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
@@ -43,10 +42,6 @@ public class ObjectLoader {
        * 没有该资源助手
        */
       private static OnNoResourceListener           sOnNoResourceListener;
-      /**
-       * encode string
-       */
-      private static StringEncoder                  sEncoder;
 
       /**
        * 设置网络异常监听

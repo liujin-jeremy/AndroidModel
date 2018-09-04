@@ -9,7 +9,7 @@ import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
-import tech.threekilogram.depository.function.Close;
+import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.retrofit.BaseRetrofitConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitDowner.OnProgressUpdateListener;
@@ -112,7 +112,7 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
             private long                     mLength;
 
             /**
-             * every {@link #saveValue(String, OutputStream, InputStream)}must set length
+             * every {@link #to(String, OutputStream, InputStream)}must set length
              */
             void setLength ( long length ) {
 
@@ -132,13 +132,13 @@ public class RetrofitDownConverter extends BaseRetrofitConverter<File> {
              * @param stream stream from {@link java.io.File} get by {@link #fileName(String)}
              */
             @Override
-            public InputStream toValue ( String key, InputStream stream ) throws Exception {
+            public InputStream from ( String key, InputStream stream ) throws Exception {
 
                   return null;
             }
 
             @Override
-            public void saveValue ( String key, OutputStream outputStream, InputStream value )
+            public void to ( String key, OutputStream outputStream, InputStream value )
                 throws IOException {
 
                   try {

@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.function;
+package tech.threekilogram.depository.function.encode;
 
 /**
  * @author: Liujin

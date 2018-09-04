@@ -1,16 +1,15 @@
 package tech.threekilogram.depository.file.converter;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import tech.threekilogram.depository.cache.json.GsonConverter;
+import tech.threekilogram.depository.cache.json.JsonConverter;
 import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.FileConverter;
-import tech.threekilogram.depository.json.GsonConverter;
-import tech.threekilogram.depository.json.JsonConverter;
 
 /**
  * {@link FileConverter} 的一种实现
- * 通过一个{@link String}key 从本地文件系统读取成{@link T}类型的实例
+ * 从本地文件系统读取{@link T}类型的实例
  * <p>
  * 该类用于从文件中保存json和解析json对象
  *
@@ -43,13 +42,13 @@ public class FileJsonConverter<T> extends BaseFileConverter<T> {
       }
 
       @Override
-      public T toValue ( String key, InputStream stream ) throws Exception {
+      public T from ( InputStream stream ) {
 
             return mConverter.from( stream );
       }
 
       @Override
-      public void saveValue ( String key, OutputStream stream, T value ) throws IOException {
+      public void to ( OutputStream stream, T value ) {
 
             mConverter.to( stream, value );
       }

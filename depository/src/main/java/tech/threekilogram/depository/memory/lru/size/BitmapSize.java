@@ -5,17 +5,19 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 
 /**
+ * 返回一个bitmap占用内存大小
+ *
  * @author: Liujin
  * @version: V1.0
  * @date: 2018-08-02
  * @time: 10:20
  */
-public class BitmapSize<K> implements ValueSize<K, Bitmap> {
+public class BitmapSize<K> implements ObjectSize<K, Bitmap> {
 
       @Override
-      public int sizeOf (K k, Bitmap bitmap) {
+      public int sizeOf ( K k, Bitmap bitmap ) {
 
-            if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            if( VERSION.SDK_INT >= VERSION_CODES.KITKAT ) {
                   return bitmap.getAllocationByteCount();
             } else {
                   return bitmap.getByteCount();

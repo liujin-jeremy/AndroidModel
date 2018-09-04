@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.json;
+package tech.threekilogram.depository.cache.json;
 
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
@@ -218,6 +218,12 @@ public class JsonLoader<V> implements CacheLoader<V> {
             return mMemoryList.load( key );
       }
 
+      @Override
+      public int memorySize ( ) {
+
+            return mMemoryList.size();
+      }
+
       /**
        * 清除所有内存中数据
        */
@@ -420,14 +426,13 @@ public class JsonLoader<V> implements CacheLoader<V> {
             }
 
             @Override
-            public V toValue ( String key, InputStream stream ) throws Exception {
+            public V from ( InputStream stream ) {
 
                   return mJsonConverter.from( stream );
             }
 
             @Override
-            public void saveValue ( String key, OutputStream outputStream, V value )
-                throws IOException {
+            public void to ( OutputStream outputStream, V value ) {
 
                   mJsonConverter.to( outputStream, value );
             }
