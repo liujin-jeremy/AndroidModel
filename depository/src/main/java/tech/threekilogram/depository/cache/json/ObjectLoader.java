@@ -241,6 +241,6 @@ public class ObjectLoader {
        */
       public static File getFileByMd5 ( File dir, String url ) {
 
-            return new File( dir, Md5.md5( url ) );
+            return new File( dir, Md5.encode( url ) );
       }
 }

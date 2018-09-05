@@ -1,8 +1,6 @@
 package tech.threekilogram.depository.net.retrofit.down;
 
-import static tech.threekilogram.depository.function.encode.StringEncoder.HASH;
-import static tech.threekilogram.depository.function.encode.StringEncoder.MD5;
-
+import android.support.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,7 +10,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import tech.threekilogram.depository.function.encode.StringEncoder;
+import tech.threekilogram.depository.function.encode.Md5;
+import tech.threekilogram.depository.function.encode.StringHash;
 import tech.threekilogram.depository.function.instance.RetrofitClient;
 import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.function.io.FileCache;
@@ -37,17 +36,13 @@ public class Downer {
        */
       private static StreamService sService;
       /**
-       * 辅助将url转为file name
-       */
-      private static StringEncoder sNameConverter = new StringEncoder();
-      /**
        * 缓存file对象
        */
-      private static FileCache     sFileCache     = new FileCache();
+      private static FileCache sFileCache = new FileCache();
       /**
        * 监听下载进度
        */
-      private static OnDownLoadUpdateListener sOnDownLoadUpdateListener;
+      private static OnDownloadUpdateListener sOnDownloadUpdateListener;
       /**
        * 下载时发生异常的监听
        */
@@ -60,18 +55,18 @@ public class Downer {
       /**
        * 设置下载进度监听
        */
-      public static void setOnDownLoadUpdateListener (
-          OnDownLoadUpdateListener onDownLoadUpdateListener ) {
+      public static void setOnDownloadUpdateListener (
+          OnDownloadUpdateListener onDownloadUpdateListener ) {
 
-            sOnDownLoadUpdateListener = onDownLoadUpdateListener;
+            sOnDownloadUpdateListener = onDownloadUpdateListener;
       }
 
       /**
        * 获取设置的下载进度监听
        */
-      public static OnDownLoadUpdateListener getOnDownLoadUpdateListener ( ) {
+      public static OnDownloadUpdateListener getOnDownloadUpdateListener ( ) {
 
-            return sOnDownLoadUpdateListener;
+            return sOnDownloadUpdateListener;
       }
 
       /**
@@ -109,33 +104,20 @@ public class Downer {
       }
 
       /**
-       * 设置文件保存名字采用较短的还是较长的
-       */
-      public static void setShortFileName ( boolean shortFileName ) {
-
-            if( shortFileName ) {
-                  sNameConverter.setMode( HASH );
-            } else {
-                  sNameConverter.setMode( MD5 );
-            }
-      }
-
-      /**
-       * 下载到文件夹
+       * 下载到指定文件
        *
-       * @param dir 文件夹
+       * @param file 文件
        * @param url url
        *
-       * @return file down loaded , or null if exception
+       * @return 该url对应文件, 或者null保存失败
        */
-      public static File down ( File dir, String url ) {
+      @Nullable
+      public static File downloadTo ( File file, String url ) {
 
-            /* 本地已经有该文件 */
-            File file = getFile( dir, url );
             if( file != null && file.exists() ) {
 
-                  if( sOnDownLoadUpdateListener != null ) {
-                        sOnDownLoadUpdateListener.onFinished( dir, url );
+                  if( sOnDownloadUpdateListener != null ) {
+                        sOnDownloadUpdateListener.onFinished( file, url );
                   }
                   return file;
             }
@@ -159,8 +141,8 @@ public class Downer {
                         /* 转换数据 */
                         assert responseBody != null;
                         return saveToFile(
-                            dir,
                             url,
+                            file,
                             responseBody.byteStream(),
                             responseBody.contentLength()
                         );
@@ -168,7 +150,7 @@ public class Downer {
 
                         /* 连接到网络,但是没有获取到数据 */
                         if( sOnNoResourceListener != null ) {
-                              sOnNoResourceListener.onExecuteFailed( dir, url, response.code() );
+                              sOnNoResourceListener.onExecuteFailed( file, url, response.code() );
                         }
                   }
             } catch(IOException e) {
@@ -176,7 +158,7 @@ public class Downer {
                   /* 没有连接到网络 */
                   e.printStackTrace();
                   if( sOnExceptionListener != null ) {
-                        sOnExceptionListener.onConnectException( dir, url, e );
+                        sOnExceptionListener.onConnectException( file, url, e );
                   }
             }
 
@@ -184,17 +166,10 @@ public class Downer {
       }
 
       private static File saveToFile (
-          File dir,
           String url,
+          File file,
           InputStream value,
           long length ) {
-
-            File file = sFileCache.get( url );
-            if( file == null ) {
-                  String name = sNameConverter.encode( url );
-                  file = new File( dir, name );
-                  sFileCache.put( url, file );
-            }
 
             FileOutputStream outputStream = null;
             try {
@@ -202,14 +177,14 @@ public class Downer {
             } catch(FileNotFoundException e) {
                   e.printStackTrace();
                   if( sOnExceptionListener != null ) {
-                        sOnExceptionListener.onFileNotFoundException( dir, url, e );
+                        sOnExceptionListener.onFileNotFoundException( file, url, e );
                   }
                   return null;
             }
 
             try {
 
-                  OnDownLoadUpdateListener onProgressUpdateListener = sOnDownLoadUpdateListener;
+                  OnDownloadUpdateListener onProgressUpdateListener = sOnDownloadUpdateListener;
                   byte[] bytes = new byte[ 64 ];
                   int len = 0;
                   long write = 0;
@@ -221,19 +196,19 @@ public class Downer {
                         if( onProgressUpdateListener != null ) {
 
                               write += len;
-                              onProgressUpdateListener.onProgressUpdate( dir, url, length, write );
+                              onProgressUpdateListener.onProgressUpdate( file, url, length, write );
                         }
                   }
 
                   if( onProgressUpdateListener != null ) {
-                        onProgressUpdateListener.onFinished( dir, url );
+                        onProgressUpdateListener.onFinished( file, url );
                   }
             } catch(IOException e) {
                   e.printStackTrace();
 
                   /* 通知没有文件异常 */
                   if( sOnExceptionListener != null ) {
-                        sOnExceptionListener.onIOException( dir, url, e );
+                        sOnExceptionListener.onIOException( file, url, e );
                   }
                   file = null;
             } finally {
@@ -245,39 +220,54 @@ public class Downer {
             return file;
       }
 
-      public static File getFile ( File dir, String url ) {
+      /**
+       * 根据一个url获取一个文件
+       *
+       * @param dir 文件夹
+       * @param url 文件url,将会转为文件名字
+       *
+       * @return 位于文件夹下的文件
+       */
+      public static File getFileByHash ( File dir, String url ) {
 
-            File file = sFileCache.get( url );
-            if( file == null ) {
-                  String name = sNameConverter.encode( url );
-                  file = new File( dir, name );
-                  sFileCache.put( url, file );
-            }
-            return file;
+            return new File( dir, StringHash.hash( url ) );
+      }
+
+      /**
+       * 根据一个url获取一个文件
+       *
+       * @param dir 文件夹
+       * @param url 文件url,将会转为文件名字
+       *
+       * @return 位于文件夹下的文件
+       */
+      public static File getFileByMd5 ( File dir, String url ) {
+
+            return new File( dir, Md5.encode( url ) );
       }
 
       /**
        * 监听下载进度
        */
-      public interface OnDownLoadUpdateListener {
+      public interface OnDownloadUpdateListener {
 
             /**
              * 回调监听
              *
-             * @param dir dir
+             * @param file file
              * @param url url
              * @param total 数据总长
              * @param current 当前下载长度
              */
-            void onProgressUpdate ( File dir, String url, long total, long current );
+            void onProgressUpdate ( File file, String url, long total, long current );
 
             /**
              * 下载完成回调
              *
-             * @param dir dir
+             * @param file file
              * @param url url
              */
-            void onFinished ( File dir, String url );
+            void onFinished ( File file, String url );
       }
 
       /**
@@ -288,29 +278,29 @@ public class Downer {
             /**
              * 无法连接网络
              *
-             * @param dir dir
+             * @param file file
              * @param url url
              * @param e exception exception
              */
-            void onConnectException ( File dir, String url, IOException e );
+            void onConnectException ( File file, String url, IOException e );
 
             /**
              * 没有该文件异常
              *
-             * @param dir dir
+             * @param file file
              * @param url url
              * @param e e
              */
-            void onFileNotFoundException ( File dir, String url, FileNotFoundException e );
+            void onFileNotFoundException ( File file, String url, FileNotFoundException e );
 
             /**
              * io 异常
              *
-             * @param dir dir
+             * @param file file
              * @param url url
              * @param e e
              */
-            void onIOException ( File dir, String url, IOException e );
+            void onIOException ( File file, String url, IOException e );
       }
 
       /**
@@ -323,10 +313,10 @@ public class Downer {
              * <p>
              * when cant get a correct response {response not in 200~300} return failed
              *
-             * @param dir dir
+             * @param file file
              * @param url key
              * @param httpCode http code
              */
-            void onExecuteFailed ( File dir, String url, int httpCode );
+            void onExecuteFailed ( File file, String url, int httpCode );
       }
 }

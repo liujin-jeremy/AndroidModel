@@ -16,6 +16,7 @@ import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.map.MemoryMap;
 import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverter;
+import tech.threekilogram.depository.net.retrofit.down.Downer;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
@@ -76,10 +77,6 @@ public class JsonLoader<V> implements CacheLoader<V> {
             mMemoryList = new MemoryMap<>();
 
             mJsonConverter = jsonConverter;
-
-            mRetrofitListLoader = new RetrofitLoader<>(
-                new JsonRetrofitListConverter()
-            );
 
             mRetrofitLoader = new RetrofitLoader<>(
                 new JsonRetrofitConverter()
@@ -153,6 +150,12 @@ public class JsonLoader<V> implements CacheLoader<V> {
        */
       public List<V> loadListFromNet ( String url ) {
 
+            if( mRetrofitListLoader == null ) {
+                  mRetrofitListLoader = new RetrofitLoader<>(
+                      new JsonRetrofitListConverter()
+                  );
+            }
+
             return mRetrofitListLoader.load( url );
       }
 
@@ -171,6 +174,28 @@ public class JsonLoader<V> implements CacheLoader<V> {
                   saveToMemory( url, v );
             }
             return v;
+      }
+
+      @Override
+      public void download ( String url ) {
+
+            File file = getFile( url );
+            if( file != null && file.exists() ) {
+                  return;
+            }
+            Downer.downloadTo( file, url );
+      }
+
+      @Override
+      public V loadFromDownload ( String url ) {
+
+            download( url );
+            File file = getFile( url );
+            if( file != null && file.exists() ) {
+
+                  return loadFromFile( url );
+            }
+            return null;
       }
 
       /**
@@ -282,6 +307,15 @@ public class JsonLoader<V> implements CacheLoader<V> {
             }
             /* 只有本地没有缓存时才保存到文件 */
             mFileContainer.save( url, v );
+      }
+
+      @Override
+      public File getFile ( String url ) {
+
+            if( mFileContainer == null ) {
+                  return null;
+            }
+            return mFileContainer.getFile( url );
       }
 
       /**

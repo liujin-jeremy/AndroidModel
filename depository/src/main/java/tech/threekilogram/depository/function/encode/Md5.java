@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * md5 string util
+ * encode string util
  *
  * @author: Liujin
  * @version: V1.0
@@ -39,9 +39,9 @@ public class Md5 {
        *
        * @param src 原始字符串
        *
-       * @return md5 后的字符串
+       * @return encode 后的字符串
        */
-      public static String md5 ( @NonNull String src ) {
+      public static String encode ( @NonNull String src ) {
 
             return encodeByMD5( src );
       }

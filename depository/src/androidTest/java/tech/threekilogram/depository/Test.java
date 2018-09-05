@@ -332,7 +332,7 @@ class Test {
             for( int i = 0; i < 10; i++ ) {
 
                   String s = String.format( url, i );
-                  String md5 = Md5.md5( s );
+                  String md5 = Md5.encode( s );
                   String hash = StringHash.hash( s );
                   System.out.println( md5 );
                   System.out.println( hash );

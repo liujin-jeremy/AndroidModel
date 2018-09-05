@@ -33,18 +33,18 @@ public class RetrofitDowner extends RetrofitLoader<File> {
       /**
        * 获取设置的下载进度监听
        */
-      public OnDownLoadUpdateListener getOnDownLoadUpdateListener ( ) {
+      public OnDownloadUpdateListener getOnDownLoadUpdateListener ( ) {
 
-            return getDownConverter().mOnDownLoadUpdateListener;
+            return getDownConverter().mOnDownloadUpdateListener;
       }
 
       /**
        * 设置下载进度监听
        */
       public void setOnDownLoadUpdateListener (
-          OnDownLoadUpdateListener onDownLoadUpdateListener ) {
+          OnDownloadUpdateListener onDownloadUpdateListener ) {
 
-            getDownConverter().mOnDownLoadUpdateListener = onDownLoadUpdateListener;
+            getDownConverter().mOnDownloadUpdateListener = onDownloadUpdateListener;
       }
 
       /**
@@ -105,9 +105,9 @@ public class RetrofitDowner extends RetrofitLoader<File> {
             File file = converter.getFileLoader().getFile( url );
 
             if( file != null && file.exists() ) {
-                  OnDownLoadUpdateListener onDownLoadUpdateListener = getOnDownLoadUpdateListener();
-                  if( onDownLoadUpdateListener != null ) {
-                        onDownLoadUpdateListener.onFinished( url );
+                  OnDownloadUpdateListener onDownloadUpdateListener = getOnDownLoadUpdateListener();
+                  if( onDownloadUpdateListener != null ) {
+                        onDownloadUpdateListener.onFinished( url );
                   }
                   return file;
             }
@@ -120,7 +120,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        *
        * @author liujin
        */
-      public interface OnDownLoadUpdateListener {
+      public interface OnDownloadUpdateListener {
 
             /**
              * 回调监听

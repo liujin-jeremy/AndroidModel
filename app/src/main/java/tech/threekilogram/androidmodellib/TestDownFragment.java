@@ -56,11 +56,12 @@ public class TestDownFragment extends Fragment implements OnClickListener {
 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
-            mRetrofitDowner = new RetrofitDowner( getActivity().getExternalFilesDir( "down" ) );
+            mRetrofitDowner = new RetrofitDowner(
+                getActivity().getExternalFilesDir( "downloadToDir" ) );
 
             try {
                   mRetrofitDiskDowner = new RetrofitDowner(
-                      getActivity().getExternalFilesDir( "down" ),
+                      getActivity().getExternalFilesDir( "downloadToDir" ),
                       10 * 1024 * 1024
                   );
             } catch(IOException e) {

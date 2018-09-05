@@ -12,7 +12,7 @@ import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverter;
-import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner.OnDownLoadUpdateListener;
+import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner.OnDownloadUpdateListener;
 
 /**
  * 辅助{@link RetrofitDowner}将一个响应流保存到文件系统
@@ -24,7 +24,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
       /**
        * 下载进度监听
        */
-      OnDownLoadUpdateListener mOnDownLoadUpdateListener;
+      OnDownloadUpdateListener mOnDownloadUpdateListener;
       /**
        * 下载文件夹
        */
@@ -38,7 +38,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
        */
       private FileStreamConverter           mFileStreamConverter;
       /**
-       * 临时保存信息,用于{@link #mOnDownLoadUpdateListener}回调时使用
+       * 临时保存信息,用于{@link #mOnDownloadUpdateListener}回调时使用
        */
       private ArrayMap<InputStream, Holder> mHolders;
 
@@ -69,7 +69,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
           throws Exception {
 
             InputStream inputStream = response.byteStream();
-            if( mOnDownLoadUpdateListener != null ) {
+            if( mOnDownloadUpdateListener != null ) {
                   if( mHolders == null ) {
                         mHolders = new ArrayMap<>();
                   }
@@ -115,7 +115,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
             @Override
             public void to ( OutputStream outputStream, InputStream value ) {
 
-                  if( mOnDownLoadUpdateListener != null ) {
+                  if( mOnDownloadUpdateListener != null ) {
 
                         Holder holder = mHolders.remove( value );
                         if( holder != null ) {
@@ -124,7 +124,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
                                   value,
                                   holder.mUrl,
                                   holder.mContentLength,
-                                  mOnDownLoadUpdateListener
+                                  mOnDownloadUpdateListener
                               );
                         } else {
 
@@ -141,7 +141,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
                 InputStream value,
                 String url,
                 long total,
-                OnDownLoadUpdateListener listener ) {
+                OnDownloadUpdateListener listener ) {
 
                   try {
 

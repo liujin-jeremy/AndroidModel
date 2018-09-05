@@ -40,7 +40,7 @@ public class StringEncoder {
 
             if( mMode == MD5 ) {
 
-                  return Md5.md5( key );
+                  return Md5.encode( key );
             }
 
             return key;
