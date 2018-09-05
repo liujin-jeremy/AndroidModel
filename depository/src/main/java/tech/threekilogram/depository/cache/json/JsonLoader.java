@@ -192,26 +192,26 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 保存数据到内存中
        *
-       * @param key value key
+       * @param url value url
        * @param v value
        */
       @Override
-      public void saveToMemory ( String key, V v ) {
+      public void saveToMemory ( String url, V v ) {
 
-            mMemoryList.save( key, v );
+            mMemoryList.save( url, v );
       }
 
       /**
        * 测试该key对应的value是否存在与内存中
        *
-       * @param key key
+       * @param url url
        *
        * @return true :存在于内存中
        */
       @Override
-      public boolean containsOfMemory ( String key ) {
+      public boolean containsOfMemory ( String url ) {
 
-            return mMemoryList.containsOf( key );
+            return mMemoryList.containsOf( url );
       }
 
       /**
@@ -220,9 +220,9 @@ public class JsonLoader<V> implements CacheLoader<V> {
        * @return 值
        */
       @Override
-      public V removeFromMemory ( String key ) {
+      public V removeFromMemory ( String url ) {
 
-            return mMemoryList.remove( key );
+            return mMemoryList.remove( url );
       }
 
       /**
@@ -231,9 +231,9 @@ public class JsonLoader<V> implements CacheLoader<V> {
        * @return 该key对应的值 or null (if not in memory)
        */
       @Override
-      public V loadFromMemory ( String key ) {
+      public V loadFromMemory ( String url ) {
 
-            return mMemoryList.load( key );
+            return mMemoryList.load( url );
       }
 
       @Override
@@ -254,81 +254,81 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 测试该key对应的value是否存在于本地文件中
        *
-       * @param key key
+       * @param url url
        *
        * @return true:存在于本地文件中
        */
       @Override
-      public boolean containsOfFile ( String key ) {
+      public boolean containsOfFile ( String url ) {
 
-            return mFileContainer != null && mFileContainer.containsOf( key );
+            return mFileContainer != null && mFileContainer.containsOf( url );
       }
 
       /**
        * 保存一个json对象到本地文件,如果本地已经有缓存那么不会覆盖它,如果需要覆盖它请使用{@link #removeFromFile(String)}先删除
        * 或者使用{@link #saveToFileForce(String, Object)}
        *
-       * @param key key
+       * @param url url
        * @param v value
        */
       @Override
-      public void saveToFile ( String key, V v ) {
+      public void saveToFile ( String url, V v ) {
 
             if( mFileContainer == null ) {
                   return;
             }
-            if( mFileContainer.getFile( key ).exists() ) {
+            if( mFileContainer.getFile( url ).exists() ) {
                   return;
             }
             /* 只有本地没有缓存时才保存到文件 */
-            mFileContainer.save( key, v );
+            mFileContainer.save( url, v );
       }
 
       /**
        * 保存一个json对象到本地文件,如果本地已经有缓存那么直接覆盖它
        *
-       * @param key key
+       * @param url url
        * @param v value
        */
-      public void saveToFileForce ( String key, V v ) {
+      public void saveToFileForce ( String url, V v ) {
 
             if( mFileContainer == null ) {
                   return;
             }
             /* 强制保存到文件,无论是否有缓存文件 */
-            mFileContainer.save( key, v );
+            mFileContainer.save( url, v );
       }
 
       /**
        * 删除该key对应的缓存文件
        *
-       * @param key key
+       * @param url url
        */
       @Override
-      public void removeFromFile ( String key ) {
+      public void removeFromFile ( String url ) {
 
             if( mFileContainer == null ) {
                   return;
             }
-            mFileContainer.remove( key );
+            mFileContainer.remove( url );
       }
 
       /**
        * 从本地文件加载json对象
        *
-       * @param key key
+       * @param url url
        *
        * @return 该key对应json对象
        */
       @Override
-      public V loadFromFile ( String key ) {
+      public V loadFromFile ( String url ) {
 
             if( mFileContainer == null ) {
                   return null;
             }
-            V v = mFileContainer.load( key );
+            V v = mFileContainer.load( url );
             if( v != null ) {
-                  saveToMemory( key, v );
+                  saveToMemory( url, v );
             }
             return v;
       }
@@ -347,42 +347,42 @@ public class JsonLoader<V> implements CacheLoader<V> {
       }
 
       @Override
-      public boolean containsOf ( String key ) {
+      public boolean containsOf ( String url ) {
 
-            return containsOfMemory( key ) || containsOfFile( key );
+            return containsOfMemory( url ) || containsOfFile( url );
       }
 
       @Override
-      public void save ( String key, V v ) {
+      public void save ( String url, V v ) {
 
-            saveToMemory( key, v );
-            saveToFile( key, v );
+            saveToMemory( url, v );
+            saveToFile( url, v );
       }
 
       @Override
-      public V load ( String key ) {
+      public V load ( String url ) {
 
-            V v = loadFromMemory( key );
+            V v = loadFromMemory( url );
             if( v != null ) {
 
                   return v;
             }
 
-            return loadFromFile( key );
+            return loadFromFile( url );
       }
 
       /**
        * 压缩内存,将指定数据缓存到本地缓存,同时在内存中删除,该方法线程安全
        *
-       * @param key 需要缓存索引
+       * @param url 需要缓存索引
        */
-      public void trimMemory ( String key ) {
+      public void trimMemory ( String url ) {
 
-            V v = mMemoryList.remove( key );
+            V v = mMemoryList.remove( url );
             if( v != null ) {
 
                   synchronized(mWillCacheToFile) {
-                        mWillCacheToFile.put( key, v );
+                        mWillCacheToFile.put( url, v );
                   }
                   notifyCacheFile();
             }

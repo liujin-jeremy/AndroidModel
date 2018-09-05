@@ -178,15 +178,15 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       @Override
-      public void saveToMemory ( String key, Bitmap bitmap ) {
+      public void saveToMemory ( String url, Bitmap bitmap ) {
 
-            mMemory.save( key, bitmap );
+            mMemory.save( url, bitmap );
       }
 
       @Override
-      public boolean containsOfMemory ( String key ) {
+      public boolean containsOfMemory ( String url ) {
 
-            return mMemory.containsOf( key );
+            return mMemory.containsOf( url );
       }
 
       /**
@@ -221,22 +221,22 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       @Override
-      public boolean containsOfFile ( String key ) {
+      public boolean containsOfFile ( String url ) {
 
-            return getFile( key ).exists();
+            return getFile( url ).exists();
       }
 
       @Override
-      public void saveToFile ( String key, Bitmap bitmap ) {
+      public void saveToFile ( String url, Bitmap bitmap ) {
 
-            File file = getFile( key );
+            File file = getFile( url );
             mBitmapConverter.to( file, bitmap );
       }
 
       @Override
-      public void removeFromFile ( String key ) {
+      public void removeFromFile ( String url ) {
 
-            boolean delete = getFile( key ).delete();
+            boolean delete = getFile( url ).delete();
       }
 
       /**
@@ -269,27 +269,27 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       @Override
-      public boolean containsOf ( String key ) {
+      public boolean containsOf ( String url ) {
 
-            return containsOfMemory( key ) || containsOfFile( key );
+            return containsOfMemory( url ) || containsOfFile( url );
       }
 
       @Override
-      public void save ( String key, Bitmap bitmap ) {
+      public void save ( String url, Bitmap bitmap ) {
 
-            saveToMemory( key, bitmap );
-            saveToFile( key, bitmap );
+            saveToMemory( url, bitmap );
+            saveToFile( url, bitmap );
       }
 
       @Override
-      public Bitmap load ( String key ) {
+      public Bitmap load ( String url ) {
 
-            Bitmap bitmap = loadFromMemory( key );
+            Bitmap bitmap = loadFromMemory( url );
             if( bitmap != null ) {
                   return bitmap;
             }
 
-            return loadFromFile( key );
+            return loadFromFile( url );
       }
 
       /**
