@@ -157,7 +157,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       }
 
       /**
-       * 从网络加载一个数据
+       * 从网络加载一个数据,加载成功缓存到内存中
        *
        * @param url url
        *
@@ -169,6 +169,22 @@ public class JsonLoader<V> implements CacheLoader<V> {
             V v = mRetrofitLoader.load( url );
             if( v != null ) {
                   saveToMemory( url, v );
+            }
+            return v;
+      }
+
+      /**
+       * 从网络加载一个数据,如果加载成功那么缓存到内存/文件中
+       *
+       * @param url url
+       *
+       * @return 数据
+       */
+      public V loadFromNetAndCache ( String url ) {
+
+            V v = mRetrofitLoader.load( url );
+            if( v != null ) {
+                  save( url, v );
             }
             return v;
       }

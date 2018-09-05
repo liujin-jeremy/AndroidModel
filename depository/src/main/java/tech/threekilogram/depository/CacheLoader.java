@@ -8,7 +8,7 @@ package tech.threekilogram.depository;
 public interface CacheLoader<V> {
 
       /**
-       * 从网络加载
+       * 从网络加载,如果加载成功需要缓存到内存中{@link #saveToMemory(String, Object)}
        *
        * @param url url
        *
@@ -88,7 +88,7 @@ public interface CacheLoader<V> {
       void removeFromFile ( String key );
 
       /**
-       * 从本地文件加载json对象
+       * 从本地文件加载json对象,如果加载成功缓存到内存中{@link #saveToMemory(String, Object)}
        *
        * @param key key
        *
