@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.objectbus.executor.PoolExecutor;
+import java.io.File;
 import tech.threekilogram.depository.cache.bitmap.BitmapLoader;
 import tech.threekilogram.messengers.Messengers;
 import tech.threekilogram.messengers.OnMessageReceiveListener;
@@ -23,10 +24,11 @@ import tech.threekilogram.messengers.OnMessageReceiveListener;
  * @date: 2018-08-25
  * @time: 9:10
  */
-public class TestBitmapLoaderFragment extends Fragment implements OnClickListener,
-                                                                  OnMessageReceiveListener {
+public class TestBitmapLoaderFragment extends Fragment implements OnMessageReceiveListener,
+                                                                  OnClickListener {
 
       private static final String TAG = TestBitmapLoaderFragment.class.getSimpleName();
+      private Button mDown;
 
       public static TestBitmapLoaderFragment newInstance ( ) {
 
@@ -81,6 +83,8 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
             mLoad = (Button) itemView.findViewById( R.id.load );
             mLoad.setOnClickListener( this );
             mImage = (ImageView) itemView.findViewById( R.id.image );
+            mDown = (Button) itemView.findViewById( R.id.down );
+            mDown.setOnClickListener( this );
       }
 
       @Override
@@ -89,37 +93,62 @@ public class TestBitmapLoaderFragment extends Fragment implements OnClickListene
             switch( v.getId() ) {
                   case R.id.load:
 
-                        final int i = mUrlIndex % mBitmaps.length;
-                        Bitmap bitmap = mLoader.loadFromMemory( mBitmaps[ i ] );
-                        if( bitmap != null ) {
-                              mImage.setImageBitmap( bitmap );
-                              mUrlIndex++;
-                              Log.e( TAG, "onClick : loadFromNet from net " + mBitmaps[ i ] );
-                              return;
-                        }
-
-                        PoolExecutor.execute( new Runnable() {
-
-                              @Override
-                              public void run ( ) {
-
-                                    Bitmap bitmap = mLoader.loadFromFile( mBitmaps[ i ] );
-                                    if( bitmap == null ) {
-                                          bitmap = mLoader.loadFromNet( mBitmaps[ i ] );
-                                          Log.e(
-                                              TAG, "run : loadFromNet from net " + mBitmaps[ i ] );
-                                    } else {
-                                          Log.e(
-                                              TAG, "run : loadFromNet from file " + mBitmaps[ i ] );
-                                    }
-                                    mUrlIndex++;
-                                    Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
-                              }
-                        } );
+                        load();
+                        break;
+                  case R.id.down:
+                        down();
                         break;
                   default:
                         break;
             }
+      }
+
+      private void down ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        String url = "http://7xi8d6.com1.z0.glb.clouddn.com/2017-03-21-17268102_763630507137257_3620762734536163328_n%20-1-.jpg";
+                        File file = mLoader.getFile( url );
+                        Log.e( TAG, "run : " + file + " " + file.exists() );
+                        Bitmap bitmap = mLoader.loadFromDownload( url );
+                        Log.e( TAG, "run : " + file + " " + file.exists() );
+                        Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
+                  }
+            } );
+      }
+
+      private void load ( ) {
+
+            final int i = mUrlIndex % mBitmaps.length;
+            Bitmap bitmap = mLoader.loadFromMemory( mBitmaps[ i ] );
+            if( bitmap != null ) {
+                  mImage.setImageBitmap( bitmap );
+                  mUrlIndex++;
+                  Log.e( TAG, "onClick : loadFromNet from net " + mBitmaps[ i ] );
+                  return;
+            }
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        Bitmap bitmap = mLoader.loadFromFile( mBitmaps[ i ] );
+                        if( bitmap == null ) {
+                              bitmap = mLoader.loadFromNet( mBitmaps[ i ] );
+                              Log.e(
+                                  TAG, "run : loadFromNet from net " + mBitmaps[ i ] );
+                        } else {
+                              Log.e(
+                                  TAG, "run : loadFromNet from file " + mBitmaps[ i ] );
+                        }
+                        mUrlIndex++;
+                        Messengers.send( 11, bitmap, TestBitmapLoaderFragment.this );
+                  }
+            } );
       }
 
       @Override

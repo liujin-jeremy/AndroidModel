@@ -87,7 +87,7 @@ public class TestDownLoadFragment extends Fragment implements OnClickListener {
 
             final String url = "http://p4.so.qhmsg.com/t01b07c46919f693549.jpg";
             final File dir = getContext().getCacheDir();
-            final File file = new File( dir, Downer.hashUrl( url ) );
+            final File file = Downer.getFileByHash( dir, url );
 
             Log.e( TAG, "delete : " + file + " " + file.exists() );
             file.delete();
@@ -97,7 +97,7 @@ public class TestDownLoadFragment extends Fragment implements OnClickListener {
 
             final String url = "http://p4.so.qhmsg.com/t01b07c46919f693549.jpg";
             final File dir = getContext().getCacheDir();
-            final File file = new File( dir, Downer.hashUrl( url ) );
+            final File file = Downer.getFileByHash( dir, url );
 
             PoolExecutor.execute( new Runnable() {
 
@@ -115,7 +115,7 @@ public class TestDownLoadFragment extends Fragment implements OnClickListener {
 
             final String url = "http://p2.so.qhimgs1.com/t014a39bd9c52ac5ab2.jpg";
             final File dir = getContext().getExternalFilesDir( "downLoader" );
-            final File file = new File( dir, Downer.hashUrl( url ) );
+            final File file = Downer.getFileByHash( dir, url );
 
             Log.e( TAG, "deleteEx : " + file + " " + file.exists() );
             file.delete();
@@ -125,7 +125,7 @@ public class TestDownLoadFragment extends Fragment implements OnClickListener {
 
             final String url = "http://p2.so.qhimgs1.com/t014a39bd9c52ac5ab2.jpg";
             final File dir = getContext().getExternalFilesDir( "downLoader" );
-            final File file = new File( dir, Downer.hashUrl( url ) );
+            final File file = Downer.getFileByHash( dir, url );
 
             PoolExecutor.execute( new Runnable() {
 

@@ -118,5 +118,25 @@
           android:text="fileLoad"
           app:layout_constraintStart_toEndOf="@+id/fileContains"
           app:layout_constraintTop_toBottomOf="@+id/memoryLoad"/>
+      <Button
+          android:id="@+id/down"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="down"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/fileContains"/>
+      <Button
+          android:id="@+id/loadFromDown"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="loadFromDown"
+          app:layout_constraintStart_toEndOf="@+id/down"
+          app:layout_constraintTop_toBottomOf="@+id/fileLoad"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -40,6 +40,8 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
       private Button mMemoryLoad;
       private Button mFileContains;
       private Button mFileLoad;
+      private Button mDown;
+      private Button mLoadFromDown;
 
       public static TestJsonLoaderFragment newInstance ( ) {
 
@@ -105,6 +107,10 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             mFileContains.setOnClickListener( this );
             mFileLoad = (Button) itemView.findViewById( R.id.fileLoad );
             mFileLoad.setOnClickListener( this );
+            mDown = (Button) itemView.findViewById( R.id.down );
+            mDown.setOnClickListener( this );
+            mLoadFromDown = (Button) itemView.findViewById( R.id.loadFromDown );
+            mLoadFromDown.setOnClickListener( this );
       }
 
       @Override
@@ -145,9 +151,46 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
                   case R.id.fileLoad:
                         fileLoad();
                         break;
+                  case R.id.down:
+                        down();
+                        break;
+                  case R.id.loadFromDown:
+                        loadFromDown();
+                        break;
                   default:
                         break;
             }
+      }
+
+      private void loadFromDown ( ) {
+
+            final String url = "https://gank.io/api/day/2016/03/18";
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        GankDayBean gankDayBean = mDayLoader.loadFromDownload( url );
+                        String desc = gankDayBean.getResults().getAndroid().get( 0 ).getDesc();
+                        Log.e( TAG, "run : " + desc );
+                  }
+            } );
+      }
+
+      private void down ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        String url = "https://gank.io/api/day/2016/03/18";
+                        File file = mDayLoader.getFile( url );
+                        Log.e( TAG, "down : " + file + " " + file.exists() );
+                        mDayLoader.download( url );
+                        Log.e( TAG, "down : " + file + " " + file.exists() );
+                  }
+            } );
       }
 
       private void fileLoad ( ) {
@@ -168,8 +211,8 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
 
             String url = getDayUrl();
             boolean b = mDayLoader.containsOfFile( url );
-
-            Log.e( TAG, "fileContainsOf : " + url + " " + b );
+            File file = mDayLoader.getFile( url );
+            Log.e( TAG, "fileContainsOf : " + url + " " + b + " " + file );
       }
 
       private void memoryLoad ( ) {
