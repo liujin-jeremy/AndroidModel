@@ -6,7 +6,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.support.annotation.IntDef;
-import com.example.bitmapreader.BitmapReader;
+import com.threekilogram.bitmapreader.BitmapReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
