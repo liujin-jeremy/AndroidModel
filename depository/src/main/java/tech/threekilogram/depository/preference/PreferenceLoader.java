@@ -12,11 +12,11 @@ import java.util.Set;
  * @date: 2018-08-13
  * @time: 13:35
  */
-public class Preference {
+public class PreferenceLoader {
 
       private SharedPreferences mPreferences;
 
-      public Preference ( Context context, String name ) {
+      public PreferenceLoader ( Context context, String name ) {
 
             mPreferences = context.getSharedPreferences( name, Context.MODE_PRIVATE );
       }
