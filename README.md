@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	          implementation 'com.github.threekilogram:AndroidModel:1.9.5'
+	          implementation 'com.github.threekilogram:AndroidModel:1.9.6'
 	}
 ```
 
@@ -307,6 +307,7 @@ private JsonLoader<GankDayBean>     mDayLoader;
 // 指定缓存文件夹,如果不需要文件缓存,那么可以不指定
 File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
 mDayLoader = new JsonLoader<>(
+	-1,
     jsonFile,
     GankDayBean.class	//--> json bean 对象
 );
@@ -334,20 +335,14 @@ boolean containsOf = mDayLoader.containsOf( url );
 GankDayBean dayBean = mDayLoader.loadFromNet( url );
 ```
 
-## DownLoader下载
+## Downer下载
 
 > 该类提供静态下载方式
 
 * 下载
 
 ```
-File down = DownLoader.down( dir, url );
-```
-
-* 获取文件
-
-```
-File file = DownLoader.getFile( dir, url ); //改文件可能并不存在,需要自己判断一下
+File down = Downer.downloadTo( dir, url );
 ```
 
 ## ObjectLoader
