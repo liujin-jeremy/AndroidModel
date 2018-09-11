@@ -14,6 +14,8 @@ import tech.threekilogram.depository.file.BaseFileConverter;
 import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
+import tech.threekilogram.depository.memory.Memory;
+import tech.threekilogram.depository.memory.lru.MemoryLruCache;
 import tech.threekilogram.depository.memory.map.MemoryMap;
 import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverter;
 import tech.threekilogram.depository.net.retrofit.down.Downer;
@@ -30,16 +32,12 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 内存
        */
-      protected MemoryMap<String, V>    mMemoryList;
+      protected Memory<String, V>       mMemoryContainer;
       /**
        * 文件
        */
       @Nullable
       protected BaseFileLoader<V>       mFileContainer;
-      /**
-       * 网络list
-       */
-      protected RetrofitLoader<List<V>> mRetrofitListLoader;
       /**
        * 网络bean
        */
@@ -48,6 +46,10 @@ public class JsonLoader<V> implements CacheLoader<V> {
        * 辅助将流转换为json bean
        */
       protected JsonConverter<V>        mJsonConverter;
+      /**
+       * 网络list
+       */
+      protected RetrofitLoader<List<V>> mRetrofitListLoader;
       /**
        * 临时保存需要需要写入文件的bean
        */
@@ -58,87 +60,91 @@ public class JsonLoader<V> implements CacheLoader<V> {
       protected final AtomicBoolean       mIsCacheToFile   = new AtomicBoolean();
 
       /**
-       * 创建一个内存/网络缓存的loader
+       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
+       * 指定了缓存文件夹及其大小,超多文件夹大小根据规则{@link com.jakewharton.disklrucache.DiskLruCache}删除多余文件
        *
-       * @param type bean 类型
-       */
-      public JsonLoader ( Class<V> type ) {
-
-            this( new GsonConverter<V>( type ) );
-      }
-
-      /**
-       * 创建一个内存/网络缓存的loader
+       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
+       * @param dir 缓存文件夹
+       * @param maxFileSize 缓存文件夹最大大小
+       * @param jsonConverter 辅助将数据流转换为json对象
        *
-       * @param jsonConverter 转换流为bean对象
+       * @throws IOException 创建{@link com.jakewharton.disklrucache.DiskLruCache}时异常
        */
-      public JsonLoader ( JsonConverter<V> jsonConverter ) {
-
-            mMemoryList = new MemoryMap<>();
+      public JsonLoader (
+          int memoryItemCount,
+          File dir,
+          long maxFileSize,
+          JsonConverter<V> jsonConverter ) throws IOException {
 
             mJsonConverter = jsonConverter;
-
-            mRetrofitLoader = new RetrofitLoader<>(
-                new JsonRetrofitConverter()
-            );
+            if( memoryItemCount > 0 ) {
+                  mMemoryContainer = new MemoryLruCache<>( memoryItemCount );
+            } else {
+                  mMemoryContainer = new MemoryMap<>();
+            }
+            mFileContainer = new DiskLruLoader<>( dir, maxFileSize, new JsonFileConverter() );
+            mRetrofitLoader = new RetrofitLoader<>( new JsonRetrofitConverter() );
       }
 
       /**
-       * 创建一个内存/文件/网络缓存的loader
+       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
+       * 指定了缓存文件夹及其大小,超多文件夹大小根据规则{@link com.jakewharton.disklrucache.DiskLruCache}删除多余文件
        *
+       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
        * @param dir 缓存文件夹
-       * @param type json bean type
+       * @param maxFileSize 缓存文件夹最大大小
+       * @param jsonType json bean类,会将数据流转换为指定类型的对象
+       *
+       * @throws IOException 创建{@link com.jakewharton.disklrucache.DiskLruCache}时异常
        */
-      public JsonLoader ( File dir, Class<V> type ) {
+      public JsonLoader (
+          int memoryItemCount,
+          File dir,
+          long maxFileSize,
+          Class<V> jsonType ) throws IOException {
 
-            this( dir, new GsonConverter<V>( type ) );
+            this( memoryItemCount, dir, maxFileSize, new GsonConverter<V>( jsonType ) );
       }
 
       /**
-       * 创建一个内存/文件/网络缓存的loader
+       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
+       * 可以选择指定缓存文件夹,用来支持本地文件缓存操作
        *
-       * @param dir 缓存文件夹
-       * @param jsonConverter 转换流为bean对象
+       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
+       * @param dir 缓存文件夹,如果为null将不支持本地文件缓存
+       * @param jsonConverter 辅助将数据流转换为json对象
        */
-      public JsonLoader ( File dir, JsonConverter<V> jsonConverter ) {
+      public JsonLoader (
+          int memoryItemCount,
+          @Nullable File dir,
+          JsonConverter<V> jsonConverter ) {
 
-            this( jsonConverter );
-            mFileContainer = new FileLoader<>(
-                dir,
-                new JsonFileConverter()
-            );
+            mJsonConverter = jsonConverter;
+            if( memoryItemCount > 0 ) {
+                  mMemoryContainer = new MemoryLruCache<>( memoryItemCount );
+            } else {
+                  mMemoryContainer = new MemoryMap<>();
+            }
+            if( dir != null ) {
+                  mFileContainer = new FileLoader<>( dir, new JsonFileConverter() );
+            }
+            mRetrofitLoader = new RetrofitLoader<>( new JsonRetrofitConverter() );
       }
 
       /**
-       * 创建一个内存/文件/网络缓存的loader
+       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
+       * 可以选择指定缓存文件夹,用来支持本地文件缓存操作
        *
-       * @param dir 缓存文件夹
-       * @param maxFileSize max file size
-       * @param type bean type
-       *
-       * @throws IOException cont create
+       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
+       * @param dir 缓存文件夹,如果为null将不支持本地文件缓存
+       * @param jsonType json bean类,会将数据流转换为指定类型的对象
        */
-      public JsonLoader ( File dir, long maxFileSize, Class<V> type )
-          throws IOException {
+      public JsonLoader (
+          int memoryItemCount,
+          @Nullable File dir,
+          Class<V> jsonType ) {
 
-            this( dir, maxFileSize, new GsonConverter<V>( type ) );
-      }
-
-      /**
-       * 创建一个内存/文件/网络缓存的loader
-       *
-       * @param dir 缓存文件夹
-       * @param jsonConverter 转换流为bean对象
-       */
-      public JsonLoader ( File dir, long maxFileSize, JsonConverter<V> jsonConverter )
-          throws IOException {
-
-            this( jsonConverter );
-            mFileContainer = new DiskLruLoader<>(
-                dir,
-                maxFileSize,
-                new JsonFileConverter()
-            );
+            this( memoryItemCount, dir, new GsonConverter<V>( jsonType ) );
       }
 
       /**
@@ -199,22 +205,6 @@ public class JsonLoader<V> implements CacheLoader<V> {
       }
 
       /**
-       * 从网络加载一个数据,如果加载成功那么缓存到内存/文件中
-       *
-       * @param url url
-       *
-       * @return 数据
-       */
-      public V loadFromNetAndCache ( String url ) {
-
-            V v = mRetrofitLoader.load( url );
-            if( v != null ) {
-                  save( url, v );
-            }
-            return v;
-      }
-
-      /**
        * 保存数据到内存中
        *
        * @param url value url
@@ -223,7 +213,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public void saveToMemory ( String url, V v ) {
 
-            mMemoryList.save( url, v );
+            mMemoryContainer.save( url, v );
       }
 
       /**
@@ -236,7 +226,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public boolean containsOfMemory ( String url ) {
 
-            return mMemoryList.containsOf( url );
+            return mMemoryContainer.containsOf( url );
       }
 
       /**
@@ -247,7 +237,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V removeFromMemory ( String url ) {
 
-            return mMemoryList.remove( url );
+            return mMemoryContainer.remove( url );
       }
 
       /**
@@ -258,13 +248,13 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V loadFromMemory ( String url ) {
 
-            return mMemoryList.load( url );
+            return mMemoryContainer.load( url );
       }
 
       @Override
       public int memorySize ( ) {
 
-            return mMemoryList.size();
+            return mMemoryContainer.size();
       }
 
       /**
@@ -273,7 +263,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public void clearMemory ( ) {
 
-            mMemoryList.clear();
+            mMemoryContainer.clear();
       }
 
       /**
@@ -412,7 +402,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
        */
       public void trimMemory ( String url ) {
 
-            V v = mMemoryList.remove( url );
+            V v = mMemoryContainer.remove( url );
             if( v != null ) {
 
                   synchronized(mWillCacheToFile) {

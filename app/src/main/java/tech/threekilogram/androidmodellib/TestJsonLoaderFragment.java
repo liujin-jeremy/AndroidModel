@@ -69,11 +69,14 @@ public class TestJsonLoaderFragment extends Fragment implements OnClickListener 
             initView( view );
 
             mHistoryLoader = new JsonLoader<>(
+                -1,
+                null,
                 GankHistoryBean.class
             );
 
             File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
             mDayLoader = new JsonLoader<>(
+                -1,
                 jsonFile,
                 GankDayBean.class
             );
