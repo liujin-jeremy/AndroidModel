@@ -232,7 +232,11 @@ public class BitmapConverter {
                   return BitmapReader.matchSize( file, mWidth, mHeight, mBitmapConfig );
             }
 
-            return BitmapReader.matchSize( file, mWidth, mHeight, mBitmapConfig );
+            if( mMode == SRC_RGB ) {
+                  return BitmapReader.readRgb( file );
+            }
+
+            return BitmapReader.readArgb( file );
       }
 
       /**
@@ -263,10 +267,6 @@ public class BitmapConverter {
       }
 
       /**
-       * 缩放模式:加载原图
-       */
-      public static final int DEFAULT      = 0;
-      /**
        * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},缩放后图片尺寸不会小于设置的值
        */
       public static final int SAMPLE       = 1;
@@ -286,11 +286,19 @@ public class BitmapConverter {
        * 缩放模式:等比例缩放至匹配{@link #mHeight}或者匹配{@link #mWidth}
        */
       public static final int MATCH_SIZE   = 5;
+      /**
+       * 加载原图,使用rgb_565格式
+       */
+      public static final int SRC_RGB      = 6;
+      /**
+       * 加载原图,使用ARGB_8888格式
+       */
+      public static final int SRC_ARGB     = 7;
 
       /**
        * 配置缩放模式
        */
-      @IntDef({ DEFAULT, SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT, MATCH_SIZE })
+      @IntDef({ SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT, MATCH_SIZE, SRC_RGB, SRC_ARGB })
       @Retention(RetentionPolicy.SOURCE)
       public @interface ScaleMode { }
 }
