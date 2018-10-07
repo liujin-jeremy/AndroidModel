@@ -31,73 +31,26 @@ public class Downer {
       /**
        * retrofit 客户端
        */
-      private static Retrofit                 mRetrofit = RetrofitClient.INSTANCE;
+      private static Retrofit      mRetrofit = RetrofitClient.INSTANCE;
       /**
        * 创建的service
        */
-      private static StreamService            sService;
-      /**
-       * 监听下载进度
-       */
-      private static OnDownloadUpdateListener sOnDownloadUpdateListener;
-      /**
-       * 下载时发生异常的监听
-       */
-      private static OnExceptionListener      sOnExceptionListener;
-      /**
-       * 下载时没有该资源的异常
-       */
-      private static OnNoResourceListener     sOnNoResourceListener;
+      private static StreamService sService;
 
       /**
-       * 设置下载进度监听
+       * 下载到指定文件
+       *
+       * @param file 文件
+       * @param url url
+       *
+       * @return 该url对应文件, 或者null保存失败
        */
-      public static void setOnDownloadUpdateListener (
-          OnDownloadUpdateListener onDownloadUpdateListener ) {
+      @Nullable
+      public static File downloadTo (
+          File file,
+          String url ) {
 
-            sOnDownloadUpdateListener = onDownloadUpdateListener;
-      }
-
-      /**
-       * 获取设置的下载进度监听
-       */
-      public static OnDownloadUpdateListener getOnDownloadUpdateListener ( ) {
-
-            return sOnDownloadUpdateListener;
-      }
-
-      /**
-       * 获取设置的异常监听
-       */
-      public static OnExceptionListener getOnExceptionListener ( ) {
-
-            return sOnExceptionListener;
-      }
-
-      /**
-       * 设置异常监听
-       */
-      public static void setOnExceptionListener (
-          OnExceptionListener onExceptionListener ) {
-
-            sOnExceptionListener = onExceptionListener;
-      }
-
-      /**
-       * 获取设置的没有资源监听
-       */
-      public static OnNoResourceListener getOnNoResourceListener ( ) {
-
-            return sOnNoResourceListener;
-      }
-
-      /**
-       * 设置没有资源监听
-       */
-      public static void setOnNoResourceListener (
-          OnNoResourceListener onNoResourceListener ) {
-
-            sOnNoResourceListener = onNoResourceListener;
+            return downloadTo( file, url, null, null, null );
       }
 
       /**
@@ -109,12 +62,17 @@ public class Downer {
        * @return 该url对应文件, 或者null保存失败
        */
       @Nullable
-      public static File downloadTo ( File file, String url ) {
+      public static File downloadTo (
+          File file,
+          String url,
+          @Nullable OnDownloadUpdateListener updateListener,
+          @Nullable OnNoResourceListener noResourceListener,
+          @Nullable OnExceptionListener exceptionListener ) {
 
             if( file != null && file.exists() ) {
 
-                  if( sOnDownloadUpdateListener != null ) {
-                        sOnDownloadUpdateListener.onFinished( file, url );
+                  if( updateListener != null ) {
+                        updateListener.onFinished( file, url );
                   }
                   return file;
             }
@@ -141,21 +99,23 @@ public class Downer {
                             url,
                             file,
                             responseBody.byteStream(),
-                            responseBody.contentLength()
+                            responseBody.contentLength(),
+                            updateListener,
+                            exceptionListener
                         );
                   } else {
 
                         /* 连接到网络,但是没有获取到数据 */
-                        if( sOnNoResourceListener != null ) {
-                              sOnNoResourceListener.onExecuteFailed( file, url, response.code() );
+                        if( noResourceListener != null ) {
+                              noResourceListener.onExecuteFailed( file, url, response.code() );
                         }
                   }
             } catch(IOException e) {
 
                   /* 没有连接到网络 */
                   e.printStackTrace();
-                  if( sOnExceptionListener != null ) {
-                        sOnExceptionListener.onConnectException( file, url, e );
+                  if( exceptionListener != null ) {
+                        exceptionListener.onConnectException( file, url, e );
                   }
             }
 
@@ -166,22 +126,23 @@ public class Downer {
           String url,
           File file,
           InputStream value,
-          long length ) {
+          long length,
+          @Nullable OnDownloadUpdateListener updateListener,
+          @Nullable OnExceptionListener exceptionListener ) {
 
             FileOutputStream outputStream = null;
             try {
                   outputStream = new FileOutputStream( file );
             } catch(FileNotFoundException e) {
                   e.printStackTrace();
-                  if( sOnExceptionListener != null ) {
-                        sOnExceptionListener.onFileNotFoundException( file, url, e );
+                  if( exceptionListener != null ) {
+                        exceptionListener.onFileNotFoundException( file, url, e );
                   }
                   return null;
             }
 
             try {
 
-                  OnDownloadUpdateListener onProgressUpdateListener = sOnDownloadUpdateListener;
                   byte[] bytes = new byte[ 64 ];
                   int len = 0;
                   long write = 0;
@@ -190,22 +151,22 @@ public class Downer {
 
                         outputStream.write( bytes, 0, len );
 
-                        if( onProgressUpdateListener != null ) {
+                        if( updateListener != null ) {
 
                               write += len;
-                              onProgressUpdateListener.onProgressUpdate( file, url, length, write );
+                              updateListener.onProgressUpdate( file, url, length, write );
                         }
                   }
 
-                  if( onProgressUpdateListener != null ) {
-                        onProgressUpdateListener.onFinished( file, url );
+                  if( updateListener != null ) {
+                        updateListener.onFinished( file, url );
                   }
             } catch(IOException e) {
                   e.printStackTrace();
 
                   /* 通知没有文件异常 */
-                  if( sOnExceptionListener != null ) {
-                        sOnExceptionListener.onIOException( file, url, e );
+                  if( exceptionListener != null ) {
+                        exceptionListener.onIOException( file, url, e );
                   }
                   file = null;
             } finally {
