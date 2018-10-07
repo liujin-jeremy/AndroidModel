@@ -17,7 +17,7 @@ Add it in your root build.gradle at the end of repositories:
 
 ```
 	dependencies {
-	          implementation 'com.github.threekilogram:AndroidModel:1.9.7'
+	          implementation 'com.github.threekilogram:AndroidModel:1.9.8'
 	}
 ```
 
@@ -373,4 +373,68 @@ String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
 File cache = getContext().getExternalFilesDir( "cache" );
 File file = ObjectLoader.getFileByHash( cache, url );
 GankCategoryBean bean = ObjectLoader.loadFromFile( file, GankCategoryBean.class );
+```
+
+## StreamLoader
+
+> 该类提供一些工具方法,简化从数据流中加载对象
+
+* String
+
+```
+// 从网络读取
+mString = StreamLoader
+    .loadStringFromNet( "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/1/1" );
+```
+
+```
+// 从文件读取/保存
+StreamLoader.saveStringToFile( mString, mFile );
+String s = StreamLoader.loadStringFromFile( mFile );
+```
+
+* Json
+
+```
+// 从网络
+mBean = StreamLoader
+    .loadJsonFromNet(
+        "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/1/1",
+        GankCategoryBean.class
+    );
+```
+
+```
+// 从文件读取/保存
+StreamLoader.saveJsonToFile( mJsonFile, GankCategoryBean.class, mBean );
+GankCategoryBean bean = StreamLoader
+    .loadJsonFromFile( mJsonFile, GankCategoryBean.class );
+```
+
+* bitmap
+
+```
+Bitmap bitmap = StreamLoader.loadBitmapFromNet(
+    "https://ws1.sinaimg.cn/large/0065oQSqly1fvexaq313uj30qo0wldr4.jpg" );
+```
+
+* 下载
+
+```
+StreamLoader
+    .downLoad(
+        "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/1/1",
+        file,
+        new OnDownloadUpdateListener() {
+              @Override
+              public void onProgressUpdate (
+                  File file, String url, long total, long current ) {
+                    Log.e( TAG, "onProgressUpdate : " + current );
+              }
+              @Override
+              public void onFinished ( File file, String url ) {
+                    Log.e( TAG, "onFinished : " + file );
+              }
+        }
+    );
 ```
