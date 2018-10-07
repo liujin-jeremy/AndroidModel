@@ -26,6 +26,6 @@ public class StringHash {
             }
             return Integer.toHexString( len )
                 + Integer.toHexString( count )
-                + String.format( "%016x", h );
+                + Long.toHexString( h );
       }
 }

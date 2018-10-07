@@ -41,4 +41,8 @@
           android:id="@+id/menu09"
           android:title="testObjectLoader"/>
 
+      <item
+          android:id="@+id/menu10"
+          android:title="testStreamStringLoader"/>
+
 </menu>

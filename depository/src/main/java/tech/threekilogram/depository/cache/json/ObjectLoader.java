@@ -27,10 +27,12 @@ import tech.threekilogram.depository.net.retrofit.loader.StreamService;
  */
 public class ObjectLoader {
 
+      private ObjectLoader ( ) { }
+
       /**
        * retrofit 客户端
        */
-      private static Retrofit mRetrofit = RetrofitClient.INSTANCE;
+      private static Retrofit                       mRetrofit = RetrofitClient.INSTANCE;
       /**
        * 创建的service
        */

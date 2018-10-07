@@ -14,7 +14,6 @@ import tech.threekilogram.depository.function.encode.Md5;
 import tech.threekilogram.depository.function.encode.StringHash;
 import tech.threekilogram.depository.function.instance.RetrofitClient;
 import tech.threekilogram.depository.function.io.Close;
-import tech.threekilogram.depository.function.io.FileCache;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
@@ -27,18 +26,16 @@ import tech.threekilogram.depository.net.retrofit.loader.StreamService;
  */
 public class Downer {
 
+      private Downer ( ) { }
+
       /**
        * retrofit 客户端
        */
-      private static Retrofit mRetrofit = RetrofitClient.INSTANCE;
+      private static Retrofit                 mRetrofit = RetrofitClient.INSTANCE;
       /**
        * 创建的service
        */
-      private static StreamService sService;
-      /**
-       * 缓存file对象
-       */
-      private static FileCache sFileCache = new FileCache();
+      private static StreamService            sService;
       /**
        * 监听下载进度
        */

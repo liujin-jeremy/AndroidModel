@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.menu09:
                               changeFragment( TestObjectLoaderFragment.newInstance() );
                               break;
+
+                        case R.id.menu10:
+                              changeFragment( TestStreamStringLoader.newInstance() );
+                              break;
                         default:
                               break;
                   }

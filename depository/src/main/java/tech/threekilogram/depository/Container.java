@@ -11,7 +11,7 @@ package tech.threekilogram.depository;
 public interface Container<K, V> extends Loader<K, V> {
 
       /**
-       * save a value to key,then could load value with this key
+       * save a value to key,then could loadStringFromNet value with this key
        *
        * @param key where to save
        * @param value value to save
