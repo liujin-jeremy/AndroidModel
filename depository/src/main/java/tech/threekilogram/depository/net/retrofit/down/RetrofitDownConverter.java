@@ -104,7 +104,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
             /**
              * empty method
              *
-             * @param stream stream from {@link java.io.File} get by {@link #fileName(String)}
+             * @param stream stream from {@link File} get by {@link #fileName(String)}
              */
             @Override
             public InputStream from ( InputStream stream ) {

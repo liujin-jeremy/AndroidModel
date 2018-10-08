@@ -28,7 +28,7 @@ public class TestBitmapLoaderFragment extends Fragment implements OnMessageRecei
                                                                   OnClickListener {
 
       private static final String TAG = TestBitmapLoaderFragment.class.getSimpleName();
-      private Button mDown;
+      private              Button mDown;
 
       public static TestBitmapLoaderFragment newInstance ( ) {
 
@@ -40,7 +40,7 @@ public class TestBitmapLoaderFragment extends Fragment implements OnMessageRecei
       private Button       mLoad;
       private ImageView    mImage;
       private int          mUrlIndex;
-      private String[] mBitmaps = {
+      private String[]     mBitmaps = {
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg",
           "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz6g6wppj20ms0xp13n.jpg",
           "http://ww3.sinaimg.cn/mw690/81309c56jw1f4sx4ybttdj20ku0vd0ym.jpg",
@@ -75,7 +75,6 @@ public class TestBitmapLoaderFragment extends Fragment implements OnMessageRecei
                 (int) Runtime.getRuntime().maxMemory() >> 3,
                 getContext().getExternalFilesDir( "bitmap" )
             );
-            mLoader.configBitmap( ScreenSize.getWidth(), ScreenSize.getHeight() );
       }
 
       private void initView ( @NonNull final View itemView ) {

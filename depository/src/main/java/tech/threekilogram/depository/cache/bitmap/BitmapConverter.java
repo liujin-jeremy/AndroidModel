@@ -1,18 +1,20 @@
 package tech.threekilogram.depository.cache.bitmap;
 
+import static tech.threekilogram.depository.cache.bitmap.ScaleMode.MATCH_HEIGHT;
+import static tech.threekilogram.depository.cache.bitmap.ScaleMode.MATCH_SIZE;
+import static tech.threekilogram.depository.cache.bitmap.ScaleMode.MATCH_WIDTH;
+import static tech.threekilogram.depository.cache.bitmap.ScaleMode.SAMPLE;
+import static tech.threekilogram.depository.cache.bitmap.ScaleMode.SAMPLE_MAX;
+import static tech.threekilogram.depository.cache.bitmap.ScaleMode.SRC_RGB;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.support.annotation.IntDef;
 import com.threekilogram.bitmapreader.BitmapReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * 用于按照规则从file读取bitmap
@@ -25,175 +27,16 @@ import java.lang.annotation.RetentionPolicy;
 public class BitmapConverter {
 
       /**
-       * 图片缩放宽度
-       */
-      private int mWidth;
-      /**
-       * 图片缩放高度
-       */
-      private int mHeight;
-      /**
-       * 图片缩放模式
-       */
-      private int mMode;
-      /**
-       * 图片像素配置
-       */
-      private Bitmap.Config mBitmapConfig = Config.RGB_565;
-
-      /**
-       * 保存格式
-       */
-      private Bitmap.CompressFormat mCompressFormat  = CompressFormat.PNG;
-      /**
-       * 保存质量
-       */
-      private int                   mCompressQuality = 100;
-
-      /**
-       * 获取设置的图片保存格式
-       */
-      public CompressFormat getCompressFormat ( ) {
-
-            return mCompressFormat;
-      }
-
-      /**
-       * 设置图片保存格式
+       * from a bitmap
        *
-       * @param compressFormat 格式
-       */
-      public void setCompressFormat ( CompressFormat compressFormat ) {
-
-            mCompressFormat = compressFormat;
-      }
-
-      /**
-       * 获取设置的图片保存质量
-       */
-      public int getCompressQuality ( ) {
-
-            return mCompressQuality;
-      }
-
-      /**
-       * 设置图片保存质量
-       */
-      public void setCompressQuality ( int compressQuality ) {
-
-            mCompressQuality = compressQuality;
-      }
-
-      /**
-       * 获取设置的图片像素质量
-       */
-      public Config getBitmapConfig ( ) {
-
-            return mBitmapConfig;
-      }
-
-      /**
-       * 设置图片像素质量
-       */
-      public void setBitmapConfig ( Config bitmapConfig ) {
-
-            mBitmapConfig = bitmapConfig;
-      }
-
-      /**
-       * 设置缩放宽度
+       * @param file file bitmap
        *
-       * @param width 宽度
+       * @return bitmap
        */
-      public void setWidth ( int width ) {
+      public Bitmap from (
+          File file ) {
 
-            mWidth = width;
-      }
-
-      public int getWidth ( ) {
-
-            return mWidth;
-      }
-
-      /**
-       * 设置缩放高度
-       *
-       * @param height 高度
-       */
-      public void setHeight ( int height ) {
-
-            mHeight = height;
-      }
-
-      public int getHeight ( ) {
-
-            return mHeight;
-      }
-
-      /**
-       * 设置缩放模式
-       *
-       * @param mode 模式
-       */
-      public void setMode ( @ScaleMode int mode ) {
-
-            mMode = mode;
-      }
-
-      public int getMode ( ) {
-
-            return mMode;
-      }
-
-      /**
-       * 配置bitmap加载配置
-       *
-       * @param width 需求宽度
-       * @param height 需求高度
-       */
-      public void configBitmap ( int width, int height ) {
-
-            configBitmap( width, height, MATCH_SIZE, Config.RGB_565 );
-      }
-
-      /**
-       * 配置bitmap加载配置
-       *
-       * @param width 需求宽度
-       * @param height 需求高度
-       * @param scaleMode 缩放方式
-       */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
-
-            configBitmap( width, height, scaleMode, Config.RGB_565 );
-      }
-
-      /**
-       * 配置bitmap加载配置
-       *
-       * @param width 需求宽度
-       * @param height 需求高度
-       * @param scaleMode 缩放方式
-       * @param config bitmap 像素格式
-       */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
-
-            setWidth( width );
-            setHeight( height );
-            setMode( scaleMode );
-            setBitmapConfig( config );
-      }
-
-      /**
-       * 配置图片保存方式
-       *
-       * @param compressFormat 保存格式
-       * @param compressQuality 保存质量
-       */
-      public void configCompress ( CompressFormat compressFormat, int compressQuality ) {
-
-            setCompressFormat( compressFormat );
-            setCompressQuality( compressQuality );
+            return from( file, ScaleMode.SRC_ARGB, 0, 0, Config.ARGB_8888 );
       }
 
       /**
@@ -203,36 +46,56 @@ public class BitmapConverter {
        *
        * @return bitmap
        */
-      public Bitmap from ( File file ) {
+      public Bitmap from (
+          File file, int width, int height ) {
 
-            if( mWidth == 0 || mHeight == 0 || mMode == 0 ) {
+            return from( file, ScaleMode.MATCH_SIZE, width, height, Config.RGB_565 );
+      }
 
-                  BitmapFactory.Options options = new Options();
-                  options.inPreferredConfig = mBitmapConfig;
-                  return BitmapFactory.decodeFile( file.getAbsolutePath(), options );
+      /**
+       * from a bitmap
+       *
+       * @param file file bitmap
+       *
+       * @return bitmap
+       */
+      public Bitmap from (
+          File file, int width, int height, Config config ) {
+
+            return from( file, ScaleMode.MATCH_SIZE, width, height, config );
+      }
+
+      /**
+       * from a bitmap
+       *
+       * @param file file bitmap
+       *
+       * @return bitmap
+       */
+      public Bitmap from (
+          File file, @ScaleMode int scaleMode, int width, int height, Config config ) {
+
+            if( scaleMode == SAMPLE ) {
+                  return BitmapReader.sampledBitmap( file, width, height, config );
             }
 
-            if( mMode == SAMPLE ) {
-                  return BitmapReader.sampledBitmap( file, mWidth, mHeight, mBitmapConfig );
+            if( scaleMode == SAMPLE_MAX ) {
+                  return BitmapReader.maxSampledBitmap( file, width, height, config );
             }
 
-            if( mMode == SAMPLE_MAX ) {
-                  return BitmapReader.maxSampledBitmap( file, mWidth, mHeight, mBitmapConfig );
+            if( scaleMode == MATCH_WIDTH ) {
+                  return BitmapReader.matchWidth( file, width, config );
             }
 
-            if( mMode == MATCH_WIDTH ) {
-                  return BitmapReader.matchWidth( file, mWidth, mBitmapConfig );
+            if( scaleMode == MATCH_HEIGHT ) {
+                  return BitmapReader.matchHeight( file, height, config );
             }
 
-            if( mMode == MATCH_HEIGHT ) {
-                  return BitmapReader.matchHeight( file, mHeight, mBitmapConfig );
+            if( scaleMode == MATCH_SIZE ) {
+                  return BitmapReader.matchSize( file, width, height, config );
             }
 
-            if( mMode == MATCH_SIZE ) {
-                  return BitmapReader.matchSize( file, mWidth, mHeight, mBitmapConfig );
-            }
-
-            if( mMode == SRC_RGB ) {
+            if( scaleMode == SRC_RGB ) {
                   return BitmapReader.readRgb( file );
             }
 
@@ -245,9 +108,22 @@ public class BitmapConverter {
        * @param stream outputStream
        * @param value bitmap
        */
-      public void to ( OutputStream stream, Bitmap value ) {
+      public void to (
+          OutputStream stream, Bitmap value ) {
 
             value.compress( CompressFormat.PNG, 100, stream );
+      }
+
+      /**
+       * save bitmap to outputStream
+       *
+       * @param stream outputStream
+       * @param value bitmap
+       */
+      public void to (
+          OutputStream stream, Bitmap value, CompressFormat compressFormat, int quality ) {
+
+            value.compress( compressFormat, quality, stream );
       }
 
       /**
@@ -265,40 +141,4 @@ public class BitmapConverter {
                   e.printStackTrace();
             }
       }
-
-      /**
-       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},缩放后图片尺寸不会小于设置的值
-       */
-      public static final int SAMPLE       = 1;
-      /**
-       * 缩放模式:等比例缩放至最接近{@link #mWidth}和{@link #mHeight},缩放后图片尺寸均会小于设置的值
-       */
-      public static final int SAMPLE_MAX   = 2;
-      /**
-       * 缩放模式:等比例缩放至匹配{@link #mWidth}
-       */
-      public static final int MATCH_WIDTH  = 3;
-      /**
-       * 缩放模式:等比例缩放至匹配{@link #mHeight}
-       */
-      public static final int MATCH_HEIGHT = 4;
-      /**
-       * 缩放模式:等比例缩放至匹配{@link #mHeight}或者匹配{@link #mWidth}
-       */
-      public static final int MATCH_SIZE   = 5;
-      /**
-       * 加载原图,使用rgb_565格式
-       */
-      public static final int SRC_RGB      = 6;
-      /**
-       * 加载原图,使用ARGB_8888格式
-       */
-      public static final int SRC_ARGB     = 7;
-
-      /**
-       * 配置缩放模式
-       */
-      @IntDef({ SAMPLE, SAMPLE_MAX, MATCH_WIDTH, MATCH_HEIGHT, MATCH_SIZE, SRC_RGB, SRC_ARGB })
-      @Retention(RetentionPolicy.SOURCE)
-      public @interface ScaleMode { }
 }

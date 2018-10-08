@@ -1,14 +1,10 @@
 package tech.threekilogram.depository.cache.bitmap;
 
-import static tech.threekilogram.depository.cache.bitmap.BitmapConverter.MATCH_SIZE;
-
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.depository.CacheLoader;
-import tech.threekilogram.depository.cache.bitmap.BitmapConverter.ScaleMode;
 import tech.threekilogram.depository.memory.lru.MemoryBitmap;
 import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner;
 
@@ -64,52 +60,6 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
-       * 配置bitmap加载配置
-       *
-       * @param width 需求宽度
-       * @param height 需求高度
-       */
-      public void configBitmap ( int width, int height ) {
-
-            configBitmap( width, height, MATCH_SIZE, Config.RGB_565 );
-      }
-
-      /**
-       * 配置bitmap加载配置
-       *
-       * @param width 需求宽度
-       * @param height 需求高度
-       * @param scaleMode 缩放方式
-       */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode ) {
-
-            configBitmap( width, height, scaleMode, Config.RGB_565 );
-      }
-
-      /**
-       * 配置bitmap加载配置
-       *
-       * @param width 需求宽度
-       * @param height 需求高度
-       * @param scaleMode 缩放方式
-       */
-      public void configBitmap ( int width, int height, @ScaleMode int scaleMode, Config config ) {
-
-            mBitmapConverter.configBitmap( width, height, scaleMode, config );
-      }
-
-      /**
-       * 配置图片保存方式
-       *
-       * @param compressFormat 保存格式
-       * @param compressQuality 保存质量
-       */
-      public void configCompress ( CompressFormat compressFormat, int compressQuality ) {
-
-            mBitmapConverter.configCompress( compressFormat, compressQuality );
-      }
-
-      /**
        * 从网络读取该url对应的图片,并缓存到内存中
        *
        * @param url 图片url
@@ -134,6 +84,76 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
+       * 从网络读取该url对应的图片,并缓存到内存中,缩放至指定尺寸
+       *
+       * @param url 图片url
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadFromNet ( String url, int width, int height ) {
+
+            /* 先下载到本地 */
+            File file = mDowner.load( url );
+            /* 解析成bitmap */
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.from( file, width, height );
+                  if( bitmap != null ) {
+                        saveToMemory( url, bitmap );
+                        return bitmap;
+                  }
+            }
+            return null;
+      }
+
+      /**
+       * 从网络读取该url对应的图片,并缓存到内存中,缩放至指定尺寸,指定格式
+       *
+       * @param url 图片url
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadFromNet ( String url, int width, int height, Config config ) {
+
+            /* 先下载到本地 */
+            File file = mDowner.load( url );
+            /* 解析成bitmap */
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.from( file, width, height, config );
+                  if( bitmap != null ) {
+                        saveToMemory( url, bitmap );
+                        return bitmap;
+                  }
+            }
+            return null;
+      }
+
+      /**
+       * 从网络读取该url对应的图片,并缓存到内存中,按照指定缩放模式缩放至指定尺寸,指定格式
+       *
+       * @param url 图片url
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadFromNet (
+          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+
+            /* 先下载到本地 */
+            File file = mDowner.load( url );
+            /* 解析成bitmap */
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.from( file, scaleMode, width, height, config );
+                  if( bitmap != null ) {
+                        saveToMemory( url, bitmap );
+                        return bitmap;
+                  }
+            }
+            return null;
+      }
+
+      /**
        * 仅从网络下载图片文件,之后可以使用{@link #getFile(String)}获取改文件
        *
        * @param url 图片url
@@ -148,6 +168,9 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             mDowner.load( url );
       }
 
+      /**
+       * 从网络下载该url对应的图片,并缓存到内存中
+       */
       @Override
       public Bitmap loadFromDownload ( String url ) {
 
@@ -156,6 +179,49 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             if( file.exists() ) {
 
                   return loadFromFile( url );
+            }
+            return null;
+      }
+
+      /**
+       * 从网络下载该url对应的图片,并缓存到内存中,按照指定缩放模式缩放至指定尺寸
+       */
+      public Bitmap loadFromDownload ( String url, int width, int height ) {
+
+            download( url );
+            File file = getFile( url );
+            if( file.exists() ) {
+
+                  return loadFromFile( url, width, height );
+            }
+            return null;
+      }
+
+      /**
+       * 从网络下载该url对应的图片,并缓存到内存中,缩放至指定尺寸,指定格式
+       */
+      public Bitmap loadFromDownload ( String url, int width, int height, Config config ) {
+
+            download( url );
+            File file = getFile( url );
+            if( file.exists() ) {
+
+                  return loadFromFile( url, width, height, config );
+            }
+            return null;
+      }
+
+      /**
+       * 从网络下载该url对应的图片,并缓存到内存中,按照指定缩放模式缩放至指定尺寸,指定格式
+       */
+      public Bitmap loadFromDownload (
+          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+
+            download( url );
+            File file = getFile( url );
+            if( file.exists() ) {
+
+                  return loadFromFile( url, scaleMode, width, height, config );
             }
             return null;
       }
@@ -276,6 +342,73 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             return null;
       }
 
+      /**
+       * 从本地文件读取,并且缩放至匹配尺寸,使用的是{@link Bitmap.Config#RGB_565}格式
+       *
+       * @param url mUrl
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadFromFile ( String url, int width, int height ) {
+
+            File file = mDowner.getFile( url );
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.from( file, width, height );
+                  if( bitmap != null ) {
+                        mMemory.save( url, bitmap );
+                        return bitmap;
+                  }
+            }
+
+            return null;
+      }
+
+      /**
+       * 从本地文件读取,并且缩放至匹配尺寸
+       *
+       * @param url mUrl
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadFromFile ( String url, int width, int height, Config config ) {
+
+            File file = mDowner.getFile( url );
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.from( file, width, height, config );
+                  if( bitmap != null ) {
+                        mMemory.save( url, bitmap );
+                        return bitmap;
+                  }
+            }
+
+            return null;
+      }
+
+      /**
+       * 从本地文件读取,并且缩放
+       *
+       * @param url mUrl
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadFromFile (
+          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+
+            File file = mDowner.getFile( url );
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.from( file, scaleMode, width, height, config );
+                  if( bitmap != null ) {
+                        mMemory.save( url, bitmap );
+                        return bitmap;
+                  }
+            }
+
+            return null;
+      }
+
       @Override
       public void clearFile ( ) {
 
@@ -295,6 +428,11 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             saveToFile( url, bitmap );
       }
 
+      /**
+       * 加载url对应的原图
+       *
+       * @param url url
+       */
       @Override
       public Bitmap load ( String url ) {
 
@@ -307,50 +445,61 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
-       * 获取设置的宽度
+       * 加载URL对应的图片并且缩放至指定尺寸
        */
-      public int getConfigWidth ( ) {
+      public Bitmap load ( String url, int width, int height ) {
 
-            return mBitmapConverter.getWidth();
+            Bitmap bitmap = loadFromMemory( url );
+            if( bitmap != null ) {
+
+                  if( bitmap.getWidth() < width && bitmap.getHeight() < height ) {
+                        return loadFromFile( url, width, height );
+                  }
+                  return bitmap;
+            }
+
+            return loadFromFile( url, width, height );
       }
 
       /**
-       * 获取设置的高度
+       * 加载URL对应的图片并且缩放至指定尺寸,指定格式
        */
-      public int getConfigHeight ( ) {
+      public Bitmap load ( String url, int width, int height, Config config ) {
 
-            return mBitmapConverter.getHeight();
+            Bitmap bitmap = loadFromMemory( url );
+            if( bitmap != null ) {
+
+                  if( bitmap.getWidth() < width && bitmap.getHeight() < height ) {
+                        return loadFromFile( url, width, height, config );
+                  }
+                  if( bitmap.getConfig() != config ) {
+                        return loadFromFile( url, width, height, config );
+                  }
+                  return bitmap;
+            }
+
+            return loadFromFile( url, width, height, config );
       }
 
       /**
-       * 获取设置的加载模式
+       * 加载URL对应的图片使用指定缩放模式缩放至指定尺寸
        */
-      public int getConfigMode ( ) {
+      public Bitmap load (
+          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
 
-            return mBitmapConverter.getMode();
-      }
+            Bitmap bitmap = loadFromMemory( url );
+            if( bitmap != null ) {
 
-      /**
-       * 获取设置的bitmap像素格式
-       */
-      public Config getBitmapConfig ( ) {
+                  if( scaleMode != ScaleMode.SAMPLE_MAX && bitmap.getWidth() < width
+                      && bitmap.getHeight() < height ) {
+                        return loadFromFile( url, scaleMode, width, height, config );
+                  }
+                  if( bitmap.getConfig() != config ) {
+                        return loadFromFile( url, scaleMode, width, height, config );
+                  }
+                  return bitmap;
+            }
 
-            return mBitmapConverter.getBitmapConfig();
-      }
-
-      /**
-       * 获取设置的图片保存质量
-       */
-      public int getCompressQuality ( ) {
-
-            return mBitmapConverter.getCompressQuality();
-      }
-
-      /**
-       * 获取设置的图片保存格式
-       */
-      public CompressFormat getCompressFormat ( ) {
-
-            return mBitmapConverter.getCompressFormat();
+            return loadFromFile( url, scaleMode, width, height, config );
       }
 }

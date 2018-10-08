@@ -3,13 +3,12 @@ package tech.threekilogram.depository.stream;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import tech.threekilogram.depository.cache.bitmap.BitmapConverter;
-import tech.threekilogram.depository.cache.bitmap.BitmapConverter.ScaleMode;
+import tech.threekilogram.depository.cache.bitmap.ScaleMode;
 import tech.threekilogram.depository.cache.json.ObjectLoader;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
 import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
@@ -25,9 +24,22 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
  */
 public class StreamLoader {
 
+      /**
+       * 网络获取string
+       */
       private static RetrofitLoader<String> sRetrofitStringLoader;
+      /**
+       * 网络获取bitmap
+       */
       private static RetrofitLoader<Bitmap> sRetrofitBitmapLoader;
+      /**
+       * 辅助从文件读取保存string
+       */
       private static FileStringConverter    sFileStringConverter;
+      /**
+       * 辅助读取保存bitmap数据流
+       */
+      private static BitmapConverter        sBitmapConverter;
 
       private StreamLoader ( ) { }
 
@@ -156,11 +168,11 @@ public class StreamLoader {
       }
 
       /**
-       * 从网络加载json
+       * 从网络加载图片,如果需要缩放图片尺寸,请先下载文件到一个文件夹{@link #downLoad(String, File)},之后读取
        *
        * @param url url
        *
-       * @return url 对应的 json bean
+       * @return url 对应的图片
        */
       public static Bitmap loadBitmapFromNet ( String url ) {
 
@@ -172,7 +184,7 @@ public class StreamLoader {
       }
 
       /**
-       * 保存一个json到文件
+       * 保存一个bitmap到文件
        *
        * @param file string 需要保存到的文件
        */
@@ -186,7 +198,7 @@ public class StreamLoader {
       }
 
       /**
-       * 保存一个json到文件
+       * 保存一个bitmap到文件
        *
        * @param file string 需要保存到的文件
        */
@@ -201,55 +213,47 @@ public class StreamLoader {
       }
 
       /**
-       * 从网络加载json
-       *
-       * @param file json 对应 file
-       *
-       * @return url 对应的 json bean
+       * 从一个文件读取bitmap
        */
-      public static Bitmap loadJsonFromFile ( File file ) {
+      public static Bitmap loadBitmapFromFile ( File file ) {
 
-            return BitmapFactory.decodeFile( file.getAbsolutePath() );
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
+            return sBitmapConverter.from( file );
       }
 
       /**
-       * 从网络加载json
-       *
-       * @param file json 对应 file
-       *
-       * @return url 对应的 json bean
+       * 从一个文件读取bitmap,缩放至指定尺寸
        */
-      public static Bitmap loadJsonFromFile (
-          File file, int width, int height, @ScaleMode int scaleMode, Config config ) {
+      public static Bitmap loadBitmapFromFile ( File file, int width, int height ) {
 
-            BitmapConverter converter = new BitmapConverter();
-            converter.configBitmap( width, height, scaleMode, config );
-            return loadJsonFromFile( file, converter );
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
+            return sBitmapConverter.from( file, width, height );
       }
 
       /**
-       * 从网络加载json
-       *
-       * @param file json 对应 file
-       *
-       * @return url 对应的 json bean
+       * 从一个文件读取bitmap,缩放至指定尺寸,指定格式
        */
-      public static Bitmap loadJsonFromFile ( File file, int width, int height ) {
+      public static Bitmap loadBitmapFromFile ( File file, int width, int height, Config config ) {
 
-            BitmapConverter converter = new BitmapConverter();
-            converter.configBitmap( width, height );
-            return loadJsonFromFile( file, converter );
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
+            return sBitmapConverter.from( file, width, height, config );
       }
 
       /**
-       * 从网络加载json
-       *
-       * @param file json 对应 file
-       *
-       * @return url 对应的 json bean
+       * 从一个文件读取bitmap,缩放至指定尺寸,指定格式
        */
-      public static Bitmap loadJsonFromFile ( File file, BitmapConverter bitmapConverter ) {
+      public static Bitmap loadBitmapFromFile (
+          File file, @ScaleMode int scaleMode, int width, int height, Config config ) {
 
-            return bitmapConverter.from( file );
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
+            return sBitmapConverter.from( file, scaleMode, width, height, config );
       }
 }

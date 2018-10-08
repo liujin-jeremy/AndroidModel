@@ -17,7 +17,7 @@ import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
- * 一个通用下载器,相对于{@link RetrofitDowner}使用更直接,可以直接使用静态方法
+ * 一个通用下载器
  *
  * @author: Liujin
  * @version: V1.0
@@ -51,6 +51,76 @@ public class Downer {
           String url ) {
 
             return downloadTo( file, url, null, null, null );
+      }
+
+      /**
+       * 下载到指定文件
+       *
+       * @param file 文件
+       * @param url url
+       *
+       * @return 该url对应文件, 或者null保存失败
+       */
+      @Nullable
+      public static <S extends StreamService> File downloadTo (
+          File file,
+          String url,
+          Class<S> service,
+          @Nullable OnDownloadUpdateListener updateListener,
+          @Nullable OnNoResourceListener noResourceListener,
+          @Nullable OnExceptionListener exceptionListener ) {
+
+            if( file != null && file.exists() ) {
+
+                  if( updateListener != null ) {
+                        updateListener.onFinished( file, url );
+                  }
+                  return file;
+            }
+
+            /* 制造一个call对象 */
+            if( sService == null ) {
+
+                  sService = mRetrofit.create( service );
+            }
+            Call<ResponseBody> call = sService.toGet( url );
+
+            /* 执行call */
+            try {
+                  Response<ResponseBody> response = call.execute();
+
+                  /* 如果成功获得数据 */
+                  if( response.isSuccessful() ) {
+
+                        ResponseBody responseBody = response.body();
+
+                        /* 转换数据 */
+                        assert responseBody != null;
+                        return saveToFile(
+                            url,
+                            file,
+                            responseBody.byteStream(),
+                            responseBody.contentLength(),
+                            updateListener,
+                            exceptionListener
+                        );
+                  } else {
+
+                        /* 连接到网络,但是没有获取到数据 */
+                        if( noResourceListener != null ) {
+                              noResourceListener.onExecuteFailed( file, url, response.code() );
+                        }
+                  }
+            } catch(IOException e) {
+
+                  /* 没有连接到网络 */
+                  e.printStackTrace();
+                  if( exceptionListener != null ) {
+                        exceptionListener.onConnectException( file, url, e );
+                  }
+            }
+
+            return null;
       }
 
       /**
