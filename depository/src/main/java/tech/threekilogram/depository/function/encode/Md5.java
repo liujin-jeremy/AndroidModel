@@ -14,6 +14,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Md5 {
 
+      private Md5 ( ) { }
+
       /**
        * 十六进制下数字到字符的映射数组
        */

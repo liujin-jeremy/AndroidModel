@@ -16,13 +16,7 @@ public class StringEncoder {
       public static final int HASH    = 12;
       public static final int DEFAULT = 13;
 
-      @EncodeMode
-      private int mMode = HASH;
-
-      public void setMode ( @EncodeMode int mode ) {
-
-            mMode = mode;
-      }
+      private StringEncoder ( ) { }
 
       /**
        * 转换key为string
@@ -31,18 +25,14 @@ public class StringEncoder {
        *
        * @return string name
        */
-      public String encode ( String key ) {
+      public static String encode ( String key, @EncodeMode int mode ) {
 
-            if( mMode == HASH ) {
-
+            if( mode == HASH ) {
                   return StringHash.hash( key );
             }
-
-            if( mMode == MD5 ) {
-
+            if( mode == MD5 ) {
                   return Md5.encode( key );
             }
-
             return key;
       }
 

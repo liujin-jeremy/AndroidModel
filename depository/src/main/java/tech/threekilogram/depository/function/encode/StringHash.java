@@ -8,6 +8,8 @@ package tech.threekilogram.depository.function.encode;
  */
 public class StringHash {
 
+      private StringHash ( ) { }
+
       public static String hash ( String source ) {
 
             long h = 0;

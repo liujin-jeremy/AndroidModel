@@ -10,6 +10,8 @@ import com.google.gson.Gson;
  */
 public class GsonClient {
 
+      private GsonClient ( ) { }
+
       public static final Gson INSTANCE = new Gson();
 
       public static <V> V fromJson ( String json, Class<V> type ) {

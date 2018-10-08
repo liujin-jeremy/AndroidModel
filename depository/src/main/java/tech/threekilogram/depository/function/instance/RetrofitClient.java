@@ -13,10 +13,15 @@ import retrofit2.Retrofit;
  */
 public class RetrofitClient {
 
+      /**
+       * 配置的url没有作用的,因为
+       */
       public static final Retrofit INSTANCE = new Retrofit
           .Builder()
           .baseUrl( "https://github.com/" )
           .build();
+
+      private RetrofitClient ( ) { }
 
       public static Retrofit instance ( File file, long maxSize ) {
 

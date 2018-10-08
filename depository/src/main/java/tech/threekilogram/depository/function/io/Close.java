@@ -13,9 +13,11 @@ import java.io.IOException;
  */
 public class Close {
 
-      public static void close (Closeable closeable) {
+      private Close ( ) { }
 
-            if(closeable != null) {
+      public static void close ( Closeable closeable ) {
+
+            if( closeable != null ) {
 
                   try {
                         closeable.close();
