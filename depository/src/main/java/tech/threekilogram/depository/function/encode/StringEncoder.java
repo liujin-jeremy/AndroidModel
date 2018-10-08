@@ -1,8 +1,7 @@
 package tech.threekilogram.depository.function.encode;
 
-import android.support.annotation.IntDef;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import static tech.threekilogram.depository.function.encode.EncodeMode.HASH;
+import static tech.threekilogram.depository.function.encode.EncodeMode.MD5;
 
 /**
  * @author: Liujin
@@ -11,10 +10,6 @@ import java.lang.annotation.RetentionPolicy;
  * @time: 21:20
  */
 public class StringEncoder {
-
-      public static final int MD5     = 11;
-      public static final int HASH    = 12;
-      public static final int DEFAULT = 13;
 
       private StringEncoder ( ) { }
 
@@ -35,8 +30,4 @@ public class StringEncoder {
             }
             return key;
       }
-
-      @Retention(RetentionPolicy.SOURCE)
-      @IntDef(value = { MD5, HASH, DEFAULT })
-      public @interface EncodeMode { }
 }

@@ -1,7 +1,7 @@
 package tech.threekilogram.depository.file;
 
+import tech.threekilogram.depository.function.encode.EncodeMode;
 import tech.threekilogram.depository.function.encode.StringEncoder;
-import tech.threekilogram.depository.function.encode.StringEncoder.EncodeMode;
 
 /**
  * {@link FileConverter}简单实现,完成key到file name的转换工作
@@ -12,22 +12,23 @@ import tech.threekilogram.depository.function.encode.StringEncoder.EncodeMode;
  */
 public abstract class BaseFileConverter<V> implements FileConverter<V> {
 
-      /**
-       * 辅助转换{@link #fileName(String)}中的key为合法字符
-       */
-      protected StringEncoder mNameConverter = new StringEncoder();
+      @EncodeMode
+      private int mMode = EncodeMode.HASH;
 
-      /**
-       * 设置{@link #fileName(String)}采用何种转换方式
-       */
       public void setMode ( @EncodeMode int mode ) {
 
-            mNameConverter.setMode( mode );
+            mMode = mode;
+      }
+
+      @EncodeMode
+      public int getMode ( ) {
+
+            return mMode;
       }
 
       @Override
       public String fileName ( String key ) {
 
-            return mNameConverter.encode( key );
+            return StringEncoder.encode( key, mMode );
       }
 }

@@ -95,12 +95,6 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
        */
       private class FileStreamConverter extends BaseFileConverter<InputStream> {
 
-            @Override
-            public String fileName ( String key ) {
-
-                  return mNameConverter.encode( key );
-            }
-
             /**
              * empty method
              *

@@ -32,32 +32,32 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 内存
        */
-      protected Memory<String, V>       mMemoryContainer;
+      protected       Memory<String, V>       mMemoryContainer;
       /**
        * 文件
        */
       @Nullable
-      protected BaseFileLoader<V>       mFileContainer;
+      protected       BaseFileLoader<V>       mFileContainer;
       /**
        * 网络bean
        */
-      protected RetrofitLoader<V>       mRetrofitLoader;
+      protected       RetrofitLoader<V>       mRetrofitLoader;
       /**
        * 辅助将流转换为json bean
        */
-      protected JsonConverter<V>        mJsonConverter;
+      protected       JsonConverter<V>        mJsonConverter;
       /**
        * 网络list
        */
-      protected RetrofitLoader<List<V>> mRetrofitListLoader;
+      protected       RetrofitLoader<List<V>> mRetrofitListLoader;
       /**
        * 临时保存需要需要写入文件的bean
        */
-      protected final ArrayMap<String, V> mWillCacheToFile = new ArrayMap<>();
+      protected final ArrayMap<String, V>     mWillCacheToFile = new ArrayMap<>();
       /**
        * true : 正在缓存文件
        */
-      protected final AtomicBoolean       mIsCacheToFile   = new AtomicBoolean();
+      protected final AtomicBoolean           mIsCacheToFile   = new AtomicBoolean();
 
       /**
        * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
@@ -456,12 +456,6 @@ public class JsonLoader<V> implements CacheLoader<V> {
        * 辅助保存json为文件
        */
       private class JsonFileConverter extends BaseFileConverter<V> {
-
-            @Override
-            public String fileName ( String key ) {
-
-                  return mNameConverter.encode( key );
-            }
 
             @Override
             public V from ( InputStream stream ) {
