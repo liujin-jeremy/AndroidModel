@@ -11,17 +11,19 @@ import retrofit2.Retrofit;
  * @date: 2018-07-31
  * @time: 10:26
  */
-public class RetrofitClient {
+public class NetClient {
 
       /**
        * 配置的url没有作用的,因为
        */
-      public static final Retrofit INSTANCE = new Retrofit
+      public static final Retrofit RETROFIT = new Retrofit
           .Builder()
           .baseUrl( "https://github.com/" )
           .build();
 
-      private RetrofitClient ( ) { }
+      public static OkHttpClient OKHTTP = new OkHttpClient();
+
+      private NetClient ( ) { }
 
       public static Retrofit instance ( File file, long maxSize ) {
 

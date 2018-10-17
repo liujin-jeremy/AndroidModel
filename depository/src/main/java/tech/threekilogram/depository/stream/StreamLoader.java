@@ -11,8 +11,8 @@ import tech.threekilogram.depository.cache.bitmap.BitmapConverter;
 import tech.threekilogram.depository.cache.bitmap.ScaleMode;
 import tech.threekilogram.depository.cache.json.ObjectLoader;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitBitmapConverter;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
+import tech.threekilogram.depository.net.responsebody.BodyBitmapConverter;
+import tech.threekilogram.depository.net.responsebody.BodyStringConverter;
 import tech.threekilogram.depository.net.retrofit.down.Downer;
 import tech.threekilogram.depository.net.retrofit.down.Downer.OnDownloadUpdateListener;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
@@ -54,7 +54,7 @@ public class StreamLoader {
 
             if( sRetrofitStringLoader == null ) {
                   sRetrofitStringLoader = new RetrofitLoader<>(
-                      new RetrofitStringConverter()
+                      new BodyStringConverter()
                   );
             }
             return sRetrofitStringLoader.load( url );
@@ -177,7 +177,7 @@ public class StreamLoader {
       public static Bitmap loadBitmapFromNet ( String url ) {
 
             if( sRetrofitBitmapLoader == null ) {
-                  sRetrofitBitmapLoader = new RetrofitLoader<>( new RetrofitBitmapConverter() );
+                  sRetrofitBitmapLoader = new RetrofitLoader<>( new BodyBitmapConverter() );
             }
 
             return sRetrofitBitmapLoader.load( url );

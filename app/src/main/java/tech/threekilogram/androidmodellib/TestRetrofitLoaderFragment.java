@@ -11,8 +11,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitJsonConverter;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
+import tech.threekilogram.depository.net.responsebody.BodyJsonConverter;
+import tech.threekilogram.depository.net.responsebody.BodyStringConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
@@ -50,9 +50,9 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
-            mStringLoader = new RetrofitLoader<>( new RetrofitStringConverter() );
+            mStringLoader = new RetrofitLoader<>( new BodyStringConverter() );
             mJsonLoader = new RetrofitLoader<>(
-                new RetrofitJsonConverter<>( GankCategoryBean.class )
+                new BodyJsonConverter<>( GankCategoryBean.class )
             );
       }
 

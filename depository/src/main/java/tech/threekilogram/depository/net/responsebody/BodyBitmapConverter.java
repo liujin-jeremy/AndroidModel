@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.converter;
+package tech.threekilogram.depository.net.responsebody;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +11,7 @@ import tech.threekilogram.depository.function.io.Close;
  *
  * @author liujin
  */
-public class RetrofitBitmapConverter implements ResponseBodyConverter<Bitmap> {
+public class BodyBitmapConverter implements ResponseBodyConverter<Bitmap> {
 
       @Override
       public Bitmap onExecuteSuccess (

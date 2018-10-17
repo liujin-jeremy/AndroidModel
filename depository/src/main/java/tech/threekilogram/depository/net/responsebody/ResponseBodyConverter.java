@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.converter;
+package tech.threekilogram.depository.net.responsebody;
 
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.net.NetConverter;

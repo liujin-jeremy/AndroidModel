@@ -14,8 +14,8 @@ import tech.threekilogram.depository.function.instance.GsonClient;
 import tech.threekilogram.depository.memory.lru.MemoryLruCache;
 import tech.threekilogram.depository.memory.map.MemoryList;
 import tech.threekilogram.depository.memory.map.MemoryMap;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitJsonConverter;
-import tech.threekilogram.depository.net.retrofit.converter.RetrofitStringConverter;
+import tech.threekilogram.depository.net.responsebody.BodyJsonConverter;
+import tech.threekilogram.depository.net.responsebody.BodyStringConverter;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
@@ -107,7 +107,7 @@ class Test {
       private static void testRetrofitJson ( ) {
 
             RetrofitLoader<Bean> loader = new RetrofitLoader<>(
-                new RetrofitJsonConverter<Bean>( Bean.class ) );
+                new BodyJsonConverter<Bean>( Bean.class ) );
 
             final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
 
@@ -118,7 +118,7 @@ class Test {
 
       private static void testRetrofitString ( ) {
 
-            RetrofitLoader<String> loader = new RetrofitLoader<>( new RetrofitStringConverter() );
+            RetrofitLoader<String> loader = new RetrofitLoader<>( new BodyStringConverter() );
 
             final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
 

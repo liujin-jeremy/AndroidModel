@@ -17,7 +17,7 @@ import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.Memory;
 import tech.threekilogram.depository.memory.lru.MemoryLruCache;
 import tech.threekilogram.depository.memory.map.MemoryMap;
-import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverter;
+import tech.threekilogram.depository.net.responsebody.ResponseBodyConverter;
 import tech.threekilogram.depository.net.retrofit.down.Downer;
 import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 

@@ -1,13 +1,14 @@
-package tech.threekilogram.depository.net.retrofit.loader;
+package tech.threekilogram.depository.net.okhttp;
 
 import java.io.IOException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 import tech.threekilogram.depository.function.instance.NetClient;
 import tech.threekilogram.depository.net.BaseNetLoader;
 import tech.threekilogram.depository.net.responsebody.ResponseBodyConverter;
+import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
 /**
  * 使用 retrofit 从网络使用get方法获取{@link ResponseBody}响应,然后使用{@link ResponseBodyConverter}完成转换工作
@@ -18,46 +19,42 @@ import tech.threekilogram.depository.net.responsebody.ResponseBodyConverter;
  *
  * @author liujin
  */
-public class RetrofitLoader<V> extends BaseNetLoader<V, ResponseBody> {
+public class OkhttpLoader<V> extends BaseNetLoader<V, ResponseBody> {
 
       /**
        * retrofit
        */
-      protected Retrofit      mRetrofit = NetClient.RETROFIT;
-      /**
-       * service
-       */
-      protected StreamService mService;
+      protected OkHttpClient mOkHttpClient = NetClient.OKHTTP;
 
-      public RetrofitLoader ( ResponseBodyConverter<V> netConverter ) {
+      /**
+       * 构建一个加载器
+       *
+       * @param netConverter 辅助完成网络响应到值的转换
+       */
+      protected OkhttpLoader ( ResponseBodyConverter<V> netConverter ) {
 
             super( netConverter );
       }
 
-      public Retrofit getRetrofit ( ) {
+      public OkHttpClient getOkHttpClient ( ) {
 
-            return mRetrofit;
+            return mOkHttpClient;
       }
 
-      public void setRetrofit ( Retrofit retrofit ) {
+      public void setOkHttpClient ( OkHttpClient okHttpClient ) {
 
-            mRetrofit = retrofit;
+            mOkHttpClient = okHttpClient;
       }
 
       @Override
       public V load ( String url ) {
 
-
-            /* 制造一个call对象 */
-            if( mService == null ) {
-
-                  mService = mRetrofit.create( StreamService.class );
-            }
-            Call<ResponseBody> call = mService.toGet( url );
-
             /* 执行call */
             try {
-                  Response<ResponseBody> response = call.execute();
+                  Request request = new Request.Builder()
+                      .url( url )
+                      .build();
+                  Response response = mOkHttpClient.newCall( request ).execute();
 
                   /* 如果成功获得数据 */
                   if( response.isSuccessful() ) {

@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.converter;
+package tech.threekilogram.depository.net.responsebody;
 
 import okhttp3.ResponseBody;
 import tech.threekilogram.depository.cache.json.GsonConverter;
@@ -9,17 +9,17 @@ import tech.threekilogram.depository.cache.json.JsonConverter;
  *
  * @author liujin
  */
-public class RetrofitJsonConverter<V> implements ResponseBodyConverter<V> {
+public class BodyJsonConverter<V> implements ResponseBodyConverter<V> {
 
       @SuppressWarnings("WeakerAccess")
       protected JsonConverter<V> mConverter;
 
-      public RetrofitJsonConverter ( Class<V> valueType ) {
+      public BodyJsonConverter ( Class<V> valueType ) {
 
             mConverter = new GsonConverter<>( valueType );
       }
 
-      public RetrofitJsonConverter ( JsonConverter<V> converter ) {
+      public BodyJsonConverter ( JsonConverter<V> converter ) {
 
             mConverter = converter;
       }

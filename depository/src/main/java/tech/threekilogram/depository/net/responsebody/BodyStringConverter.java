@@ -1,4 +1,4 @@
-package tech.threekilogram.depository.net.retrofit.converter;
+package tech.threekilogram.depository.net.responsebody;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import tech.threekilogram.depository.function.io.Close;
  *
  * @author liujin
  */
-public class RetrofitStringConverter implements ResponseBodyConverter<String> {
+public class BodyStringConverter implements ResponseBodyConverter<String> {
 
       @Override
       public String onExecuteSuccess (

@@ -12,7 +12,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import tech.threekilogram.depository.function.encode.Md5;
 import tech.threekilogram.depository.function.encode.StringHash;
-import tech.threekilogram.depository.function.instance.RetrofitClient;
+import tech.threekilogram.depository.function.instance.NetClient;
 import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.retrofit.loader.StreamService;
 
@@ -31,7 +31,7 @@ public class Downer {
       /**
        * retrofit 客户端
        */
-      private static Retrofit      mRetrofit = RetrofitClient.INSTANCE;
+      private static Retrofit      mRetrofit = NetClient.RETROFIT;
       /**
        * 创建的service
        */

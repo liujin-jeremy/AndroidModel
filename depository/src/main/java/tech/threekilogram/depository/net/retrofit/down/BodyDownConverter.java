@@ -11,7 +11,7 @@ import tech.threekilogram.depository.file.BaseFileLoader;
 import tech.threekilogram.depository.file.loader.DiskLruLoader;
 import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.function.io.Close;
-import tech.threekilogram.depository.net.retrofit.converter.ResponseBodyConverter;
+import tech.threekilogram.depository.net.responsebody.ResponseBodyConverter;
 import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner.OnDownloadUpdateListener;
 
 /**
@@ -19,7 +19,7 @@ import tech.threekilogram.depository.net.retrofit.down.RetrofitDowner.OnDownload
  *
  * @author liujin
  */
-class RetrofitDownConverter implements ResponseBodyConverter<File> {
+class BodyDownConverter implements ResponseBodyConverter<File> {
 
       /**
        * 下载进度监听
@@ -45,7 +45,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
       /**
        * @param dir 指定保存文件夹
        */
-      RetrofitDownConverter ( File dir ) {
+      BodyDownConverter ( File dir ) {
 
             mDir = dir;
             mFileStreamConverter = new FileStreamConverter();
@@ -56,7 +56,7 @@ class RetrofitDownConverter implements ResponseBodyConverter<File> {
        * @param dir 保存文件夹
        * @param maxSize 该文件夹最大大小
        */
-      RetrofitDownConverter ( File dir, long maxSize ) throws IOException {
+      BodyDownConverter ( File dir, long maxSize ) throws IOException {
 
             mDir = dir;
             mFileStreamConverter = new FileStreamConverter();

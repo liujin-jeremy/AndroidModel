@@ -11,7 +11,7 @@ import retrofit2.Retrofit;
 import tech.threekilogram.depository.StreamConverter;
 import tech.threekilogram.depository.function.encode.Md5;
 import tech.threekilogram.depository.function.encode.StringHash;
-import tech.threekilogram.depository.function.instance.RetrofitClient;
+import tech.threekilogram.depository.function.instance.NetClient;
 import tech.threekilogram.depository.function.io.Close;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNetExceptionListener;
 import tech.threekilogram.depository.net.BaseNetLoader.OnNoResourceListener;
@@ -32,7 +32,7 @@ public class ObjectLoader {
       /**
        * retrofit 客户端
        */
-      private static Retrofit                       mRetrofit = RetrofitClient.INSTANCE;
+      private static Retrofit                       mRetrofit = NetClient.RETROFIT;
       /**
        * 创建的service
        */

@@ -16,7 +16,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        */
       public RetrofitDowner ( File dir ) {
 
-            super( new RetrofitDownConverter( dir ) );
+            super( new BodyDownConverter( dir ) );
       }
 
       /**
@@ -27,7 +27,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
        */
       public RetrofitDowner ( File dir, long maxSize ) throws IOException {
 
-            super( new RetrofitDownConverter( dir, maxSize ) );
+            super( new BodyDownConverter( dir, maxSize ) );
       }
 
       /**
@@ -50,9 +50,9 @@ public class RetrofitDowner extends RetrofitLoader<File> {
       /**
        * 工具方法
        */
-      private RetrofitDownConverter getDownConverter ( ) {
+      private BodyDownConverter getDownConverter ( ) {
 
-            return (RetrofitDownConverter) mNetConverter;
+            return (BodyDownConverter) mNetConverter;
       }
 
       /**
@@ -101,7 +101,7 @@ public class RetrofitDowner extends RetrofitLoader<File> {
       @Override
       public File load ( String url ) {
 
-            RetrofitDownConverter converter = getDownConverter();
+            BodyDownConverter converter = getDownConverter();
             File file = converter.getFileLoader().getFile( url );
 
             if( file != null && file.exists() ) {
