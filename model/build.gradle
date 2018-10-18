@@ -5,8 +5,6 @@ group = 'com.github.threekilogram'    // 指定group，com.github.<用户名>
 android {
     compileSdkVersion 27
 
-
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
