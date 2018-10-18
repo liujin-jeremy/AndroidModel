@@ -14,9 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
-import tech.threekilogram.depository.function.encode.StringHash;
-import tech.threekilogram.depository.net.retrofit.down.Downer.OnDownloadUpdateListener;
-import tech.threekilogram.depository.stream.StreamLoader;
+import tech.threekilogram.model.function.encode.StringHash;
+import tech.threekilogram.model.net.retrofit.down.Downer.OnDownloadUpdateListener;
+import tech.threekilogram.model.stream.StreamLoader;
 
 /**
  * @author Liujin 2018-10-07:20:13

@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.threekilogram.bitmapreader.BitmapReader;
-import tech.threekilogram.depository.memory.lru.MemoryBitmap;
+import tech.threekilogram.model.memory.lru.MemoryBitmap;
 
 /**
  * @author: Liujin

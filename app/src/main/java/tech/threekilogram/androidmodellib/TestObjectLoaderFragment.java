@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
-import tech.threekilogram.depository.cache.json.GsonConverter;
-import tech.threekilogram.depository.cache.json.ObjectLoader;
+import tech.threekilogram.model.cache.json.GsonConverter;
+import tech.threekilogram.model.cache.json.ObjectLoader;
 
 /**
  * @author: Liujin

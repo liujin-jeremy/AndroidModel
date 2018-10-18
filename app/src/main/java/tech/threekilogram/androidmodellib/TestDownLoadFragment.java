@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
-import tech.threekilogram.depository.net.retrofit.down.Downer;
+import tech.threekilogram.model.net.retrofit.down.Downer;
 
 /**
  * @author: Liujin

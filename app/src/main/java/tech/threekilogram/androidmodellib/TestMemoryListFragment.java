@@ -10,7 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import tech.threekilogram.depository.memory.map.MemoryList;
+import tech.threekilogram.model.memory.map.MemoryList;
 
 /**
  * @author: Liujin

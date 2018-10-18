@@ -14,9 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
-import tech.threekilogram.depository.cache.bitmap.BitmapLoader;
 import tech.threekilogram.messengers.Messengers;
 import tech.threekilogram.messengers.OnMessageReceiveListener;
+import tech.threekilogram.model.cache.bitmap.BitmapLoader;
 
 /**
  * @author: Liujin

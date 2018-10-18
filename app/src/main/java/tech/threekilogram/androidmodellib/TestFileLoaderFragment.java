@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import java.io.File;
-import tech.threekilogram.depository.file.converter.FileJsonConverter;
-import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.FileLoader;
-import tech.threekilogram.depository.function.instance.GsonClient;
+import tech.threekilogram.model.file.converter.FileJsonConverter;
+import tech.threekilogram.model.file.converter.FileStringConverter;
+import tech.threekilogram.model.file.loader.FileLoader;
+import tech.threekilogram.model.function.instance.GsonClient;
 
 /**
  * @author: Liujin

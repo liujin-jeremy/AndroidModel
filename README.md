@@ -157,7 +157,15 @@ System.out.println( "value at key: " + load ); // null
 
 ```
 // FileStringConverter 会将文件流转为string对象
-FileLoader<String> loader = new FileLoader<>( TEMP, new FileStringConverter() );
+FileStringConverter converter = new FileStringConverter()
+// 文件创建
+FileLoader<String> loader = new FileLoader<>( TEMP, converter );
+// disk文件创建
+DiskLruLoader<String> loader = new DiskLruLoader<>(
+          TEMP,
+          10 * 1024 * 1024,
+          converter
+);
 
 String key = "key";
 String value = "曾经沧海难为水";
@@ -185,6 +193,13 @@ boolean containsOf = loader.containsOf( key );
 FileLoader<Bean> loader = new FileLoader<>(
     TEMP,
     new FileJsonConverter<Bean>( Bean.class )
+);
+
+// disk文件创建
+DiskLruLoader<String> loader = new DiskLruLoader<>(
+          TEMP,
+          10 * 1024 * 1024,
+          new FileJsonConverter<Bean>( Bean.class )
 );
 
 String key = "json";
@@ -217,7 +232,8 @@ boolean containsOf = loader.containsOf( key );
 
 ```
 // 配置
-RetrofitLoader<String> loader = new RetrofitLoader<>( new RetrofitStringConverter() );
+RetrofitLoader<String> loader = new RetrofitLoader<>( new BodyStringConverter() );
+OkhttpLoader<String> loader = new OkhttpLoader<>( new BodyStringConverter() );
 
 // url
 final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
@@ -230,7 +246,8 @@ String load = loader.load( url );
 
 ```
 // json
-RetrofitLoader<Bean> loader = new RetrofitLoader<>( new RetrofitJsonConverter<Bean>(Bean.class) );
+RetrofitLoader<Bean> loader = new RetrofitLoader<>( new BodyJsonConverter<>(Bean.class) );
+OkhttpLoader<Bean> loader = new OkhttpLoader<>( new BodyJsonConverter<>( Bean.class ) );
 
 // url
 final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";

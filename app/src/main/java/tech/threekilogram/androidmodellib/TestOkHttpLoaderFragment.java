@@ -11,9 +11,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
-import tech.threekilogram.depository.net.okhttp.OkhttpLoader;
-import tech.threekilogram.depository.net.responsebody.BodyJsonConverter;
-import tech.threekilogram.depository.net.responsebody.BodyStringConverter;
+import tech.threekilogram.model.net.okhttp.OkhttpLoader;
+import tech.threekilogram.model.net.responsebody.BodyJsonConverter;
+import tech.threekilogram.model.net.responsebody.BodyStringConverter;
 
 /**
  * @author: Liujin

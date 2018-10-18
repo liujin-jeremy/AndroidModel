@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
-import tech.threekilogram.depository.file.converter.FileJsonConverter;
-import tech.threekilogram.depository.file.converter.FileStringConverter;
-import tech.threekilogram.depository.file.loader.DiskLruLoader;
-import tech.threekilogram.depository.function.instance.GsonClient;
+import tech.threekilogram.model.file.converter.FileJsonConverter;
+import tech.threekilogram.model.file.converter.FileStringConverter;
+import tech.threekilogram.model.file.loader.DiskLruLoader;
+import tech.threekilogram.model.function.instance.GsonClient;
 
 /**
  * @author: Liujin
