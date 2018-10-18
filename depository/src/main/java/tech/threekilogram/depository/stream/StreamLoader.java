@@ -11,11 +11,11 @@ import tech.threekilogram.depository.cache.bitmap.BitmapConverter;
 import tech.threekilogram.depository.cache.bitmap.ScaleMode;
 import tech.threekilogram.depository.cache.json.ObjectLoader;
 import tech.threekilogram.depository.file.converter.FileStringConverter;
+import tech.threekilogram.depository.net.okhttp.OkhttpLoader;
 import tech.threekilogram.depository.net.responsebody.BodyBitmapConverter;
 import tech.threekilogram.depository.net.responsebody.BodyStringConverter;
 import tech.threekilogram.depository.net.retrofit.down.Downer;
 import tech.threekilogram.depository.net.retrofit.down.Downer.OnDownloadUpdateListener;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
  * 从网络
@@ -27,19 +27,19 @@ public class StreamLoader {
       /**
        * 网络获取string
        */
-      private static RetrofitLoader<String> sRetrofitStringLoader;
-      /**
-       * 网络获取bitmap
-       */
-      private static RetrofitLoader<Bitmap> sRetrofitBitmapLoader;
+      private static OkhttpLoader<String> sRetrofitStringLoader;
       /**
        * 辅助从文件读取保存string
        */
-      private static FileStringConverter    sFileStringConverter;
+      private static FileStringConverter  sFileStringConverter;
+      /**
+       * 网络获取bitmap
+       */
+      private static OkhttpLoader<Bitmap> sRetrofitBitmapLoader;
       /**
        * 辅助读取保存bitmap数据流
        */
-      private static BitmapConverter        sBitmapConverter;
+      private static BitmapConverter      sBitmapConverter;
 
       private StreamLoader ( ) { }
 
@@ -53,7 +53,7 @@ public class StreamLoader {
       public static String loadStringFromNet ( String url ) {
 
             if( sRetrofitStringLoader == null ) {
-                  sRetrofitStringLoader = new RetrofitLoader<>(
+                  sRetrofitStringLoader = new OkhttpLoader<>(
                       new BodyStringConverter()
                   );
             }
@@ -177,7 +177,7 @@ public class StreamLoader {
       public static Bitmap loadBitmapFromNet ( String url ) {
 
             if( sRetrofitBitmapLoader == null ) {
-                  sRetrofitBitmapLoader = new RetrofitLoader<>( new BodyBitmapConverter() );
+                  sRetrofitBitmapLoader = new OkhttpLoader<>( new BodyBitmapConverter() );
             }
 
             return sRetrofitBitmapLoader.load( url );

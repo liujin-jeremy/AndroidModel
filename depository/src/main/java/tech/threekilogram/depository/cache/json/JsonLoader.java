@@ -17,9 +17,9 @@ import tech.threekilogram.depository.file.loader.FileLoader;
 import tech.threekilogram.depository.memory.Memory;
 import tech.threekilogram.depository.memory.lru.MemoryLruCache;
 import tech.threekilogram.depository.memory.map.MemoryMap;
+import tech.threekilogram.depository.net.okhttp.OkhttpLoader;
 import tech.threekilogram.depository.net.responsebody.ResponseBodyConverter;
 import tech.threekilogram.depository.net.retrofit.down.Downer;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
  * 该类提供json对象三级缓存
@@ -32,32 +32,32 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 内存
        */
-      protected       Memory<String, V>       mMemoryContainer;
+      protected       Memory<String, V>     mMemoryContainer;
       /**
        * 文件
        */
       @Nullable
-      protected       BaseFileLoader<V>       mFileContainer;
+      protected       BaseFileLoader<V>     mFileContainer;
       /**
        * 网络bean
        */
-      protected       RetrofitLoader<V>       mRetrofitLoader;
+      protected       OkhttpLoader<V>       mOkhttpLoader;
       /**
        * 辅助将流转换为json bean
        */
-      protected       JsonConverter<V>        mJsonConverter;
+      protected       JsonConverter<V>      mJsonConverter;
       /**
        * 网络list
        */
-      protected       RetrofitLoader<List<V>> mRetrofitListLoader;
+      protected       OkhttpLoader<List<V>> mOkhttpListLoader;
       /**
        * 临时保存需要需要写入文件的bean
        */
-      protected final ArrayMap<String, V>     mWillCacheToFile = new ArrayMap<>();
+      protected final ArrayMap<String, V>   mWillCacheToFile = new ArrayMap<>();
       /**
        * true : 正在缓存文件
        */
-      protected final AtomicBoolean           mIsCacheToFile   = new AtomicBoolean();
+      protected final AtomicBoolean         mIsCacheToFile   = new AtomicBoolean();
 
       /**
        * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
@@ -83,7 +83,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
                   mMemoryContainer = new MemoryMap<>();
             }
             mFileContainer = new DiskLruLoader<>( dir, maxFileSize, new JsonFileConverter() );
-            mRetrofitLoader = new RetrofitLoader<>( new JsonRetrofitConverter() );
+            mOkhttpLoader = new OkhttpLoader<>( new JsonRetrofitConverter() );
       }
 
       /**
@@ -128,7 +128,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
             if( dir != null ) {
                   mFileContainer = new FileLoader<>( dir, new JsonFileConverter() );
             }
-            mRetrofitLoader = new RetrofitLoader<>( new JsonRetrofitConverter() );
+            mOkhttpLoader = new OkhttpLoader<>( new JsonRetrofitConverter() );
       }
 
       /**
@@ -156,13 +156,13 @@ public class JsonLoader<V> implements CacheLoader<V> {
        */
       public List<V> loadListFromNet ( String url ) {
 
-            if( mRetrofitListLoader == null ) {
-                  mRetrofitListLoader = new RetrofitLoader<>(
+            if( mOkhttpListLoader == null ) {
+                  mOkhttpListLoader = new OkhttpLoader<>(
                       new JsonRetrofitListConverter()
                   );
             }
 
-            return mRetrofitListLoader.load( url );
+            return mOkhttpListLoader.load( url );
       }
 
       /**
@@ -175,7 +175,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V loadFromNet ( String url ) {
 
-            V v = mRetrofitLoader.load( url );
+            V v = mOkhttpLoader.load( url );
             if( v != null ) {
                   saveToMemory( url, v );
             }
