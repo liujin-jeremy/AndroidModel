@@ -42,7 +42,6 @@ dependencies {
     }
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.threekilogram:BitmapReader:1.2.1'
-    implementation 'com.github.threekilogram:Executor:2.0.1'
 }
 
 // 指定编码
