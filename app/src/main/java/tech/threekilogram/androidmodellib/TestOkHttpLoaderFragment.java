@@ -11,9 +11,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
+import tech.threekilogram.depository.net.okhttp.OkhttpLoader;
 import tech.threekilogram.depository.net.responsebody.BodyJsonConverter;
 import tech.threekilogram.depository.net.responsebody.BodyStringConverter;
-import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
 
 /**
  * @author: Liujin
@@ -21,20 +21,20 @@ import tech.threekilogram.depository.net.retrofit.loader.RetrofitLoader;
  * @date: 2018-08-23
  * @time: 21:58
  */
-public class TestRetrofitLoaderFragment extends Fragment implements OnClickListener {
+public class TestOkHttpLoaderFragment extends Fragment implements OnClickListener {
 
-      private static final String TAG = TestRetrofitLoaderFragment.class.getSimpleName();
+      private static final String TAG = TestOkHttpLoaderFragment.class.getSimpleName();
 
-      public static TestRetrofitLoaderFragment newInstance ( ) {
+      public static TestOkHttpLoaderFragment newInstance ( ) {
 
-            TestRetrofitLoaderFragment fragment = new TestRetrofitLoaderFragment();
+            TestOkHttpLoaderFragment fragment = new TestOkHttpLoaderFragment();
             return fragment;
       }
 
-      private Button                           mJsonLoad;
-      private Button                           mStringLoad;
-      private RetrofitLoader<String>           mStringLoader;
-      private RetrofitLoader<GankCategoryBean> mJsonLoader;
+      private Button                         mJsonLoad;
+      private Button                         mStringLoad;
+      private OkhttpLoader<String>           mStringLoader;
+      private OkhttpLoader<GankCategoryBean> mJsonLoader;
 
       @Nullable
       @Override
@@ -50,17 +50,17 @@ public class TestRetrofitLoaderFragment extends Fragment implements OnClickListe
 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
-            mStringLoader = new RetrofitLoader<>( new BodyStringConverter() );
-            mJsonLoader = new RetrofitLoader<>(
+            mStringLoader = new OkhttpLoader<>( new BodyStringConverter() );
+            mJsonLoader = new OkhttpLoader<>(
                 new BodyJsonConverter<>( GankCategoryBean.class )
             );
       }
 
       private void initView ( @NonNull final View itemView ) {
 
-            mStringLoad = itemView.findViewById( R.id.stringLoad );
+            mStringLoad = (Button) itemView.findViewById( R.id.stringLoad );
             mStringLoad.setOnClickListener( this );
-            mJsonLoad = itemView.findViewById( R.id.jsonLoad );
+            mJsonLoad = (Button) itemView.findViewById( R.id.jsonLoad );
             mJsonLoad.setOnClickListener( this );
       }
 

@@ -26,6 +26,10 @@
           android:title="testRetrofitLoader"/>
 
       <item
+          android:id="@+id/menu11"
+          android:title="testOkhttpLoader"/>
+
+      <item
           android:id="@+id/menu06"
           android:title="testBitmapLoader"/>
 

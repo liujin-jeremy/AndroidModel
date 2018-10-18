@@ -21,9 +21,19 @@ Add it in your root build.gradle at the end of repositories:
 	}
 ```
 
-### 使用内存缓存
+### 内存缓存
 
-* MemoryList
+> 内存缓存包含3个种类,
+>
+> 一个是MemoryList使用数字作为索引保存数据,
+>
+> 一个是MemoryMap,使用键值对保存数据,
+>
+> 还有一个是MemoryLruCache,只能保存一定数量数据,到达上限之后删除最近最少使用的数据
+>
+> MemoryList/MemoryMap需要自己定期清理数据
+
+* MemoryList使用
 
 ```
 /* MemoryListLoader 使用数字索引保存/读取数据 */
@@ -54,7 +64,7 @@ loader.remove( 2 );
 loader.clear();
 ```
 
-* MemoryMap
+* MemoryMap使用
 
 ```
 /* MemoryMap 使用map保存/读取数据 */
@@ -88,7 +98,7 @@ loader.remove( key2 );
 loader.clear();
 ```
 
-* MemoryLruCache
+* MemoryLruCache使用
 
 ```
 /* MemoryLruCache 使用lruCache保存/读取数据 */
@@ -134,10 +144,10 @@ String load = loader.load( key ); // 读取最先添加的值
 System.out.println( "value at key: " + load ); // null
 ```
 
-### 使用文件缓存
+### 文件缓存
 
 * FileLoader<T> : 可以保存到本地文件
-* DiskLruLoader<T> : 底层使用DiskLruCache保存文件
+* DiskLruLoader<T> : 底层使用DiskLruCache保存文件,会自动管理文件夹大小
 
 > 以上两个都需要 FileConverter<T> 辅助将一个数据流转换为对应的对象
 
@@ -166,15 +176,6 @@ String remove = loader.remove( key );
 
 // 测试是否有该文件
 boolean containsOf = loader.containsOf( key );
-```
-
-```
-// 使用 DiskLruLoader 读取保存string对象
-DiskLruLoader<String> loader = new DiskLruLoader<>(
-    TEMP,
-    MAX_SIZE,
-    new FileStringConverter() 
-);
 ```
 
 * Json对象
@@ -208,40 +209,9 @@ loader.remove( key );
 boolean containsOf = loader.containsOf( key );
 ```
 
-```
-// 使用 DiskLruLoader 读取保存json对象
-DiskLruLoader<Bean> loader = new DiskLruLoader<>(
-    TEMP,
-    MAX_SIZE,
-    new FileJsonConverter<Bean>( Bean.class )
-);
-```
-
 > 目前框架只实现了 FileStringConverter 和 FileGsonConverter, 其他类型数据需要自己实现FileConverter<T>接口,完成转换工作
 
-### 使用网络缓存
-
-* 下载文件
-
-```
-// 配置文件夹
-RetrofitDowner loader = new RetrofitDowner( TEMP );
-
-// url
-final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
-
-// 从网络下载
-File file = loader.load( url00 );
-
-// 设置下载进度监听
-OnProgressUpdateListener onProgressUpdateListener = new OnProgressUpdateListener() {
-      @Override
-      public void onProgressUpdate ( String key, long total, long current ) {
-            Log.e( TAG, "onProgressUpdate : " + total + " " + current );
-      }
-};
-mRetrofitDowner.setOnProgressUpdateListener( onProgressUpdateListener );
-```
+### 网络缓存
 
 * 从网络获取string
 
@@ -269,9 +239,9 @@ final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
 Bean bean = loader.load( url );
 ```
 
-### Bitmap缓存
+### BitmapLoader : bitmap三级缓存
 
-> 该类提供了bitmap三级缓存
+> 该类是一个综合类型缓存器,用于提供bitmap三级缓存
 
 ```
 private BitmapLoader mLoader;
@@ -293,9 +263,7 @@ Bitmap bitmap = mLoader.loadFromFile( url );
 Bitmap bitmap = mLoader.loadFromNet( url );
 ```
 
-> 将内存/文件网络加载分开是因为,文件网络加载需要异步操作
-
-### Json缓存
+### JsonLoader : json对象三级缓存
 
 > 该类提供了json三级缓存
 
@@ -307,49 +275,59 @@ private JsonLoader<GankDayBean>     mDayLoader;
 // 指定缓存文件夹,如果不需要文件缓存,那么可以不指定
 File jsonFile = getContext().getExternalFilesDir( "jsonFile" );
 mDayLoader = new JsonLoader<>(
-	-1,
+	-1,		//--> 指定内存中保留的数据量,负数表示无限多
     jsonFile,
     GankDayBean.class	//--> json bean 对象
 );
 ```
 
-* 内存
-
 ```
-GankDayBean dayBean = mDayLoader.loadFromMemory( dayUrl );
-boolean b = mDayLoader.containsOfMemory( dayUrl );
-```
+// 内存
+GankDayBean dayBean = mDayLoader.loadFromMemory( url );
+boolean b = mDayLoader.containsOfMemory( url );
 
-* 文件
-
-```
-GankDayBean dayBean = mDayLoader.loadFromFile( dayUrl );
+// 文件
+GankDayBean dayBean = mDayLoader.loadFromFile( url );
 boolean b = mDayLoader.containsOfFile( url );
-```
 
-* 网络
-
-```
-// 测试内存/文件中是否包含该url对应的缓存
+// 网络
 boolean containsOf = mDayLoader.containsOf( url );
 GankDayBean dayBean = mDayLoader.loadFromNet( url );
 ```
 
-## Downer下载
+## 下载文件
 
-> 该类提供静态下载方式
-
-* 下载
+* Downer下载 : 该类提供简单下载方式
 
 ```
 File down = Downer.downloadTo( dir, url );
 ```
 
-## ObjectLoader
+* RetrofitDowner : 该类用于下载大量文件到一个文件夹
 
-> 该类提供从数据流静态加载对象方式
+```
+// 配置文件夹
+RetrofitDowner loader = new RetrofitDowner( TEMP );
 
-* 从网络加载
+// url
+final String url00 = "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg";
+
+// 从网络下载
+File file = loader.load( url00 );
+
+// 设置下载进度监听
+OnProgressUpdateListener onProgressUpdateListener = new OnProgressUpdateListener() {
+      @Override
+      public void onProgressUpdate ( String key, long total, long current ) {
+            Log.e( TAG, "onProgressUpdate : " + total + " " + current );
+      }
+};
+mRetrofitDowner.setOnProgressUpdateListener( onProgressUpdateListener );
+```
+
+## ObjectLoader : 从数据流中读取json对象
+
+* 网络
 
 ```
 GankDayBean dayBean = ObjectLoader.loadFromNet(
@@ -375,7 +353,7 @@ File file = ObjectLoader.getFileByHash( cache, url );
 GankCategoryBean bean = ObjectLoader.loadFromFile( file, GankCategoryBean.class );
 ```
 
-## StreamLoader
+## StreamLoader : 从数据流中读取对象
 
 > 该类提供一些工具方法,简化从数据流中加载对象
 

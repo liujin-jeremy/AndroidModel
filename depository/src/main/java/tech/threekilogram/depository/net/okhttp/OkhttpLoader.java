@@ -31,7 +31,7 @@ public class OkhttpLoader<V> extends BaseNetLoader<V, ResponseBody> {
        *
        * @param netConverter 辅助完成网络响应到值的转换
        */
-      protected OkhttpLoader ( ResponseBodyConverter<V> netConverter ) {
+      public OkhttpLoader ( ResponseBodyConverter<V> netConverter ) {
 
             super( netConverter );
       }
