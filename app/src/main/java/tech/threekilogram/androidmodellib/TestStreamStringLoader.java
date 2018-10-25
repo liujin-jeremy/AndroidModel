@@ -26,18 +26,19 @@ public class TestStreamStringLoader extends Fragment implements OnClickListener 
       private static final String TAG = TestStreamStringLoader.class.getSimpleName();
 
       private Button           mButton;
-      private Button           mSaveToFile;
-      private Button           mLoadFromFile;
-      private String           mString;
-      private File             mFile;
-      private Button           mNetJson;
-      private Button           mSaveJson;
-      private Button           mFileJson;
+      private Button mSaveToFile;
+      private Button mLoadFromFile;
+      private String mString;
+      private File mFile;
+      private Button mNetJson;
+      private Button mSaveJson;
+      private Button mFileJson;
       private GankCategoryBean mBean;
-      private File             mJsonFile;
-      private Button           mDownLoad;
-      private Button           mLoadBitmap;
-      private ImageView        mImageView2;
+      private File mJsonFile;
+      private Button mDownLoad;
+      private Button mLoadBitmap;
+      private ImageView mImageView2;
+      private Button mLoadUrlBitmap;
 
       public static TestStreamStringLoader newInstance ( ) {
 
@@ -80,6 +81,8 @@ public class TestStreamStringLoader extends Fragment implements OnClickListener 
             mLoadBitmap = itemView.findViewById( R.id.loadBitmap );
             mLoadBitmap.setOnClickListener( this );
             mImageView2 = itemView.findViewById( R.id.imageView2 );
+            mLoadUrlBitmap = (Button) itemView.findViewById( R.id.loadUrlBitmap );
+            mLoadUrlBitmap.setOnClickListener( this );
       }
 
       @Override
@@ -110,9 +113,39 @@ public class TestStreamStringLoader extends Fragment implements OnClickListener 
                   case R.id.loadBitmap:
                         loadBitmap();
                         break;
+                  case R.id.loadUrlBitmap:
+                        loadUrlBitmap();
+                        break;
                   default:
                         break;
             }
+      }
+
+      private void loadUrlBitmap ( ) {
+
+            PoolExecutor.execute( new Runnable() {
+
+                  @Override
+                  public void run ( ) {
+
+                        final Bitmap bitmap = StreamLoader.loadBitmapFromNet(
+                            "https://ww1.sinaimg.cn/large/0065oQSqly1fu7xueh1gbj30hs0uwtgb.jpg",
+                            500, 500
+                        );
+                        mImageView2.post( new Runnable() {
+
+                              @Override
+                              public void run ( ) {
+
+                                    mImageView2.setImageBitmap( bitmap );
+                                    Log.e(
+                                        TAG,
+                                        "run : " + bitmap.getWidth() + " " + bitmap.getHeight()
+                                    );
+                              }
+                        } );
+                  }
+            } );
       }
 
       private void loadBitmap ( ) {
