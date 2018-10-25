@@ -2,10 +2,10 @@ package tech.threekilogram.model.file.converter;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.model.cache.json.GsonConverter;
-import tech.threekilogram.model.cache.json.JsonConverter;
 import tech.threekilogram.model.file.BaseFileConverter;
 import tech.threekilogram.model.file.FileConverter;
+import tech.threekilogram.model.json.GsonConverter;
+import tech.threekilogram.model.json.JsonConverter;
 
 /**
  * {@link FileConverter} 的一种实现

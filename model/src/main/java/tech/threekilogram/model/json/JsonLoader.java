@@ -1,4 +1,4 @@
-package tech.threekilogram.model.cache.json;
+package tech.threekilogram.model.json;
 
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;

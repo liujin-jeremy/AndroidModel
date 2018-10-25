@@ -1,4 +1,4 @@
-package tech.threekilogram.model.cache.json;
+package tech.threekilogram.model.json;
 
 import java.io.InputStream;
 import java.util.List;

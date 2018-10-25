@@ -1,4 +1,4 @@
-package tech.threekilogram.model.cache.bitmap;
+package tech.threekilogram.model.bitmap;
 
 import android.content.Context;
 import android.graphics.Bitmap;

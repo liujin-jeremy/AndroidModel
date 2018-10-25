@@ -1,8 +1,8 @@
 package tech.threekilogram.model.net.responsebody;
 
 import okhttp3.ResponseBody;
-import tech.threekilogram.model.cache.json.GsonConverter;
-import tech.threekilogram.model.cache.json.JsonConverter;
+import tech.threekilogram.model.json.GsonConverter;
+import tech.threekilogram.model.json.JsonConverter;
 
 /**
  * 将网络响应转换为json bean对象

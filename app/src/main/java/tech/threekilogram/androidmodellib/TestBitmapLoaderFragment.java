@@ -16,7 +16,7 @@ import com.threekilogram.objectbus.executor.PoolExecutor;
 import java.io.File;
 import tech.threekilogram.messengers.Messengers;
 import tech.threekilogram.messengers.OnMessageReceiveListener;
-import tech.threekilogram.model.cache.bitmap.BitmapLoader;
+import tech.threekilogram.model.bitmap.BitmapLoader;
 
 /**
  * @author: Liujin

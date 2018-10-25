@@ -50,7 +50,7 @@ public class Downer {
           File file,
           String url ) {
 
-            return downloadTo( file, url, null, null, null );
+            return downloadTo( file, url, null, null );
       }
 
       /**
@@ -66,8 +66,7 @@ public class Downer {
           File file,
           String url,
           @Nullable OnDownloadUpdateListener updateListener,
-          @Nullable OnNoResourceListener noResourceListener,
-          @Nullable OnExceptionListener exceptionListener ) {
+          @Nullable OnErrorListener errorListener ) {
 
             if( file != null && file.exists() ) {
 
@@ -101,21 +100,21 @@ public class Downer {
                             responseBody.byteStream(),
                             responseBody.contentLength(),
                             updateListener,
-                            exceptionListener
+                            errorListener
                         );
                   } else {
 
                         /* 连接到网络,但是没有获取到数据 */
-                        if( noResourceListener != null ) {
-                              noResourceListener.onExecuteFailed( file, url, response.code() );
+                        if( errorListener != null ) {
+                              errorListener.onNoResource( file, url, response.code() );
                         }
                   }
             } catch(IOException e) {
 
                   /* 没有连接到网络 */
                   e.printStackTrace();
-                  if( exceptionListener != null ) {
-                        exceptionListener.onConnectException( file, url, e );
+                  if( errorListener != null ) {
+                        errorListener.onConnectException( file, url, e );
                   }
             }
 
@@ -128,7 +127,7 @@ public class Downer {
           InputStream value,
           long length,
           @Nullable OnDownloadUpdateListener updateListener,
-          @Nullable OnExceptionListener exceptionListener ) {
+          @Nullable OnErrorListener exceptionListener ) {
 
             FileOutputStream outputStream = null;
             try {
@@ -231,7 +230,7 @@ public class Downer {
       /**
        * 使用该类处理网络异常
        */
-      public interface OnExceptionListener {
+      public interface OnErrorListener {
 
             /**
              * 无法连接网络
@@ -259,12 +258,6 @@ public class Downer {
              * @param e e
              */
             void onIOException ( File file, String url, IOException e );
-      }
-
-      /**
-       * 当从网络获取资源响应码不在{200~300}之间时的处理
-       */
-      public interface OnNoResourceListener {
 
             /**
              * 没有成功获取数据的回调
@@ -275,6 +268,6 @@ public class Downer {
              * @param url key
              * @param httpCode http code
              */
-            void onExecuteFailed ( File file, String url, int httpCode );
+            void onNoResource ( File file, String url, int httpCode );
       }
 }

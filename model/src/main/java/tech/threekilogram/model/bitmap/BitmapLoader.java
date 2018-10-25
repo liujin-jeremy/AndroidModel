@@ -1,4 +1,4 @@
-package tech.threekilogram.model.cache.bitmap;
+package tech.threekilogram.model.bitmap;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -137,7 +137,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        * @return bitmap or null
        */
       public Bitmap loadFromNet (
-          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+          String url, int scaleMode, int width, int height, Config config ) {
 
             /* 先下载到本地 */
             File file = mDowner.load( url );
@@ -215,7 +215,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        * 从网络下载该url对应的图片,并缓存到内存中,按照指定缩放模式缩放至指定尺寸,指定格式
        */
       public Bitmap loadFromDownload (
-          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+          String url, int scaleMode, int width, int height, Config config ) {
 
             download( url );
             File file = getFile( url );
@@ -394,7 +394,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        * @return bitmap or null
        */
       public Bitmap loadFromFile (
-          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+          String url, int scaleMode, int width, int height, Config config ) {
 
             File file = mDowner.getFile( url );
             if( file != null && file.exists() ) {
@@ -485,7 +485,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        * 加载URL对应的图片使用指定缩放模式缩放至指定尺寸
        */
       public Bitmap load (
-          String url, @ScaleMode int scaleMode, int width, int height, Config config ) {
+          String url, int scaleMode, int width, int height, Config config ) {
 
             Bitmap bitmap = loadFromMemory( url );
             if( bitmap != null ) {

@@ -1,4 +1,4 @@
-package tech.threekilogram.model.cache.json;
+package tech.threekilogram.model.json;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
