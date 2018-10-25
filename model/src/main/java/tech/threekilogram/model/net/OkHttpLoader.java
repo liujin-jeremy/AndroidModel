@@ -9,9 +9,7 @@ import tech.threekilogram.model.converter.StreamConverter;
 import tech.threekilogram.model.util.instance.NetClient;
 
 /**
- * 使用 retrofit 从网络使用get方法获取{@link ResponseBody}响应,然后使用{@link StreamConverter}完成转换工作
- * <p>
- * 使用的service为{@link StreamService}
+ * 使用 okHttp 从网络使用get方法获取{@link ResponseBody}响应,然后使用{@link StreamConverter}完成转换工作
  *
  * @param <V> value type
  *
@@ -63,7 +61,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
 
                               /* 转换数据 */
                               assert responseBody != null;
-                              return mNetConverter.from( responseBody.byteStream() );
+                              return mConverter.from( responseBody.byteStream() );
                         } catch(Exception e) {
 
                               e.printStackTrace();

@@ -11,7 +11,7 @@ import retrofit2.Retrofit;
 import tech.threekilogram.model.converter.GsonConverter;
 import tech.threekilogram.model.converter.StreamConverter;
 import tech.threekilogram.model.net.BaseNetLoader.OnErrorListener;
-import tech.threekilogram.model.net.StreamService;
+import tech.threekilogram.model.net.RetrofitLoader.StreamService;
 import tech.threekilogram.model.util.encode.Md5;
 import tech.threekilogram.model.util.encode.StringHash;
 import tech.threekilogram.model.util.instance.NetClient;

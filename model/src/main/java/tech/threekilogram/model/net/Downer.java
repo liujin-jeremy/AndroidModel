@@ -10,6 +10,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import tech.threekilogram.model.net.RetrofitLoader.StreamService;
 import tech.threekilogram.model.util.encode.Md5;
 import tech.threekilogram.model.util.encode.StringHash;
 import tech.threekilogram.model.util.instance.NetClient;

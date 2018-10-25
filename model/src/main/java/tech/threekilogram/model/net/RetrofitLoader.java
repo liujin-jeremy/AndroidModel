@@ -5,6 +5,9 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.http.GET;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 import tech.threekilogram.model.converter.StreamConverter;
 import tech.threekilogram.model.util.instance.NetClient;
 
@@ -67,7 +70,7 @@ public class RetrofitLoader<V> extends BaseNetLoader<V> {
 
                               /* 转换数据 */
                               assert responseBody != null;
-                              return mNetConverter.from( responseBody.byteStream() );
+                              return mConverter.from( responseBody.byteStream() );
                         } catch(Exception e) {
 
                               e.printStackTrace();
@@ -93,5 +96,28 @@ public class RetrofitLoader<V> extends BaseNetLoader<V> {
             }
 
             return null;
+      }
+
+      /**
+       * 该类用于{@link retrofit2.Retrofit#create(Class)}
+       * 适用于传入url,返回一个{@link java.io.InputStream}的情况
+       *
+       * @author: Liujin
+       * @version: V1.0
+       * @date: 2018-08-02
+       * @time: 14:14
+       */
+      public interface StreamService {
+
+            /**
+             * to get
+             *
+             * @param path url path
+             *
+             * @return response
+             */
+            @GET
+            @Streaming
+            Call<ResponseBody> toGet ( @Url String path );
       }
 }

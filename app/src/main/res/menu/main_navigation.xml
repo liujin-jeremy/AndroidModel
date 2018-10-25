@@ -13,4 +13,16 @@
           android:id="@+id/menu02"
           android:title="FileLoader"/>
 
+      <item
+          android:id="@+id/menu03"
+          android:title="DiskFileLoader"/>
+
+      <item
+          android:id="@+id/menu04"
+          android:title="OkHttp"/>
+
+      <item
+          android:id="@+id/menu05"
+          android:title="Retrofit"/>
+
 </menu>

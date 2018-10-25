@@ -10,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import tech.threekilogram.androidmodellib.test.FileDiskFragment;
 import tech.threekilogram.androidmodellib.test.FileFragment;
 import tech.threekilogram.androidmodellib.test.MemoryBitmapFragment;
 import tech.threekilogram.androidmodellib.test.MemoryMapFragment;
+import tech.threekilogram.androidmodellib.test.OkHttpFragment;
+import tech.threekilogram.androidmodellib.test.RetrofitFragment;
 import tech.threekilogram.androidmodellib.util.FileManager;
 import tech.threekilogram.androidmodellib.util.ScreenSize;
 
@@ -58,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
                               break;
                         case R.id.menu02:
                               changeFragment( FileFragment.newInstance() );
+                              break;
+                        case R.id.menu03:
+                              changeFragment( FileDiskFragment.newInstance() );
+                              break;
+                        case R.id.menu04:
+                              changeFragment( OkHttpFragment.newInstance() );
+                              break;
+                        case R.id.menu05:
+                              changeFragment( RetrofitFragment.newInstance() );
                               break;
                         default:
                               break;

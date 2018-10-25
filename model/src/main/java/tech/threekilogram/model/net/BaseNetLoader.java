@@ -21,16 +21,16 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
       /**
        * 辅助完成响应到value的转换
        */
-      protected StreamConverter<V> mNetConverter;
+      protected StreamConverter<V> mConverter;
 
       /**
        * 构建一个加载器
        *
-       * @param netConverter 辅助完成网络响应到值的转换
+       * @param converter 辅助完成网络响应到值的转换
        */
-      protected BaseNetLoader ( StreamConverter<V> netConverter ) {
+      protected BaseNetLoader ( StreamConverter<V> converter ) {
 
-            mNetConverter = netConverter;
+            mConverter = converter;
       }
 
       /**
