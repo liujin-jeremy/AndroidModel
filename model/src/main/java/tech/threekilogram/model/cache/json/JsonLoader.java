@@ -164,11 +164,11 @@ public class JsonLoader<V> implements CacheLoader<V> {
       public File download ( String url ) {
 
             File file = getFile( url );
-            if( file != null && file.exists() ) {
-                  return null;
+            if( file.exists() ) {
+                  return file;
             }
-            Downer.downloadTo( file, url );
-            return null;
+            Downer.down( url, file );
+            return file;
       }
 
       /**

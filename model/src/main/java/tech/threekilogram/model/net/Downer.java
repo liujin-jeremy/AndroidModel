@@ -138,6 +138,9 @@ public class Downer {
           String url,
           File file ) {
 
+            if( file.exists() ) {
+                  return file;
+            }
             return executeUrl( url, file, null, null );
       }
 
@@ -146,6 +149,9 @@ public class Downer {
           File file,
           OnProgressUpdateListener updateListener ) {
 
+            if( file.exists() ) {
+                  return file;
+            }
             return executeUrl( url, file, updateListener, null );
       }
 
@@ -155,6 +161,9 @@ public class Downer {
           OnProgressUpdateListener updateListener,
           OnErrorListener listener ) {
 
+            if( file.exists() ) {
+                  return file;
+            }
             return executeUrl( url, file, updateListener, listener );
       }
 }

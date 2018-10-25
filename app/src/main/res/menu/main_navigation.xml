@@ -25,4 +25,8 @@
           android:id="@+id/menu05"
           android:title="Retrofit"/>
 
+      <item
+          android:id="@+id/menu06"
+          android:title="DownLoad"/>
+
 </menu>

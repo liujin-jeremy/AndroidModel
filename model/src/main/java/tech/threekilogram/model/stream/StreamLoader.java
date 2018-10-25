@@ -13,10 +13,10 @@ import tech.threekilogram.model.cache.json.ObjectLoader;
 import tech.threekilogram.model.converter.BitmapConverter;
 import tech.threekilogram.model.converter.InputStreamConverter;
 import tech.threekilogram.model.converter.StringConverter;
+import tech.threekilogram.model.net.DownLoader.OnProgressUpdateListener;
 import tech.threekilogram.model.net.Downer;
-import tech.threekilogram.model.net.Downer.OnDownloadUpdateListener;
-import tech.threekilogram.model.net.Downer.OnErrorListener;
 import tech.threekilogram.model.net.OkHttpLoader;
+import tech.threekilogram.model.net.OnErrorListener;
 
 /**
  * 从网络
@@ -150,7 +150,7 @@ public class StreamLoader {
        */
       public static void downLoad ( String url, File file ) {
 
-            Downer.downloadTo( file, url );
+            Downer.down( url, file );
       }
 
       /**
@@ -163,10 +163,10 @@ public class StreamLoader {
       public static void downLoad (
           String url,
           File file,
-          @Nullable OnDownloadUpdateListener updateListener,
+          @Nullable OnProgressUpdateListener updateListener,
           @Nullable OnErrorListener onErrorListener ) {
 
-            Downer.downloadTo( file, url, updateListener, onErrorListener );
+            Downer.down( url, file, updateListener, onErrorListener );
       }
 
       /**

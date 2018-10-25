@@ -150,10 +150,20 @@ public class DownLoader {
 
       public File down ( String url ) {
 
+            File file = mFileHelper.getFile( url );
+            if( file.exists() ) {
+                  return file;
+            }
+
             return executeUrl( url, null );
       }
 
       public File down ( String url, OnProgressUpdateListener updateListener ) {
+
+            File file = mFileHelper.getFile( url );
+            if( file.exists() ) {
+                  return file;
+            }
 
             return executeUrl( url, updateListener );
       }
@@ -163,6 +173,7 @@ public class DownLoader {
             /**
              * 下载进度更新
              *
+             * @param url url
              * @param total 数据总长
              * @param readLength 已经读取的数据
              */
