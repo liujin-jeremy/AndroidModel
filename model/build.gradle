@@ -39,7 +39,6 @@ dependencies {
         exclude group: 'com.squareup.okhttp3'
     }
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.github.threekilogram:BitmapReader:1.2.1'
 }
 
 // 指定编码

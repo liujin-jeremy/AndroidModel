@@ -10,7 +10,6 @@ import static tech.threekilogram.model.cache.bitmap.ScaleMode.SRC_RGB;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
-import com.threekilogram.bitmapreader.BitmapReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
