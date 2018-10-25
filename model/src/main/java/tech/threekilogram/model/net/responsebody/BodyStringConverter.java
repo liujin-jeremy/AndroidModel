@@ -1,8 +1,8 @@
 package tech.threekilogram.model.net.responsebody;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import okhttp3.ResponseBody;
 import tech.threekilogram.model.function.io.Close;
 
@@ -12,6 +12,18 @@ import tech.threekilogram.model.function.io.Close;
  * @author liujin
  */
 public class BodyStringConverter implements ResponseBodyConverter<String> {
+
+      private Charset mCharset;
+
+      public BodyStringConverter ( ) {
+
+            mCharset = Charset.forName( "UTF-8" );
+      }
+
+      public BodyStringConverter ( Charset charset ) {
+
+            mCharset = charset;
+      }
 
       @Override
       public String onExecuteSuccess (
@@ -24,15 +36,12 @@ public class BodyStringConverter implements ResponseBodyConverter<String> {
                   StringBuilder builder = new StringBuilder();
 
                   inputStream = response.byteStream();
-                  BufferedReader reader = new BufferedReader(
-                      new InputStreamReader( inputStream ) );
-
-                  String line = null;
-                  while( ( line = reader.readLine() ) != null ) {
-
-                        builder.append( line );
+                  InputStreamReader reader = new InputStreamReader( inputStream, mCharset );
+                  char[] chars = new char[ 32 ];
+                  int len = 0;
+                  while( ( len = reader.read( chars, 0, chars.length ) ) != -1 ) {
+                        builder.append( chars, 0, len );
                   }
-
                   return builder.toString();
             } finally {
 
