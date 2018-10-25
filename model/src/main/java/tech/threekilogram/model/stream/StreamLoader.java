@@ -3,18 +3,20 @@ package tech.threekilogram.model.stream;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
+import android.support.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import tech.threekilogram.model.bitmap.BitmapConverter;
 import tech.threekilogram.model.file.converter.FileStringConverter;
 import tech.threekilogram.model.json.ObjectLoader;
 import tech.threekilogram.model.net.okhttp.OkHttpLoader;
-import tech.threekilogram.model.net.responsebody.BodyBitmapConverter;
-import tech.threekilogram.model.net.responsebody.BodyStringConverter;
+import tech.threekilogram.model.net.responsebody.BodyStreamConverter;
 import tech.threekilogram.model.net.retrofit.down.Downer;
 import tech.threekilogram.model.net.retrofit.down.Downer.OnDownloadUpdateListener;
+import tech.threekilogram.model.net.retrofit.down.Downer.OnErrorListener;
 
 /**
  * 从网络
@@ -24,22 +26,20 @@ import tech.threekilogram.model.net.retrofit.down.Downer.OnDownloadUpdateListene
 public class StreamLoader {
 
       /**
-       * 网络获取string
+       * 网络获取stream
        */
-      private static OkHttpLoader<String> sStringOkHttpLoader;
+      private static OkHttpLoader<InputStream> sOkHttpLoader = new OkHttpLoader<>(
+          new BodyStreamConverter()
+      );
+
       /**
        * 辅助从文件读取保存string
        */
-      private static FileStringConverter  sFileStringConverter;
-      /**
-       * 网络获取bitmap
-       */
-      private static OkHttpLoader<Bitmap> sBitmapOkHttpLoader;
+      private static FileStringConverter sFileStringConverter;
       /**
        * 辅助读取保存bitmap数据流
        */
-      private static BitmapConverter      sBitmapConverter;
-      private static BodyBitmapConverter  sBodyBitmapConverter;
+      private static BitmapConverter     sBitmapConverter;
 
       private StreamLoader ( ) { }
 
@@ -52,12 +52,11 @@ public class StreamLoader {
        */
       public static String loadStringFromNet ( String url ) {
 
-            if( sStringOkHttpLoader == null ) {
-                  sStringOkHttpLoader = new OkHttpLoader<>(
-                      new BodyStringConverter()
-                  );
+            if( sFileStringConverter == null ) {
+                  sFileStringConverter = new FileStringConverter();
             }
-            return sStringOkHttpLoader.load( url );
+            InputStream stream = sOkHttpLoader.load( url );
+            return sFileStringConverter.from( stream );
       }
 
       /**
@@ -98,7 +97,7 @@ public class StreamLoader {
                   try {
                         FileInputStream inputStream = new FileInputStream( file );
                         return sFileStringConverter.from( inputStream );
-                  } catch(FileNotFoundException e) {
+                  } catch(Exception e) {
                         e.printStackTrace();
                   }
             }
@@ -162,24 +161,16 @@ public class StreamLoader {
        * @param updateListener 下载进度监听
        */
       public static void downLoad (
-          String url, File file, OnDownloadUpdateListener updateListener ) {
+          String url,
+          File file,
+          @Nullable OnDownloadUpdateListener updateListener,
+          @Nullable OnErrorListener onErrorListener ) {
 
-            Downer.downloadTo( file, url, updateListener, null );
+            Downer.downloadTo( file, url, updateListener, onErrorListener );
       }
 
       /**
-       * 初始化bitmap加载器
-       */
-      private static void initBitmapLoader ( ) {
-
-            if( sBitmapOkHttpLoader == null ) {
-                  sBodyBitmapConverter = new BodyBitmapConverter();
-                  sBitmapOkHttpLoader = new OkHttpLoader<>( sBodyBitmapConverter );
-            }
-      }
-
-      /**
-       * 从网络加载图片,如果需要缩放图片尺寸,请先下载文件到一个文件夹{@link #downLoad(String, File)},之后读取
+       * 从网络加载原始图片
        *
        * @param url url
        *
@@ -187,13 +178,16 @@ public class StreamLoader {
        */
       public static Bitmap loadBitmapFromNet ( String url ) {
 
-            initBitmapLoader();
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
 
-            return sBitmapOkHttpLoader.load( url );
+            InputStream stream = sOkHttpLoader.load( url );
+            return sBitmapConverter.from( stream );
       }
 
       /**
-       * 从网络加载图片,如果需要缩放图片尺寸,请先下载文件到一个文件夹{@link #downLoad(String, File)},之后读取
+       * 从网络加载图片,之后缩放该图片
        *
        * @param url url
        *
@@ -201,14 +195,12 @@ public class StreamLoader {
        */
       public static Bitmap loadBitmapFromNet ( String url, int width, int height ) {
 
-            initBitmapLoader();
-            sBodyBitmapConverter.setBitmapLoadConfig(
-                url,
-                width,
-                height,
-                Config.RGB_565
-            );
-            return sBitmapOkHttpLoader.load( url );
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
+
+            InputStream stream = sOkHttpLoader.load( url );
+            return sBitmapConverter.from( stream, width, height );
       }
 
       /**
@@ -220,14 +212,12 @@ public class StreamLoader {
        */
       public static Bitmap loadBitmapFromNet ( String url, int width, int height, Config config ) {
 
-            initBitmapLoader();
-            sBodyBitmapConverter.setBitmapLoadConfig(
-                url,
-                width,
-                height,
-                config
-            );
-            return sBitmapOkHttpLoader.load( url );
+            if( sBitmapConverter == null ) {
+                  sBitmapConverter = new BitmapConverter();
+            }
+
+            InputStream stream = sOkHttpLoader.load( url );
+            return sBitmapConverter.from( stream, width, height, config );
       }
 
       /**
