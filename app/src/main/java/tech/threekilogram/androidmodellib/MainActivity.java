@@ -10,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import tech.threekilogram.androidmodellib.test.MemoryBitmapFragment;
 import tech.threekilogram.androidmodellib.test.MemoryMapFragment;
+import tech.threekilogram.androidmodellib.util.ScreenSize;
 
 /**
  * @author liujin
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
             super.onCreate( savedInstanceState );
             setContentView( R.layout.activity_main );
+            ScreenSize.init( this );
             initView();
       }
 
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
                   switch( item.getItemId() ) {
                         case R.id.menu00:
                               changeFragment( MemoryMapFragment.newInstance() );
+                              break;
+                        case R.id.menu01:
+                              changeFragment( MemoryBitmapFragment.newInstance() );
                               break;
                         default:
                               break;

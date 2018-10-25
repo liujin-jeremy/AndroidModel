@@ -86,6 +86,11 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
             return mContainer.get( key ) != null;
       }
 
+      public void resize ( int maxSize ) {
+
+            mContainer.resize( maxSize );
+      }
+
       /**
        * 使用{@link ObjectSize}构造一个{@link LruCache}
        */
