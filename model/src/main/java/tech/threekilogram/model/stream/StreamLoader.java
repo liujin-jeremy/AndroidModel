@@ -11,7 +11,7 @@ import tech.threekilogram.model.cache.bitmap.BitmapConverter;
 import tech.threekilogram.model.cache.bitmap.ScaleMode;
 import tech.threekilogram.model.cache.json.ObjectLoader;
 import tech.threekilogram.model.file.converter.FileStringConverter;
-import tech.threekilogram.model.net.okhttp.OkhttpLoader;
+import tech.threekilogram.model.net.okhttp.OkHttpLoader;
 import tech.threekilogram.model.net.responsebody.BodyBitmapConverter;
 import tech.threekilogram.model.net.responsebody.BodyStringConverter;
 import tech.threekilogram.model.net.retrofit.down.Downer;
@@ -27,7 +27,7 @@ public class StreamLoader {
       /**
        * 网络获取string
        */
-      private static OkhttpLoader<String> sRetrofitStringLoader;
+      private static OkHttpLoader<String> sStringOkHttpLoader;
       /**
        * 辅助从文件读取保存string
        */
@@ -35,7 +35,7 @@ public class StreamLoader {
       /**
        * 网络获取bitmap
        */
-      private static OkhttpLoader<Bitmap> sRetrofitBitmapLoader;
+      private static OkHttpLoader<Bitmap> sBitmapOkHttpLoader;
       /**
        * 辅助读取保存bitmap数据流
        */
@@ -52,12 +52,12 @@ public class StreamLoader {
        */
       public static String loadStringFromNet ( String url ) {
 
-            if( sRetrofitStringLoader == null ) {
-                  sRetrofitStringLoader = new OkhttpLoader<>(
+            if( sStringOkHttpLoader == null ) {
+                  sStringOkHttpLoader = new OkHttpLoader<>(
                       new BodyStringConverter()
                   );
             }
-            return sRetrofitStringLoader.load( url );
+            return sStringOkHttpLoader.load( url );
       }
 
       /**
@@ -176,11 +176,11 @@ public class StreamLoader {
        */
       public static Bitmap loadBitmapFromNet ( String url ) {
 
-            if( sRetrofitBitmapLoader == null ) {
-                  sRetrofitBitmapLoader = new OkhttpLoader<>( new BodyBitmapConverter() );
+            if( sBitmapOkHttpLoader == null ) {
+                  sBitmapOkHttpLoader = new OkHttpLoader<>( new BodyBitmapConverter() );
             }
 
-            return sRetrofitBitmapLoader.load( url );
+            return sBitmapOkHttpLoader.load( url );
       }
 
       /**

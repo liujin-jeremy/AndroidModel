@@ -17,7 +17,7 @@ import tech.threekilogram.model.file.loader.FileLoader;
 import tech.threekilogram.model.memory.Memory;
 import tech.threekilogram.model.memory.lru.MemoryLruCache;
 import tech.threekilogram.model.memory.map.MemoryMap;
-import tech.threekilogram.model.net.okhttp.OkhttpLoader;
+import tech.threekilogram.model.net.okhttp.OkHttpLoader;
 import tech.threekilogram.model.net.responsebody.ResponseBodyConverter;
 import tech.threekilogram.model.net.retrofit.down.Downer;
 
@@ -41,7 +41,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 网络bean
        */
-      protected       OkhttpLoader<V>       mOkhttpLoader;
+      protected       OkHttpLoader<V>       mOkhttpLoader;
       /**
        * 辅助将流转换为json bean
        */
@@ -49,7 +49,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 网络list
        */
-      protected       OkhttpLoader<List<V>> mOkhttpListLoader;
+      protected       OkHttpLoader<List<V>> mOkhttpListLoader;
       /**
        * 临时保存需要需要写入文件的bean
        */
@@ -83,7 +83,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
                   mMemoryContainer = new MemoryMap<>();
             }
             mFileContainer = new DiskLruLoader<>( dir, maxFileSize, new JsonFileConverter() );
-            mOkhttpLoader = new OkhttpLoader<>( new JsonRetrofitConverter() );
+            mOkhttpLoader = new OkHttpLoader<>( new JsonRetrofitConverter() );
       }
 
       /**
@@ -128,7 +128,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
             if( dir != null ) {
                   mFileContainer = new FileLoader<>( dir, new JsonFileConverter() );
             }
-            mOkhttpLoader = new OkhttpLoader<>( new JsonRetrofitConverter() );
+            mOkhttpLoader = new OkHttpLoader<>( new JsonRetrofitConverter() );
       }
 
       /**
@@ -157,7 +157,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       public List<V> loadListFromNet ( String url ) {
 
             if( mOkhttpListLoader == null ) {
-                  mOkhttpListLoader = new OkhttpLoader<>(
+                  mOkhttpListLoader = new OkHttpLoader<>(
                       new JsonRetrofitListConverter()
                   );
             }

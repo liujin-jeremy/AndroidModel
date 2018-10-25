@@ -13,8 +13,7 @@ import tech.threekilogram.model.function.encode.Md5;
 import tech.threekilogram.model.function.encode.StringHash;
 import tech.threekilogram.model.function.instance.NetClient;
 import tech.threekilogram.model.function.io.Close;
-import tech.threekilogram.model.net.BaseNetLoader.OnNetExceptionListener;
-import tech.threekilogram.model.net.BaseNetLoader.OnNoResourceListener;
+import tech.threekilogram.model.net.BaseNetLoader.OnErrorListener;
 import tech.threekilogram.model.net.retrofit.loader.StreamService;
 
 /**
@@ -32,52 +31,31 @@ public class ObjectLoader {
       /**
        * retrofit 客户端
        */
-      private static Retrofit                       mRetrofit = NetClient.RETROFIT;
+      private static Retrofit        mRetrofit = NetClient.RETROFIT;
       /**
        * 创建的service
        */
-      private static StreamService                  sService;
+      private static StreamService   sService;
       /**
        * 异常处理助手
        */
-      private static OnNetExceptionListener<String> sOnNetExceptionListener;
-      /**
-       * 没有该资源助手
-       */
-      private static OnNoResourceListener           sOnNoResourceListener;
+      private static OnErrorListener sErrorListener;
 
       /**
        * 设置网络异常监听
        */
-      public static void setOnNetExceptionListener (
-          OnNetExceptionListener<String> onNetExceptionListener ) {
+      public static void setErrorListener (
+          OnErrorListener errorListener ) {
 
-            sOnNetExceptionListener = onNetExceptionListener;
+            sErrorListener = errorListener;
       }
 
       /**
        * 获取设置的网络异常监听
        */
-      public static OnNetExceptionListener<String> getOnNetExceptionListener ( ) {
+      public static OnErrorListener getErrorListener ( ) {
 
-            return sOnNetExceptionListener;
-      }
-
-      /**
-       * 设置没有资源监听
-       */
-      public static void setOnNoResourceListener (
-          OnNoResourceListener onNoResourceListener ) {
-
-            sOnNoResourceListener = onNoResourceListener;
-      }
-
-      /**
-       * 获取设置的没有资源监听
-       */
-      public static OnNoResourceListener getOnNoResourceListener ( ) {
-
-            return sOnNoResourceListener;
+            return sErrorListener;
       }
 
       /**
@@ -128,23 +106,23 @@ public class ObjectLoader {
                               e.printStackTrace();
 
                               /* 转换异常 */
-                              if( sOnNetExceptionListener != null ) {
-                                    sOnNetExceptionListener.onConvertException( url, e );
+                              if( sErrorListener != null ) {
+                                    sErrorListener.onConvertException( url, e );
                               }
                         }
                   } else {
 
                         /* 连接到网络,但是没有获取到数据 */
-                        if( sOnNoResourceListener != null ) {
-                              sOnNoResourceListener.onExecuteFailed( url, response.code() );
+                        if( sErrorListener != null ) {
+                              sErrorListener.onNullResource( url, response.code() );
                         }
                   }
             } catch(IOException e) {
 
                   /* 没有连接到网络 */
                   e.printStackTrace();
-                  if( sOnNetExceptionListener != null ) {
-                        sOnNetExceptionListener.onConnectException( url, e );
+                  if( sErrorListener != null ) {
+                        sErrorListener.onConnectException( url, e );
                   }
             }
 

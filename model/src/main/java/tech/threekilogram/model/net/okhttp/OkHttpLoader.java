@@ -19,7 +19,7 @@ import tech.threekilogram.model.net.retrofit.loader.StreamService;
  *
  * @author liujin
  */
-public class OkhttpLoader<V> extends BaseNetLoader<V, ResponseBody> {
+public class OkHttpLoader<V> extends BaseNetLoader<V, ResponseBody> {
 
       /**
        * retrofit
@@ -31,7 +31,7 @@ public class OkhttpLoader<V> extends BaseNetLoader<V, ResponseBody> {
        *
        * @param netConverter 辅助完成网络响应到值的转换
        */
-      public OkhttpLoader ( ResponseBodyConverter<V> netConverter ) {
+      public OkHttpLoader ( ResponseBodyConverter<V> netConverter ) {
 
             super( netConverter );
       }
@@ -70,23 +70,23 @@ public class OkhttpLoader<V> extends BaseNetLoader<V, ResponseBody> {
 
                               e.printStackTrace();
                               /* 转换异常 */
-                              if( mOnNetExceptionListener != null ) {
-                                    mOnNetExceptionListener.onConvertException( url, e );
+                              if( mErrorListener != null ) {
+                                    mErrorListener.onConvertException( url, e );
                               }
                         }
                   } else {
 
                         /* 连接到网络,但是没有获取到数据 */
-                        if( mOnNoResourceListener != null ) {
-                              mOnNoResourceListener.onExecuteFailed( url, response.code() );
+                        if( mErrorListener != null ) {
+                              mErrorListener.onNullResource( url, response.code() );
                         }
                   }
             } catch(IOException e) {
 
                   /* 没有连接到网络 */
                   e.printStackTrace();
-                  if( mOnNetExceptionListener != null ) {
-                        mOnNetExceptionListener.onConnectException( url, e );
+                  if( mErrorListener != null ) {
+                        mErrorListener.onConnectException( url, e );
                   }
             }
 

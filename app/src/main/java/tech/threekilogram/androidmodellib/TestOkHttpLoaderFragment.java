@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.threekilogram.objectbus.executor.PoolExecutor;
-import tech.threekilogram.model.net.okhttp.OkhttpLoader;
+import tech.threekilogram.model.net.okhttp.OkHttpLoader;
 import tech.threekilogram.model.net.responsebody.BodyJsonConverter;
 import tech.threekilogram.model.net.responsebody.BodyStringConverter;
 
@@ -33,8 +33,8 @@ public class TestOkHttpLoaderFragment extends Fragment implements OnClickListene
 
       private Button                         mJsonLoad;
       private Button                         mStringLoad;
-      private OkhttpLoader<String>           mStringLoader;
-      private OkhttpLoader<GankCategoryBean> mJsonLoader;
+      private OkHttpLoader<String>           mStringLoader;
+      private OkHttpLoader<GankCategoryBean> mJsonLoader;
 
       @Nullable
       @Override
@@ -50,8 +50,8 @@ public class TestOkHttpLoaderFragment extends Fragment implements OnClickListene
 
             super.onViewCreated( view, savedInstanceState );
             initView( view );
-            mStringLoader = new OkhttpLoader<>( new BodyStringConverter() );
-            mJsonLoader = new OkhttpLoader<>(
+            mStringLoader = new OkHttpLoader<>( new BodyStringConverter() );
+            mJsonLoader = new OkHttpLoader<>(
                 new BodyJsonConverter<>( GankCategoryBean.class )
             );
       }

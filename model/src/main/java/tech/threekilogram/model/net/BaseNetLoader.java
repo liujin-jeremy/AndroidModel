@@ -16,15 +16,11 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       /**
        * 异常处理助手
        */
-      protected OnNetExceptionListener<String> mOnNetExceptionListener;
-      /**
-       * 没有该资源助手
-       */
-      protected OnNoResourceListener           mOnNoResourceListener;
+      protected OnErrorListener    mErrorListener;
       /**
        * 辅助完成响应到value的转换
        */
-      protected NetConverter<V, P>             mNetConverter;
+      protected NetConverter<V, P> mNetConverter;
 
       /**
        * 构建一个加载器
@@ -41,47 +37,22 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
        *
        * @return 设置的异常处理类
        */
-      public OnNetExceptionListener<String> getOnNetExceptionListener ( ) {
+      public OnErrorListener getErrorListener ( ) {
 
-            return mOnNetExceptionListener;
+            return mErrorListener;
       }
 
       /**
        * 设置异常处理类
        *
-       * @param onNetExceptionListener 异常处理类
+       * @param errorListener 异常处理类
        */
-      public void setOnNetExceptionListener (
-          OnNetExceptionListener<String> onNetExceptionListener ) {
+      public void setErrorListener (
+          OnErrorListener errorListener ) {
 
-            mOnNetExceptionListener = onNetExceptionListener;
+            mErrorListener = errorListener;
       }
 
-      /**
-       * 获取设置的没有该资源处理器
-       */
-      public OnNoResourceListener getOnNoResourceListener ( ) {
-
-            return mOnNoResourceListener;
-      }
-
-      /**
-       * 设置没有该资源处理类
-       *
-       * @param onNoResourceListener 没有该资源处理器
-       */
-      public void setOnNoResourceListener (
-          OnNoResourceListener onNoResourceListener ) {
-
-            mOnNoResourceListener = onNoResourceListener;
-      }
-
-      /**
-       * 使用该类处理网络异常
-       */
-      /**
-       * 当从网络获取资源响应码不在{200~300}之间时的处理
-       */
       protected NetConverter<V, P> getNetConverter ( ) {
 
             return mNetConverter;
@@ -90,29 +61,23 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
       /**
        * 当网络异常时的监听
        */
-      public interface OnNetExceptionListener<K> {
+      public interface OnErrorListener {
 
             /**
              * 当从网络下载的文件转换时的异常{@link NetConverter#onExecuteSuccess(String, Object)}
              *
-             * @param key key key
+             * @param url url
              * @param e exception exception
              */
-            void onConvertException ( K key, Exception e );
+            void onConvertException ( String url, Exception e );
 
             /**
              * 无法连接网络
              *
-             * @param key key key
+             * @param url url
              * @param e exception exception
              */
-            void onConnectException ( K key, IOException e );
-      }
-
-      /**
-       * 当没有资源时的监听
-       */
-      public interface OnNoResourceListener {
+            void onConnectException ( String url, IOException e );
 
             /**
              * 没有成功获取数据的回调
@@ -122,6 +87,6 @@ public abstract class BaseNetLoader<V, P> implements Loader<String, V> {
              * @param key key
              * @param httpCode http code
              */
-            void onExecuteFailed ( String key, int httpCode );
+            void onNullResource ( String key, int httpCode );
       }
 }
