@@ -144,7 +144,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             /* 解析成bitmap */
             if( file != null && file.exists() ) {
 
-                  Bitmap bitmap = mBitmapConverter.from( file, scaleMode, width, height, config );
+                  Bitmap bitmap = mBitmapConverter.from( file, width, height, config );
                   if( bitmap != null ) {
                         saveToMemory( url, bitmap );
                         return bitmap;
@@ -399,7 +399,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             File file = mDowner.getFile( url );
             if( file != null && file.exists() ) {
 
-                  Bitmap bitmap = mBitmapConverter.from( file, scaleMode, width, height, config );
+                  Bitmap bitmap = mBitmapConverter.from( file, width, height, config );
                   if( bitmap != null ) {
                         mMemory.save( url, bitmap );
                         return bitmap;
@@ -479,27 +479,5 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             }
 
             return loadFromFile( url, width, height, config );
-      }
-
-      /**
-       * 加载URL对应的图片使用指定缩放模式缩放至指定尺寸
-       */
-      public Bitmap load (
-          String url, int scaleMode, int width, int height, Config config ) {
-
-            Bitmap bitmap = loadFromMemory( url );
-            if( bitmap != null ) {
-
-                  if( scaleMode != ScaleMode.SAMPLE_MAX && bitmap.getWidth() < width
-                      && bitmap.getHeight() < height ) {
-                        return loadFromFile( url, scaleMode, width, height, config );
-                  }
-                  if( bitmap.getConfig() != config ) {
-                        return loadFromFile( url, scaleMode, width, height, config );
-                  }
-                  return bitmap;
-            }
-
-            return loadFromFile( url, scaleMode, width, height, config );
       }
 }
