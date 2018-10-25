@@ -4,12 +4,10 @@ import android.support.v4.util.ArrayMap;
 import tech.threekilogram.model.container.memory.Memory;
 
 /**
- * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap},所以线程不安全
- * <p>
- * use {@link ArrayMap} to save value in memory
+ * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap},线程不安全
  *
- * @param <K> the key type of value
- * @param <V> the value type
+ * @param <K> key type
+ * @param <V> value type
  *
  * @author liujin
  */

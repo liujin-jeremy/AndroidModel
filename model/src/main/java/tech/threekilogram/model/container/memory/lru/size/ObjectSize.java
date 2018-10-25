@@ -15,15 +15,14 @@ import tech.threekilogram.model.container.memory.lru.MemoryLruCache;
  * @date: 2018-07-30
  * @time: 8:33
  */
-public interface ObjectSize<K, V> {
+public interface ObjectSize<V> {
 
       /**
        * get a size of value
        *
-       * @param k key for value
        * @param v value to get size
        *
        * @return the size of value
        */
-      int sizeOf ( K k, V v );
+      int sizeOf ( V v );
 }

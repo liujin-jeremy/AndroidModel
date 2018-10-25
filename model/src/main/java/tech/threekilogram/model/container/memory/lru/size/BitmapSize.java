@@ -12,10 +12,10 @@ import android.os.Build.VERSION_CODES;
  * @date: 2018-08-02
  * @time: 10:20
  */
-public class BitmapSize<K> implements ObjectSize<K, Bitmap> {
+public class BitmapSize implements ObjectSize<Bitmap> {
 
       @Override
-      public int sizeOf ( K k, Bitmap bitmap ) {
+      public int sizeOf ( Bitmap bitmap ) {
 
             if( VERSION.SDK_INT >= VERSION_CODES.KITKAT ) {
                   return bitmap.getAllocationByteCount();

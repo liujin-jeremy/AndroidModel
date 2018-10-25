@@ -15,6 +15,6 @@ public class MemoryBitmap<K> extends MemoryLruCache<K, Bitmap> {
 
       public MemoryBitmap ( int maxSize ) {
 
-            super( maxSize, new BitmapSize<K>() );
+            super( maxSize, new BitmapSize() );
       }
 }

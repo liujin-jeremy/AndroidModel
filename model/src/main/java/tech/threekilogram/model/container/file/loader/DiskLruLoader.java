@@ -56,13 +56,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       @Override
       public V save ( String key, V value ) {
 
-            String name = encodeToGetName( key );
-
-            V result = null;
-
-            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
-                  result = load( key );
-            }
+            String name = encodeKey( key );
 
             try {
                   mDiskLruCache.remove( name );
@@ -99,8 +93,8 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             } catch(IOException e) {
                   e.printStackTrace();
                   abortEditor( editor );
-                  if( mOnFileConvertExceptionListener != null ) {
-                        mOnFileConvertExceptionListener.onValueToFile( e, key, value );
+                  if( mOnErrorListener != null ) {
+                        mOnErrorListener.onSaveToFile( e, key, value );
                   }
             } finally {
 
@@ -113,32 +107,26 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
                   e.printStackTrace();
             }
 
-            return result;
+            return null;
       }
 
       @Override
       public V remove ( String key ) {
 
-            V result = null;
-
-            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
-                  result = load( key );
-            }
-
             try {
-                  String fileName = encodeToGetName( key );
+                  String fileName = encodeKey( key );
                   mDiskLruCache.remove( fileName );
             } catch(IOException e) {
 
                   e.printStackTrace();
             }
-            return result;
+            return null;
       }
 
       @Override
       public boolean containsOf ( String key ) {
 
-            String name = encodeToGetName( key );
+            String name = encodeKey( key );
 
             try {
 
@@ -168,7 +156,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       @Override
       public V load ( String key ) {
 
-            String stringKey = encodeToGetName( key );
+            String stringKey = encodeKey( key );
 
             /* try to get snapShort */
 
@@ -195,8 +183,8 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
                         e.printStackTrace();
 
-                        if( mOnFileConvertExceptionListener != null ) {
-                              mOnFileConvertExceptionListener.onFileToValue( e, key );
+                        if( mOnErrorListener != null ) {
+                              mOnErrorListener.onLoadFromFile( e, key );
                         }
                   } finally {
 
@@ -227,7 +215,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
             if( file == null ) {
 
-                  String fileName = encodeToGetName( key );
+                  String fileName = encodeKey( key );
                   file = new File( mDir, fileName + ".0" );
                   mFileLoader.put( key, file );
                   return file;

@@ -26,7 +26,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
        */
       public MemoryLruCache ( ) {
 
-            this( 50, new SimpleObjectSize<K, V>() );
+            this( 50, new SimpleObjectSize<V>() );
       }
 
       /**
@@ -34,18 +34,18 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
        */
       public MemoryLruCache ( int maxSize ) {
 
-            this( maxSize, new SimpleObjectSize<K, V>() );
+            this( maxSize, new SimpleObjectSize<V>() );
       }
 
       /**
-       * 创建一个指定最大数量,指定每个数据大小的缓存
+       * 创建一个指定最大数量,指定每个数据大小如何计算的缓存
        *
        * @param maxSize 最大容量
        * @param valueSize 每个数据大小计算
        */
       public MemoryLruCache (
           int maxSize,
-          ObjectSize<K, V> valueSize ) {
+          ObjectSize<V> valueSize ) {
 
             mContainer = new ConstructLruCache( maxSize, valueSize );
       }
@@ -86,11 +86,12 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
             return mContainer.get( key ) != null;
       }
 
-      // ========================= lru cache =========================
-
+      /**
+       * 使用{@link ObjectSize}构造一个{@link LruCache}
+       */
       private class ConstructLruCache extends LruCache<K, V> {
 
-            private ObjectSize<K, V> mValueSize;
+            private ObjectSize<V> mValueSize;
 
             /**
              * @param maxSize for caches that do not override {@link #sizeOf}, this is the
@@ -99,7 +100,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
              *     the
              *     sizes of the entries in this cache.
              */
-            public ConstructLruCache ( int maxSize, ObjectSize<K, V> valueSize ) {
+            public ConstructLruCache ( int maxSize, ObjectSize<V> valueSize ) {
 
                   super( maxSize );
                   mValueSize = valueSize;
@@ -108,7 +109,7 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
             @Override
             protected int sizeOf ( K key, V value ) {
 
-                  return mValueSize.sizeOf( key, value );
+                  return mValueSize.sizeOf( value );
             }
       }
 }

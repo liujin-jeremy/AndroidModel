@@ -1,12 +1,9 @@
 package tech.threekilogram.model.container.file;
 
-import android.support.annotation.IntDef;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import tech.threekilogram.model.container.Container;
 import tech.threekilogram.model.converter.StreamConverter;
 import tech.threekilogram.model.util.encode.EncodeMode;
@@ -23,35 +20,21 @@ import tech.threekilogram.model.util.encode.StringEncoder;
 public abstract class BaseFileLoader<V> implements Container<String, V> {
 
       /**
-       * 保存文件策略,使用该策略会直接覆盖旧的文件,不会读取已经存在的key对应的文件
-       */
-      @SuppressWarnings("WeakerAccess")
-      public static final int SAVE_STRATEGY_COVER      = 0;
-      /**
-       * 保存文件策略,使用该策略会先读取key对应的旧的文件之后再覆盖文件
-       */
-      @SuppressWarnings("WeakerAccess")
-      public static final int SAVE_STRATEGY_RETURN_OLD = 1;
-
-      /**
-       * 该值会影响 {@link #save(Object, Object)} 和 {@link #remove(Object)}的返回值, 如果是{@link
-       * #SAVE_STRATEGY_COVER},那么直接返回null,不回去解析文件为value, 如果是{@link
-       * #SAVE_STRATEGY_RETURN_OLD},那么 {@link #save(Object,
-       * Object)}会去尝试解析file为value,然后返回该value
-       */
-      protected int                               mSaveStrategy = SAVE_STRATEGY_COVER;
-      /**
        * 辅助该类完成stream到{@link V}的转换工作
        */
-      protected StreamConverter<V>                mConverter;
+      protected StreamConverter<V> mConverter;
+
       /**
        * 处理发生的异常
        */
-      protected OnFileConvertExceptionListener<V> mOnFileConvertExceptionListener;
+      protected OnErrorListener<V> mOnErrorListener;
 
       @EncodeMode
       private int mMode = EncodeMode.HASH;
 
+      /**
+       * 设置文件名字转化模式
+       */
       public void setMode ( @EncodeMode int mode ) {
 
             mMode = mode;
@@ -64,62 +47,30 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
       }
 
       /**
-       * 读取保存策略
-       *
-       * @return 策略
-       */
-      public int getSaveStrategy ( ) {
-
-            return mSaveStrategy;
-      }
-
-      /**
-       * 设置当保存文件时,如果文件已经存在怎么处理, 如果是{@link #SAVE_STRATEGY_COVER}那么 {@link
-       * #save(Object, Object)}直接返回null,不会去尝试解析file为value, 如果是{@link #SAVE_STRATEGY_RETURN_OLD}那么
-       * {@link #save(Object, Object)}会去尝试解析file为value,然后返回该值,同时保存新的value到该文件,同样会影响{@link
-       * #remove(Object)}
-       *
-       * @param saveStrategy 策略
-       */
-      public void setSaveStrategy ( @SaveStrategyValue int saveStrategy ) {
-
-            mSaveStrategy = saveStrategy;
-      }
-
-      /**
        * 获取一个合法名字
        */
-      public String encodeToGetName ( String key ) {
+      public String encodeKey ( String key ) {
 
             return StringEncoder.encode( key, mMode );
       }
 
       /**
-       * 保存策略的值类型
-       */
-      @Retention(RetentionPolicy.SOURCE)
-      @SuppressWarnings("WeakerAccess")
-      @IntDef(value = { SAVE_STRATEGY_COVER,
-                        SAVE_STRATEGY_RETURN_OLD })
-      public @interface SaveStrategyValue { }
-
-      /**
        * @return 异常处理类, 或者null
        */
-      public OnFileConvertExceptionListener<V> getOnFileConvertExceptionListener ( ) {
+      public OnErrorListener<V> getOnErrorListener ( ) {
 
-            return mOnFileConvertExceptionListener;
+            return mOnErrorListener;
       }
 
       /**
        * 设置异常处理类
        *
-       * @param onFileConvertExceptionListener 异常处理类
+       * @param onErrorListener 异常处理类
        */
-      public void setOnFileConvertExceptionListener (
-          OnFileConvertExceptionListener<V> onFileConvertExceptionListener ) {
+      public void setOnErrorListener (
+          OnErrorListener<V> onErrorListener ) {
 
-            mOnFileConvertExceptionListener = onFileConvertExceptionListener;
+            mOnErrorListener = onErrorListener;
       }
 
       /**
@@ -139,7 +90,7 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
       /**
        * handle exception
        */
-      public interface OnFileConvertExceptionListener<V> {
+      public interface OnErrorListener<V> {
 
             /**
              * a exception occur at {@link StreamConverter#from(InputStream)} will
@@ -148,7 +99,7 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
              * @param e exception
              * @param key which key occur
              */
-            void onFileToValue ( Exception e, String key );
+            void onLoadFromFile ( Exception e, String key );
 
             /**
              * a exception occur at {@link StreamConverter#to(OutputStream, Object)}
@@ -159,6 +110,6 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
              * @param key key
              * @param value to save
              */
-            void onValueToFile ( IOException e, String key, V value );
+            void onSaveToFile ( IOException e, String key, V value );
       }
 }

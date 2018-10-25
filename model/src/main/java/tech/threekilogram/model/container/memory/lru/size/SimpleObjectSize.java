@@ -8,10 +8,10 @@ package tech.threekilogram.model.container.memory.lru.size;
  * @date: 2018-07-30
  * @time: 8:35
  */
-public class SimpleObjectSize<K, V> implements ObjectSize<K, V> {
+public class SimpleObjectSize<V> implements ObjectSize<V> {
 
       @Override
-      public int sizeOf ( K key, V value ) {
+      public int sizeOf ( V value ) {
 
             return 1;
       }

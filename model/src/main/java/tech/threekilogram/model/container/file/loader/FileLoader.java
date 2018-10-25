@@ -42,23 +42,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       @Override
       public V save ( String key, V value ) {
 
-            /* get file to this key */
-
-            V result = null;
-
-            /* to decide how to to a value to file */
-
-            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
-
-                  result = load( key );
-
-                  if( result != null ) {
-                        boolean delete = getFile( key ).delete();
-                  }
-            }
-
             /* save value to file */
-
             FileOutputStream stream = null;
 
             try {
@@ -72,8 +56,8 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
                   e.printStackTrace();
 
-                  if( mOnFileConvertExceptionListener != null ) {
-                        mOnFileConvertExceptionListener.onValueToFile( e, key, value );
+                  if( mOnErrorListener != null ) {
+                        mOnErrorListener.onSaveToFile( e, key, value );
                   }
             } finally {
 
@@ -82,21 +66,14 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
             /* return old value if should return */
 
-            return result;
+            return null;
       }
 
       @Override
       public V remove ( String key ) {
 
-            V result = null;
-
-            if( mSaveStrategy == SAVE_STRATEGY_RETURN_OLD ) {
-
-                  result = load( key );
-            }
-
             boolean delete = getFile( key ).delete();
-            return result;
+            return null;
       }
 
       @Override
@@ -126,8 +103,8 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
                         e.printStackTrace();
 
-                        if( mOnFileConvertExceptionListener != null ) {
-                              mOnFileConvertExceptionListener.onFileToValue( e, key );
+                        if( mOnErrorListener != null ) {
+                              mOnErrorListener.onLoadFromFile( e, key );
                         }
                   } finally {
 
@@ -150,7 +127,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
             if( file == null ) {
 
-                  String name = encodeToGetName( key );
+                  String name = encodeKey( key );
                   file = new File( mDir, name );
                   mFileLoader.put( key, file );
                   return file;
