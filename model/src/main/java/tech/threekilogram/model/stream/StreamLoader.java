@@ -9,14 +9,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import tech.threekilogram.model.bitmap.BitmapConverter;
-import tech.threekilogram.model.file.converter.FileStringConverter;
-import tech.threekilogram.model.json.ObjectLoader;
-import tech.threekilogram.model.net.okhttp.OkHttpLoader;
-import tech.threekilogram.model.net.responsebody.BodyStreamConverter;
-import tech.threekilogram.model.net.retrofit.down.Downer;
-import tech.threekilogram.model.net.retrofit.down.Downer.OnDownloadUpdateListener;
-import tech.threekilogram.model.net.retrofit.down.Downer.OnErrorListener;
+import tech.threekilogram.model.cache.json.ObjectLoader;
+import tech.threekilogram.model.converter.BitmapConverter;
+import tech.threekilogram.model.converter.SimpleConverter;
+import tech.threekilogram.model.converter.StringConverter;
+import tech.threekilogram.model.net.Downer;
+import tech.threekilogram.model.net.Downer.OnDownloadUpdateListener;
+import tech.threekilogram.model.net.Downer.OnErrorListener;
+import tech.threekilogram.model.net.OkHttpLoader;
 
 /**
  * 从网络
@@ -29,17 +29,17 @@ public class StreamLoader {
        * 网络获取stream
        */
       private static OkHttpLoader<InputStream> sOkHttpLoader = new OkHttpLoader<>(
-          new BodyStreamConverter()
+          new SimpleConverter()
       );
 
       /**
        * 辅助从文件读取保存string
        */
-      private static FileStringConverter sFileStringConverter;
+      private static StringConverter sConverter;
       /**
        * 辅助读取保存bitmap数据流
        */
-      private static BitmapConverter     sBitmapConverter;
+      private static BitmapConverter sBitmapConverter;
 
       private StreamLoader ( ) { }
 
@@ -52,11 +52,11 @@ public class StreamLoader {
        */
       public static String loadStringFromNet ( String url ) {
 
-            if( sFileStringConverter == null ) {
-                  sFileStringConverter = new FileStringConverter();
+            if( sConverter == null ) {
+                  sConverter = new StringConverter();
             }
             InputStream stream = sOkHttpLoader.load( url );
-            return sFileStringConverter.from( stream );
+            return sConverter.from( stream );
       }
 
       /**
@@ -67,13 +67,13 @@ public class StreamLoader {
        */
       public static void saveStringToFile ( String data, File file ) {
 
-            if( sFileStringConverter == null ) {
-                  sFileStringConverter = new FileStringConverter();
+            if( sConverter == null ) {
+                  sConverter = new StringConverter();
             }
 
             try {
                   FileOutputStream outputStream = new FileOutputStream( file );
-                  sFileStringConverter.to( outputStream, data );
+                  sConverter.to( outputStream, data );
             } catch(FileNotFoundException e) {
                   e.printStackTrace();
             }
@@ -88,15 +88,15 @@ public class StreamLoader {
        */
       public static String loadStringFromFile ( File file ) {
 
-            if( sFileStringConverter == null ) {
-                  sFileStringConverter = new FileStringConverter();
+            if( sConverter == null ) {
+                  sConverter = new StringConverter();
             }
 
             if( file.exists() && file.isFile() ) {
 
                   try {
                         FileInputStream inputStream = new FileInputStream( file );
-                        return sFileStringConverter.from( inputStream );
+                        return sConverter.from( inputStream );
                   } catch(Exception e) {
                         e.printStackTrace();
                   }

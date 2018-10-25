@@ -43,54 +43,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected ( @NonNull MenuItem item ) {
 
                   switch( item.getItemId() ) {
-
-                        case R.id.menu00:
-                              changeFragment( TestMemoryListFragment.newInstance() );
-                              break;
-
-                        case R.id.menu01:
-                              changeFragment( TestMemoryBitmapFragment.newInstance() );
-                              break;
-
-                        case R.id.menu02:
-                              changeFragment( TestFileLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu03:
-                              changeFragment( TestDiskLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu04:
-                              changeFragment( TestDownFragment.newInstance() );
-                              break;
-
-                        case R.id.menu05:
-                              changeFragment( TestRetrofitLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu11:
-                              changeFragment( TestOkHttpLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu06:
-                              changeFragment( TestBitmapLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu07:
-                              changeFragment( TestJsonLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu08:
-                              changeFragment( TestDownLoadFragment.newInstance() );
-                              break;
-
-                        case R.id.menu09:
-                              changeFragment( TestObjectLoaderFragment.newInstance() );
-                              break;
-
-                        case R.id.menu10:
-                              changeFragment( TestStreamStringLoader.newInstance() );
-                              break;
                         default:
                               break;
                   }
