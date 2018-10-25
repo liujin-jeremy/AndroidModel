@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import tech.threekilogram.androidmodellib.test.MemoryMapFragment;
 
 /**
  * @author liujin
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected ( @NonNull MenuItem item ) {
 
                   switch( item.getItemId() ) {
+                        case R.id.menu00:
+                              changeFragment( MemoryMapFragment.newInstance() );
+                              break;
                         default:
                               break;
                   }

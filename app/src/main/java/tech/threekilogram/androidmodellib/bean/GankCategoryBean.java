@@ -1,4 +1,4 @@
-package tech.threekilogram.androidmodellib;
+package tech.threekilogram.androidmodellib.bean;
 
 import java.util.List;
 

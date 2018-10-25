@@ -1,4 +1,4 @@
-package tech.threekilogram.androidmodellib;
+package tech.threekilogram.androidmodellib.util;
 
 import java.util.Locale;
 

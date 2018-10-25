@@ -3,9 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
+    android:layout_height="match_parent">
 
       <android.support.constraint.Guideline
           android:id="@+id/guideline"
@@ -18,10 +16,15 @@
           android:id="@+id/editKey"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginLeft="8dp"
+          android:layout_marginRight="8dp"
           android:ems="10"
           android:hint="key"
-          android:inputType="textPersonName"
+          android:inputType="text"
+          android:imeOptions="actionNext"
           app:layout_constraintEnd_toStartOf="@+id/guideline"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"/>
@@ -30,82 +33,73 @@
           android:id="@+id/editValue"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:ems="10"
-          android:hint="value"
-          android:inputType="textPersonName"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.0"
-          app:layout_constraintStart_toStartOf="@+id/guideline"
-          app:layout_constraintTop_toTopOf="parent"/>
-      <Button
-          android:id="@+id/save"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="save"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/editKey"/>
-      <Button
-          android:id="@+id/delete"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="delete"
-          app:layout_constraintStart_toEndOf="@+id/save"
-          app:layout_constraintTop_toTopOf="@+id/save"/>
-      <Button
-          android:id="@+id/containsOf"
-          android:layout_width="94dp"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="containsOf"
-          app:layout_constraintStart_toEndOf="@+id/delete"
-          app:layout_constraintTop_toTopOf="@+id/delete"/>
-      <TextView
-          android:id="@+id/messageText"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginStart="8dp"
           android:layout_marginEnd="8dp"
           android:layout_marginLeft="8dp"
           android:layout_marginRight="8dp"
+          android:ems="10"
+          android:hint="value"
+          android:imeOptions="actionDone"
+          android:inputType="text"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@+id/guideline"
+          app:layout_constraintTop_toTopOf="parent"/>
+      <Button
+          android:id="@+id/add"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="add"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/editKey"/>
+      <Button
+          android:id="@+id/get"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="get"
+          app:layout_constraintStart_toEndOf="@+id/add"
+          app:layout_constraintTop_toBottomOf="@+id/editKey"/>
+      <Button
+          android:id="@+id/delete"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="delete"
+          app:layout_constraintStart_toEndOf="@+id/get"
+          app:layout_constraintTop_toBottomOf="@+id/editKey"/>
+      <Button
+          android:id="@+id/all"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginLeft="8dp"
+          android:text="all"
+          app:layout_constraintStart_toEndOf="@+id/delete"
+          app:layout_constraintTop_toBottomOf="@+id/editValue"/>
+      <TextView
+          android:id="@+id/textView"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginLeft="8dp"
+          android:layout_marginRight="8dp"
           android:text="TextView"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/change"/>
-      <Button
-          android:id="@+id/load"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="load"
-          app:layout_constraintStart_toEndOf="@+id/containsOf"
-          app:layout_constraintTop_toTopOf="@+id/containsOf"/>
-      <Button
-          android:id="@+id/change"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="change"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/save"/>
-      <Button
-          android:id="@+id/size"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginLeft="8dp"
-          android:text="size"
-          app:layout_constraintStart_toEndOf="@+id/change"
-          app:layout_constraintTop_toBottomOf="@+id/delete"/>
+          app:layout_constraintTop_toBottomOf="@+id/all"/>
+
+
 </android.support.constraint.ConstraintLayout>

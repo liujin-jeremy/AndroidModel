@@ -3,50 +3,6 @@
 
       <item
           android:id="@+id/menu00"
-          android:title="testMemoryList"/>
-
-      <item
-          android:id="@+id/menu01"
-          android:title="testMemoryBitmap"/>
-
-      <item
-          android:id="@+id/menu02"
-          android:title="testFileLoader"/>
-
-      <item
-          android:id="@+id/menu03"
-          android:title="testDiskLoader"/>
-
-      <item
-          android:id="@+id/menu04"
-          android:title="testDownLoader"/>
-
-      <item
-          android:id="@+id/menu05"
-          android:title="testRetrofitLoader"/>
-
-      <item
-          android:id="@+id/menu11"
-          android:title="testOkhttpLoader"/>
-
-      <item
-          android:id="@+id/menu06"
-          android:title="testBitmapLoader"/>
-
-      <item
-          android:id="@+id/menu07"
-          android:title="testJsonLoader"/>
-
-      <item
-          android:id="@+id/menu08"
-          android:title="testDownLoader"/>
-
-      <item
-          android:id="@+id/menu09"
-          android:title="testObjectLoader"/>
-
-      <item
-          android:id="@+id/menu10"
-          android:title="testStreamStringLoader"/>
+          android:title="MemoryMap"/>
 
 </menu>
