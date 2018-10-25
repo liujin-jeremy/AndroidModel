@@ -1,5 +1,7 @@
 package tech.threekilogram.model.util.encode;
 
+import java.util.Locale;
+
 /**
  * @author: Liujin
  * @version: V1.0
@@ -26,8 +28,6 @@ public class StringHash {
                         h = 31 * h + source.charAt( i );
                   }
             }
-            return Integer.toHexString( len )
-                + Integer.toHexString( count )
-                + Long.toHexString( h );
+            return String.format( Locale.ENGLISH, "%d_%d_%d", len, count, h );
       }
 }

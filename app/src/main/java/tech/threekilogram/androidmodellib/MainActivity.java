@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import tech.threekilogram.androidmodellib.test.FileFragment;
 import tech.threekilogram.androidmodellib.test.MemoryBitmapFragment;
 import tech.threekilogram.androidmodellib.test.MemoryMapFragment;
+import tech.threekilogram.androidmodellib.util.FileManager;
 import tech.threekilogram.androidmodellib.util.ScreenSize;
 
 /**
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             super.onCreate( savedInstanceState );
             setContentView( R.layout.activity_main );
             ScreenSize.init( this );
+            FileManager.init( this );
             initView();
       }
 
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
                               break;
                         case R.id.menu01:
                               changeFragment( MemoryBitmapFragment.newInstance() );
+                              break;
+                        case R.id.menu02:
+                              changeFragment( FileFragment.newInstance() );
                               break;
                         default:
                               break;

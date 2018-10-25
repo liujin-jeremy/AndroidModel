@@ -9,4 +9,8 @@
           android:id="@+id/menu01"
           android:title="MemoryBitmap"/>
 
+      <item
+          android:id="@+id/menu02"
+          android:title="FileLoader"/>
+
 </menu>

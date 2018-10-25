@@ -23,14 +23,12 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
        * 辅助该类完成stream到{@link V}的转换工作
        */
       protected StreamConverter<V> mConverter;
-
       /**
        * 处理发生的异常
        */
       protected OnErrorListener<V> mOnErrorListener;
-
       @EncodeMode
-      private int mMode = EncodeMode.HASH;
+      private   int                mMode = EncodeMode.HASH;
 
       /**
        * 设置文件名字转化模式
