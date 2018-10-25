@@ -1,4 +1,4 @@
-package tech.threekilogram.model.container.file.loader;
+package tech.threekilogram.model.file.loader;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.jakewharton.disklrucache.DiskLruCache.Editor;
@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.model.container.file.BaseFileLoader;
 import tech.threekilogram.model.converter.StreamConverter;
+import tech.threekilogram.model.file.BaseFileLoader;
 import tech.threekilogram.model.util.io.Close;
 import tech.threekilogram.model.util.io.FileCache;
 
@@ -37,24 +37,20 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       /**
        * @param folder 缓存文件夹
        * @param maxSize 缓存文件最大大小
-       * @param converter 辅助完成转换工作
        *
        * @throws IOException 创建{@link DiskLruCache}时异常
        */
       public DiskLruLoader (
           File folder,
-          long maxSize,
-          StreamConverter<V> converter ) throws IOException {
+          long maxSize ) throws IOException {
             /* create DiskLruCache */
 
             mDir = folder;
             mDiskLruCache = DiskLruCache.open( folder, 1, 1, maxSize );
-
-            mConverter = converter;
       }
 
       @Override
-      public V save ( String key, V value ) {
+      public void save ( String key, V value, StreamConverter<V> converter ) {
 
             String name = encodeKey( key );
 
@@ -71,8 +67,9 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             } catch(IOException e) {
                   e.printStackTrace();
             }
+
             if( editor == null ) {
-                  return null;
+                  return;
             }
 
             OutputStream outputStream = null;
@@ -82,12 +79,13 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             } catch(IOException e) {
                   e.printStackTrace();
             }
-            if( outputStream == null ) {
-                  return null;
-            }
-            try {
 
-                  mConverter.to( outputStream, value );
+            if( outputStream == null ) {
+                  return;
+            }
+
+            try {
+                  converter.to( outputStream, value );
                   Close.close( outputStream );
                   editor.commit();
             } catch(IOException e) {
@@ -106,12 +104,10 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             } catch(IOException e) {
                   e.printStackTrace();
             }
-
-            return null;
       }
 
       @Override
-      public V remove ( String key ) {
+      public void remove ( String key ) {
 
             try {
                   String fileName = encodeKey( key );
@@ -120,7 +116,6 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
                   e.printStackTrace();
             }
-            return null;
       }
 
       @Override
@@ -154,7 +149,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public V load ( String key ) {
+      public V load ( String key, StreamConverter<V> converter ) {
 
             String stringKey = encodeKey( key );
 
@@ -178,7 +173,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
                   try {
 
-                        return mConverter.from( inputStream );
+                        return converter.from( inputStream );
                   } catch(Exception e) {
 
                         e.printStackTrace();

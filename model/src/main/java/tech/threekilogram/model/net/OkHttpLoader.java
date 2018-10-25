@@ -22,15 +22,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
        */
       protected OkHttpClient mOkHttpClient = NetClient.OKHTTP;
 
-      /**
-       * 构建一个加载器
-       *
-       * @param netConverter 辅助完成网络响应到值的转换
-       */
-      public OkHttpLoader ( StreamConverter<V> netConverter ) {
-
-            super( netConverter );
-      }
+      protected OkHttpLoader ( ) { }
 
       public OkHttpClient getOkHttpClient ( ) {
 
@@ -43,7 +35,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
       }
 
       @Override
-      public V load ( String url ) {
+      public V load ( String url, StreamConverter<V> converter ) {
 
             /* 执行call */
             try {
@@ -61,7 +53,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
 
                               /* 转换数据 */
                               assert responseBody != null;
-                              return mConverter.from( responseBody.byteStream() );
+                              return converter.from( responseBody.byteStream() );
                         } catch(Exception e) {
 
                               e.printStackTrace();

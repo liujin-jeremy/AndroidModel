@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import tech.threekilogram.androidmodellib.R;
-import tech.threekilogram.model.container.memory.map.MemoryMap;
+import tech.threekilogram.model.memory.map.MemoryMap;
 
 /**
  * @author Liujin 2018-10-25:14:31
@@ -97,8 +97,8 @@ public class MemoryMapFragment extends Fragment implements OnClickListener {
                         setText( "add : " + key + " : " + value );
                         break;
                   case R.id.get:
-                        String load = mMemoryMap.load( key );
-                        setText( "load " + key + " : " + load );
+                        String load = mMemoryMap.get( key );
+                        setText( "get " + key + " : " + load );
                         break;
                   case R.id.delete:
                         String remove = mMemoryMap.remove( key );

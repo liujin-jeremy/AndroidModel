@@ -31,11 +31,6 @@ public class RetrofitLoader<V> extends BaseNetLoader<V> {
        */
       protected StreamService mService;
 
-      public RetrofitLoader ( StreamConverter<V> netConverter ) {
-
-            super( netConverter );
-      }
-
       public Retrofit getRetrofit ( ) {
 
             return mRetrofit;
@@ -47,7 +42,7 @@ public class RetrofitLoader<V> extends BaseNetLoader<V> {
       }
 
       @Override
-      public V load ( String url ) {
+      public V load ( String url, StreamConverter<V> converter ) {
 
 
             /* 制造一个call对象 */
@@ -70,7 +65,7 @@ public class RetrofitLoader<V> extends BaseNetLoader<V> {
 
                               /* 转换数据 */
                               assert responseBody != null;
-                              return mConverter.from( responseBody.byteStream() );
+                              return converter.from( responseBody.byteStream() );
                         } catch(Exception e) {
 
                               e.printStackTrace();

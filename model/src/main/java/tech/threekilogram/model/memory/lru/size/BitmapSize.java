@@ -1,4 +1,4 @@
-package tech.threekilogram.model.container.memory.lru.size;
+package tech.threekilogram.model.memory.lru.size;
 
 import android.graphics.Bitmap;
 import android.os.Build.VERSION;

@@ -2,7 +2,7 @@ package tech.threekilogram.model.net;
 
 import java.io.IOException;
 import java.io.InputStream;
-import tech.threekilogram.model.Loader;
+import tech.threekilogram.model.ConverterLoader;
 import tech.threekilogram.model.converter.StreamConverter;
 
 /**
@@ -12,26 +12,12 @@ import tech.threekilogram.model.converter.StreamConverter;
  *
  * @author liujin
  */
-public abstract class BaseNetLoader<V> implements Loader<String, V> {
+public abstract class BaseNetLoader<V> implements ConverterLoader<String, V> {
 
       /**
        * 异常处理助手
        */
-      protected OnErrorListener    mErrorListener;
-      /**
-       * 辅助完成响应到value的转换
-       */
-      protected StreamConverter<V> mConverter;
-
-      /**
-       * 构建一个加载器
-       *
-       * @param converter 辅助完成网络响应到值的转换
-       */
-      protected BaseNetLoader ( StreamConverter<V> converter ) {
-
-            mConverter = converter;
-      }
+      protected OnErrorListener mErrorListener;
 
       /**
        * 获取设置的异常处理类
@@ -80,9 +66,9 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
              * <p>
              * when cant get a correct response {response not in 200~300} return failed
              *
-             * @param key key
+             * @param url key
              * @param httpCode http code
              */
-            void onNullResource ( String key, int httpCode );
+            void onNullResource ( String url, int httpCode );
       }
 }

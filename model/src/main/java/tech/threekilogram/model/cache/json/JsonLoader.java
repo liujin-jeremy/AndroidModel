@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import tech.threekilogram.model.cache.CacheLoader;
-import tech.threekilogram.model.container.file.BaseFileLoader;
-import tech.threekilogram.model.container.file.loader.DiskLruLoader;
-import tech.threekilogram.model.container.file.loader.FileLoader;
-import tech.threekilogram.model.container.memory.Memory;
-import tech.threekilogram.model.container.memory.lru.MemoryLruCache;
-import tech.threekilogram.model.container.memory.map.MemoryMap;
 import tech.threekilogram.model.converter.GsonConverter;
+import tech.threekilogram.model.file.BaseFileLoader;
+import tech.threekilogram.model.file.loader.DiskLruLoader;
+import tech.threekilogram.model.file.loader.FileLoader;
+import tech.threekilogram.model.memory.Memory;
+import tech.threekilogram.model.memory.lru.MemoryLruCache;
+import tech.threekilogram.model.memory.map.MemoryMap;
 import tech.threekilogram.model.net.Downer;
 import tech.threekilogram.model.net.OkHttpLoader;
 
@@ -226,7 +226,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V loadFromMemory ( String url ) {
 
-            return mMemoryContainer.load( url );
+            return mMemoryContainer.get( url );
       }
 
       @Override

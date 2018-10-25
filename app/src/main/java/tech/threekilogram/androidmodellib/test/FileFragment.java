@@ -14,10 +14,10 @@ import java.io.File;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
 import tech.threekilogram.androidmodellib.util.FileManager;
-import tech.threekilogram.model.container.file.BaseFileLoader;
-import tech.threekilogram.model.container.file.loader.FileLoader;
 import tech.threekilogram.model.converter.GsonConverter;
 import tech.threekilogram.model.converter.StringConverter;
+import tech.threekilogram.model.file.BaseFileLoader;
+import tech.threekilogram.model.file.loader.FileLoader;
 import tech.threekilogram.model.util.instance.GsonClient;
 
 /**

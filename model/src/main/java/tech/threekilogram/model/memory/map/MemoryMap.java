@@ -1,7 +1,7 @@
-package tech.threekilogram.model.container.memory.map;
+package tech.threekilogram.model.memory.map;
 
 import android.support.v4.util.ArrayMap;
-import tech.threekilogram.model.container.memory.Memory;
+import tech.threekilogram.model.memory.Memory;
 
 /**
  * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap},线程不安全
@@ -40,19 +40,19 @@ public class MemoryMap<K, V> implements Memory<K, V> {
       }
 
       @Override
-      public V save ( K key, V value ) {
+      public void save ( K key, V value ) {
 
-            return mContainer.put( key, value );
+            mContainer.put( key, value );
       }
 
       @Override
-      public V remove ( K key ) {
+      public void remove ( K key ) {
 
-            return mContainer.remove( key );
+            mContainer.remove( key );
       }
 
       @Override
-      public V load ( K key ) {
+      public V get ( K key ) {
 
             return mContainer.get( key );
       }

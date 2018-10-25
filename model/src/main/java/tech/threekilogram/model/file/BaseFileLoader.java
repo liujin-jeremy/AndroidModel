@@ -1,10 +1,11 @@
-package tech.threekilogram.model.container.file;
+package tech.threekilogram.model.file;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.model.container.Container;
+import tech.threekilogram.model.Container;
+import tech.threekilogram.model.ConverterLoader;
 import tech.threekilogram.model.converter.StreamConverter;
 import tech.threekilogram.model.util.encode.EncodeMode;
 import tech.threekilogram.model.util.encode.StringEncoder;
@@ -17,12 +18,8 @@ import tech.threekilogram.model.util.encode.StringEncoder;
  * @date: 2018-08-01
  * @time: 12:01
  */
-public abstract class BaseFileLoader<V> implements Container<String, V> {
+public abstract class BaseFileLoader<V> implements ConverterLoader<String, V>, Container<String> {
 
-      /**
-       * 辅助该类完成stream到{@link V}的转换工作
-       */
-      protected StreamConverter<V> mConverter;
       /**
        * 处理发生的异常
        */
@@ -81,9 +78,13 @@ public abstract class BaseFileLoader<V> implements Container<String, V> {
       public abstract File getFile ( String key );
 
       /**
-       * 清空缓存文件
+       * 保存一个值
+       *
+       * @param key key
+       * @param value value
+       * @param converter converter
        */
-      public abstract void clear ( );
+      public abstract void save ( String key, V value, StreamConverter<V> converter );
 
       /**
        * handle exception

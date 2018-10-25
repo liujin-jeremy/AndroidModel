@@ -1,9 +1,9 @@
-package tech.threekilogram.model.container.memory.lru;
+package tech.threekilogram.model.memory.lru;
 
 import android.support.v4.util.LruCache;
-import tech.threekilogram.model.container.memory.Memory;
-import tech.threekilogram.model.container.memory.lru.size.ObjectSize;
-import tech.threekilogram.model.container.memory.lru.size.SimpleObjectSize;
+import tech.threekilogram.model.memory.Memory;
+import tech.threekilogram.model.memory.lru.size.ObjectSize;
+import tech.threekilogram.model.memory.lru.size.SimpleObjectSize;
 
 /**
  * 使用{@link LruCache}在内存中保存数据
@@ -63,21 +63,21 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
       }
 
       @Override
-      public V save ( K key, V v ) {
+      public void save ( K key, V v ) {
 
-            return mContainer.put( key, v );
+            mContainer.put( key, v );
       }
 
       @Override
-      public V load ( K key ) {
+      public V get ( K key ) {
 
             return mContainer.get( key );
       }
 
       @Override
-      public V remove ( K key ) {
+      public void remove ( K key ) {
 
-            return mContainer.remove( key );
+            mContainer.remove( key );
       }
 
       @Override

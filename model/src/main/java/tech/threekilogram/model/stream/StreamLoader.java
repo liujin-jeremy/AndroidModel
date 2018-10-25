@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import tech.threekilogram.model.cache.json.ObjectLoader;
 import tech.threekilogram.model.converter.BitmapConverter;
-import tech.threekilogram.model.converter.SimpleConverter;
+import tech.threekilogram.model.converter.InputStreamConverter;
 import tech.threekilogram.model.converter.StringConverter;
 import tech.threekilogram.model.net.Downer;
 import tech.threekilogram.model.net.Downer.OnDownloadUpdateListener;
@@ -29,7 +29,7 @@ public class StreamLoader {
        * 网络获取stream
        */
       private static OkHttpLoader<InputStream> sOkHttpLoader = new OkHttpLoader<>(
-          new SimpleConverter()
+          new InputStreamConverter()
       );
 
       /**

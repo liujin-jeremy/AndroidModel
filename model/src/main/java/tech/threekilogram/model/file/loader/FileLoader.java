@@ -1,11 +1,11 @@
-package tech.threekilogram.model.container.file.loader;
+package tech.threekilogram.model.file.loader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import tech.threekilogram.model.container.file.BaseFileLoader;
 import tech.threekilogram.model.converter.StreamConverter;
+import tech.threekilogram.model.file.BaseFileLoader;
 import tech.threekilogram.model.util.io.Close;
 import tech.threekilogram.model.util.io.FileCache;
 import tech.threekilogram.model.util.io.FileClear;
@@ -31,16 +31,14 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
       /**
        * @param dir 保存文件的文件夹
-       * @param converter 用于转换{@link java.io.File}为{@link V}类型的实例
        */
-      public FileLoader ( File dir, StreamConverter<V> converter ) {
+      public FileLoader ( File dir ) {
 
             mDir = dir;
-            mConverter = converter;
       }
 
       @Override
-      public V save ( String key, V value ) {
+      public void save ( String key, V value, StreamConverter<V> converter ) {
 
             /* save value to file */
             FileOutputStream stream = null;
@@ -49,7 +47,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
                   File file = getFile( key );
                   stream = new FileOutputStream( file );
-                  mConverter.to( stream, value );
+                  converter.to( stream, value );
             } catch(IOException e) {
 
                   /* maybe can't save */
@@ -63,29 +61,18 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
                   Close.close( stream );
             }
-
-            /* return old value if should return */
-
-            return null;
       }
 
       @Override
-      public V remove ( String key ) {
+      public void remove ( String key ) {
 
             boolean delete = getFile( key ).delete();
-            return null;
       }
 
       @Override
-      public boolean containsOf ( String key ) {
+      public V load ( String s, StreamConverter<V> converter ) {
 
-            return getFile( key ).exists();
-      }
-
-      @Override
-      public V load ( String key ) {
-
-            File file = getFile( key );
+            File file = getFile( s );
             V result = null;
 
             if( file.exists() ) {
@@ -96,7 +83,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         /* convert the file to value */
 
                         stream = new FileInputStream( file );
-                        result = mConverter.from( stream );
+                        result = converter.from( stream );
                   } catch(Exception e) {
 
                         /* maybe can't convert */
@@ -104,7 +91,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         e.printStackTrace();
 
                         if( mOnErrorListener != null ) {
-                              mOnErrorListener.onLoadFromFile( e, key );
+                              mOnErrorListener.onLoadFromFile( e, s );
                         }
                   } finally {
 
@@ -113,6 +100,12 @@ public class FileLoader<V> extends BaseFileLoader<V> {
             }
 
             return result;
+      }
+
+      @Override
+      public boolean containsOf ( String key ) {
+
+            return getFile( key ).exists();
       }
 
       /**

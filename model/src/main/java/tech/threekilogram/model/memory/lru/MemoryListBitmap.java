@@ -1,7 +1,7 @@
-package tech.threekilogram.model.container.memory.lru;
+package tech.threekilogram.model.memory.lru;
 
 import android.graphics.Bitmap;
-import tech.threekilogram.model.container.memory.lru.size.BitmapSize;
+import tech.threekilogram.model.memory.lru.size.BitmapSize;
 
 /**
  * {@link MemoryLruCache}的bitmap实现版本,用于在内存中缓存bitmap,当内存中bitmap达到一个阈值时,会清理掉一部分
@@ -11,9 +11,9 @@ import tech.threekilogram.model.container.memory.lru.size.BitmapSize;
  * @date: 2018-08-15
  * @time: 18:13
  */
-public class MemoryBitmap<K> extends MemoryLruCache<K, Bitmap> {
+public class MemoryListBitmap extends MemoryLruCache<Integer, Bitmap> {
 
-      public MemoryBitmap ( int maxSize ) {
+      public MemoryListBitmap ( int maxSize ) {
 
             super( maxSize, new BitmapSize() );
       }

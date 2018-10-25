@@ -5,8 +5,8 @@ import android.graphics.Bitmap.Config;
 import java.io.File;
 import java.io.IOException;
 import tech.threekilogram.model.cache.CacheLoader;
-import tech.threekilogram.model.container.memory.lru.MemoryBitmap;
 import tech.threekilogram.model.converter.BitmapConverter;
+import tech.threekilogram.model.memory.lru.MemoryBitmap;
 
 /**
  * 该类提供bitmap三级缓存
@@ -70,7 +70,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       public Bitmap loadFromNet ( String url ) {
 
             /* 先下载到本地 */
-            File file = null; //= mDowner.load( url );
+            File file = null; //= mDowner.get( url );
             /* 解析成bitmap */
             if( file != null && file.exists() ) {
 
@@ -165,7 +165,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             if( file != null && file.exists() ) {
                   return;
             }
-            //mDowner.load( url );
+            //mDowner.get( url );
       }
 
       /**
@@ -236,7 +236,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       @Override
       public Bitmap loadFromMemory ( String url ) {
 
-            return mMemory.load( url );
+            return mMemory.get( url );
       }
 
       @Override
