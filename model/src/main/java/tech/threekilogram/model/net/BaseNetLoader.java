@@ -1,6 +1,6 @@
 package tech.threekilogram.model.net;
 
-import tech.threekilogram.model.Loader;
+import tech.threekilogram.model.ConverterLoader;
 import tech.threekilogram.model.converter.StreamConverter;
 
 /**
@@ -10,7 +10,7 @@ import tech.threekilogram.model.converter.StreamConverter;
  *
  * @author liujin
  */
-public abstract class BaseNetLoader<V> implements Loader<String, V> {
+public abstract class BaseNetLoader<V> implements ConverterLoader<String, V> {
 
       protected StreamConverter<V> mConverter;
       /**
@@ -22,6 +22,12 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
 
             mConverter = converter;
       }
+
+      @Override
+      public abstract V load ( String url );
+
+      @Override
+      public abstract V load ( String url, StreamConverter<V> converter );
 
       /**
        * 获取设置的异常处理类

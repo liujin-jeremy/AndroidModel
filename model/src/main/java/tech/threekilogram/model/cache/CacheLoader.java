@@ -10,7 +10,7 @@ import java.io.File;
 public interface CacheLoader<V> {
 
       /**
-       * 从网络加载,如果加载成功需要缓存到内存中{@link #saveToMemory(String, Object)}
+       * 从网络加载,如果加载成功,缓存到内存中{@link #saveToMemory(String, Object)}
        *
        * @param url url
        *

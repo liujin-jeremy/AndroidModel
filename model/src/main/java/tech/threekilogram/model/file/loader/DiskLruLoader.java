@@ -50,9 +50,16 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public void save ( String key, V value ) {
+      public void save ( String url, V value ) {
 
-            String name = encodeKey( key );
+            save( url, value, mConverter );
+      }
+
+      @Override
+      public void save (
+          String url, V value, StreamConverter<V> converter ) {
+
+            String name = encodeKey( url );
 
             try {
                   mDiskLruCache.remove( name );
@@ -85,14 +92,14 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             }
 
             try {
-                  mConverter.to( outputStream, value );
+                  converter.to( outputStream, value );
                   Close.close( outputStream );
                   editor.commit();
             } catch(IOException e) {
                   e.printStackTrace();
                   abortEditor( editor );
                   if( mOnErrorListener != null ) {
-                        mOnErrorListener.onSaveToFile( e, key, value );
+                        mOnErrorListener.onSaveToFile( e, url, value );
                   }
             } finally {
 
@@ -107,10 +114,10 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public void remove ( String key ) {
+      public void remove ( String url ) {
 
             try {
-                  String fileName = encodeKey( key );
+                  String fileName = encodeKey( url );
                   mDiskLruCache.remove( fileName );
             } catch(IOException e) {
 
@@ -119,9 +126,9 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public boolean containsOf ( String key ) {
+      public boolean containsOf ( String url ) {
 
-            String name = encodeKey( key );
+            String name = encodeKey( url );
 
             try {
 
@@ -149,9 +156,15 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public V load ( String key ) {
+      public V load ( String url ) {
 
-            String stringKey = encodeKey( key );
+            return load( url, mConverter );
+      }
+
+      @Override
+      public V load ( String url, StreamConverter<V> converter ) {
+
+            String stringKey = encodeKey( url );
 
             /* try to get snapShort */
 
@@ -173,13 +186,13 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
                   try {
 
-                        return mConverter.from( inputStream );
+                        return converter.from( inputStream );
                   } catch(Exception e) {
 
                         e.printStackTrace();
 
                         if( mOnErrorListener != null ) {
-                              mOnErrorListener.onLoadFromFile( e, key );
+                              mOnErrorListener.onLoadFromFile( e, url );
                         }
                   } finally {
 
@@ -204,15 +217,15 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public File getFile ( String key ) {
+      public File getFile ( String url ) {
 
-            File file = mFileLoader.get( key );
+            File file = mFileLoader.get( url );
 
             if( file == null ) {
 
-                  String fileName = encodeKey( key );
+                  String fileName = encodeKey( url );
                   file = new File( mDir, fileName + ".0" );
-                  mFileLoader.put( key, file );
+                  mFileLoader.put( url, file );
                   return file;
             }
 

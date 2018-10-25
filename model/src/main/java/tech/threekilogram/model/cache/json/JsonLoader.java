@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import tech.threekilogram.model.cache.CacheLoader;
 import tech.threekilogram.model.converter.GsonConverter;
@@ -42,10 +41,6 @@ public class JsonLoader<V> implements CacheLoader<V> {
        * 辅助将流转换为json bean
        */
       protected       GsonConverter<V>      mJsonConverter;
-      /**
-       * 网络list
-       */
-      protected       OkHttpLoader<List<V>> mOkhttpListLoader;
       /**
        * 临时保存需要需要写入文件的bean
        */

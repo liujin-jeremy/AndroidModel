@@ -39,16 +39,23 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public void save ( String key, V value ) {
+      public void save ( String url, V value ) {
+
+            save( url, value, mConverter );
+      }
+
+      @Override
+      public void save (
+          String url, V value, StreamConverter<V> converter ) {
 
             /* save value to file */
             FileOutputStream stream = null;
 
             try {
 
-                  File file = getFile( key );
+                  File file = getFile( url );
                   stream = new FileOutputStream( file );
-                  mConverter.to( stream, value );
+                  converter.to( stream, value );
             } catch(IOException e) {
 
                   /* maybe can't save */
@@ -56,7 +63,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                   e.printStackTrace();
 
                   if( mOnErrorListener != null ) {
-                        mOnErrorListener.onSaveToFile( e, key, value );
+                        mOnErrorListener.onSaveToFile( e, url, value );
                   }
             } finally {
 
@@ -65,15 +72,21 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public void remove ( String key ) {
+      public void remove ( String url ) {
 
-            boolean delete = getFile( key ).delete();
+            boolean delete = getFile( url ).delete();
       }
 
       @Override
-      public V load ( String s ) {
+      public V load ( String url ) {
 
-            File file = getFile( s );
+            return load( url, mConverter );
+      }
+
+      @Override
+      public V load ( String url, StreamConverter<V> converter ) {
+
+            File file = getFile( url );
             V result = null;
 
             if( file.exists() ) {
@@ -84,7 +97,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         /* convert the file to value */
 
                         stream = new FileInputStream( file );
-                        result = mConverter.from( stream );
+                        result = converter.from( stream );
                   } catch(Exception e) {
 
                         /* maybe can't convert */
@@ -92,7 +105,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         e.printStackTrace();
 
                         if( mOnErrorListener != null ) {
-                              mOnErrorListener.onLoadFromFile( e, s );
+                              mOnErrorListener.onLoadFromFile( e, url );
                         }
                   } finally {
 
@@ -104,26 +117,26 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public boolean containsOf ( String key ) {
+      public boolean containsOf ( String url ) {
 
-            return getFile( key ).exists();
+            return getFile( url ).exists();
       }
 
       /**
-       * @param key key
+       * @param url key
        *
        * @return file to this key, file may not exist
        */
       @Override
-      public File getFile ( String key ) {
+      public File getFile ( String url ) {
 
-            File file = mFileLoader.get( key );
+            File file = mFileLoader.get( url );
 
             if( file == null ) {
 
-                  String name = encodeKey( key );
+                  String name = encodeKey( url );
                   file = new File( mDir, name );
-                  mFileLoader.put( key, file );
+                  mFileLoader.put( url, file );
                   return file;
             }
 

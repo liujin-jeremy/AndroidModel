@@ -12,6 +12,7 @@ import tech.threekilogram.model.util.encode.StringEncoder;
 import tech.threekilogram.model.util.instance.NetClient;
 import tech.threekilogram.model.util.io.Close;
 import tech.threekilogram.model.util.io.FileCache;
+import tech.threekilogram.model.util.io.FileClear;
 
 /**
  * @author Liujin 2018-10-25:17:46
@@ -166,6 +167,21 @@ public class DownLoader {
             }
 
             return executeUrl( url, updateListener );
+      }
+
+      public File getFile ( String url ) {
+
+            return mFileHelper.getFile( url );
+      }
+
+      public File getDir ( ) {
+
+            return mFileHelper.mDir;
+      }
+
+      public void clear ( ) {
+
+            FileClear.clearFile( getDir() );
       }
 
       public interface OnProgressUpdateListener {
