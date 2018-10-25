@@ -19,8 +19,6 @@ import java.io.InputStream;
  */
 public class BitmapReader {
 
-      private static final String TAG = BitmapReader.class.getSimpleName();
-
       /**
        * 读取原图,使用RGB_565格式
        *
