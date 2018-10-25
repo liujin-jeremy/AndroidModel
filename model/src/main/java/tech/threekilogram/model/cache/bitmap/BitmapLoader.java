@@ -159,27 +159,13 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
        * @param url 图片url
        */
       @Override
-      public void download ( String url ) {
+      public File download ( String url ) {
 
             File file = getFile( url );
             if( file != null && file.exists() ) {
-                  return;
+                  return file;
             }
             //mDowner.get( url );
-      }
-
-      /**
-       * 从网络下载该url对应的图片,并缓存到内存中
-       */
-      @Override
-      public Bitmap loadFromDownload ( String url ) {
-
-            download( url );
-            File file = getFile( url );
-            if( file.exists() ) {
-
-                  return loadFromFile( url );
-            }
             return null;
       }
 
@@ -236,7 +222,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       @Override
       public Bitmap loadFromMemory ( String url ) {
 
-            return mMemory.get( url );
+            return mMemory.load( url );
       }
 
       @Override

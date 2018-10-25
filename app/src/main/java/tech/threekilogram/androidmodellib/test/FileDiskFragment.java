@@ -28,6 +28,8 @@ public class FileDiskFragment extends Fragment implements OnClickListener {
 
       private BaseFileLoader<String>           mStringFileLoader;
       private BaseFileLoader<GankCategoryBean> mJsonFileLoader;
+      private StringConverter                  mStringConverter;
+      private GsonConverter<GankCategoryBean>  mGsonConverter;
 
       private String   mData = "{\n"
           + "    \"error\": false,\n"
@@ -109,17 +111,18 @@ public class FileDiskFragment extends Fragment implements OnClickListener {
             final int size = 50 * 1024 * 1024;
 
             try {
+                  mStringConverter = new StringConverter();
                   mStringFileLoader = new DiskLruLoader<>(
-                      dir, size, new StringConverter() );
+                      dir, size, mStringConverter );
             } catch(IOException e) {
                   e.printStackTrace();
             }
 
             try {
+                  mGsonConverter = new GsonConverter<>( GankCategoryBean.class );
                   mJsonFileLoader = new DiskLruLoader<>(
                       dir,
-                      size,
-                      new GsonConverter<>( GankCategoryBean.class )
+                      size, mGsonConverter
                   );
             } catch(IOException e) {
                   e.printStackTrace();

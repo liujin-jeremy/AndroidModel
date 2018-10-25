@@ -40,19 +40,19 @@ public class MemoryMap<K, V> implements Memory<K, V> {
       }
 
       @Override
-      public void save ( K key, V value ) {
+      public V save ( K key, V value ) {
 
-            mContainer.put( key, value );
+            return mContainer.put( key, value );
       }
 
       @Override
-      public void remove ( K key ) {
+      public V remove ( K key ) {
 
-            mContainer.remove( key );
+            return mContainer.remove( key );
       }
 
       @Override
-      public V get ( K key ) {
+      public V load ( K key ) {
 
             return mContainer.get( key );
       }

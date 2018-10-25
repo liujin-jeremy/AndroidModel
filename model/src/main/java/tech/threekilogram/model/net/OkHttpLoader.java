@@ -22,7 +22,10 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
        */
       protected OkHttpClient mOkHttpClient = NetClient.OKHTTP;
 
-      protected OkHttpLoader ( ) { }
+      public OkHttpLoader ( StreamConverter<V> converter ) {
+
+            super( converter );
+      }
 
       public OkHttpClient getOkHttpClient ( ) {
 
@@ -35,7 +38,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
       }
 
       @Override
-      public V load ( String url, StreamConverter<V> converter ) {
+      public V load ( String url ) {
 
             /* 执行call */
             try {
@@ -53,7 +56,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
 
                               /* 转换数据 */
                               assert responseBody != null;
-                              return converter.from( responseBody.byteStream() );
+                              return mConverter.from( responseBody.byteStream() );
                         } catch(Exception e) {
 
                               e.printStackTrace();

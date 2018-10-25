@@ -32,13 +32,14 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       /**
        * @param dir 保存文件的文件夹
        */
-      public FileLoader ( File dir ) {
+      public FileLoader ( File dir, StreamConverter<V> converter ) {
 
+            super( converter );
             mDir = dir;
       }
 
       @Override
-      public void save ( String key, V value, StreamConverter<V> converter ) {
+      public void save ( String key, V value ) {
 
             /* save value to file */
             FileOutputStream stream = null;
@@ -47,7 +48,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
 
                   File file = getFile( key );
                   stream = new FileOutputStream( file );
-                  converter.to( stream, value );
+                  mConverter.to( stream, value );
             } catch(IOException e) {
 
                   /* maybe can't save */
@@ -70,7 +71,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public V load ( String s, StreamConverter<V> converter ) {
+      public V load ( String s ) {
 
             File file = getFile( s );
             V result = null;
@@ -83,7 +84,7 @@ public class FileLoader<V> extends BaseFileLoader<V> {
                         /* convert the file to value */
 
                         stream = new FileInputStream( file );
-                        result = converter.from( stream );
+                        result = mConverter.from( stream );
                   } catch(Exception e) {
 
                         /* maybe can't convert */

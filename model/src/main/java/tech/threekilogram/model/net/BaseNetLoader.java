@@ -2,7 +2,7 @@ package tech.threekilogram.model.net;
 
 import java.io.IOException;
 import java.io.InputStream;
-import tech.threekilogram.model.ConverterLoader;
+import tech.threekilogram.model.Loader;
 import tech.threekilogram.model.converter.StreamConverter;
 
 /**
@@ -12,12 +12,18 @@ import tech.threekilogram.model.converter.StreamConverter;
  *
  * @author liujin
  */
-public abstract class BaseNetLoader<V> implements ConverterLoader<String, V> {
+public abstract class BaseNetLoader<V> implements Loader<String, V> {
 
+      protected StreamConverter<V> mConverter;
       /**
        * 异常处理助手
        */
-      protected OnErrorListener mErrorListener;
+      protected OnErrorListener    mErrorListener;
+
+      public BaseNetLoader ( StreamConverter<V> converter ) {
+
+            mConverter = converter;
+      }
 
       /**
        * 获取设置的异常处理类

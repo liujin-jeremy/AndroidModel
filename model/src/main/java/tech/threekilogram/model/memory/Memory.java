@@ -1,6 +1,6 @@
 package tech.threekilogram.model.memory;
 
-import tech.threekilogram.model.Container;
+import tech.threekilogram.model.Loader;
 
 /**
  * 这是内存缓存的总接口,所有内存缓存均实现了该接口:
@@ -10,7 +10,7 @@ import tech.threekilogram.model.Container;
  *
  * @author liujin
  */
-public interface Memory<K, V> extends Container<K> {
+public interface Memory<K, V> extends Loader<K, V> {
 
       /**
        * 使用一个key读取对应的value
@@ -19,7 +19,8 @@ public interface Memory<K, V> extends Container<K> {
        *
        * @return value key 对应的value
        */
-      V get ( K key );
+      @Override
+      V load ( K key );
 
       /**
        * save a value to key,then could loadStringFromNet value with this key
@@ -29,7 +30,7 @@ public interface Memory<K, V> extends Container<K> {
        *
        * @return if a value exist at key return it, if key to a null value return null
        */
-      void save ( K key, V value );
+      V save ( K key, V value );
 
       /**
        * 数据量
@@ -37,4 +38,27 @@ public interface Memory<K, V> extends Container<K> {
        * @return 数据量
        */
       int size ( );
+
+      /**
+       * remove the value to this key
+       *
+       * @param key remove the value at key
+       *
+       * @return if key exist remove value at key , or null returned
+       */
+      V remove ( K key );
+
+      /**
+       * test contains a value or not
+       *
+       * @param key contains of a value to this key
+       *
+       * @return true contains this value
+       */
+      boolean containsOf ( K key );
+
+      /**
+       * 清空
+       */
+      void clear ( );
 }

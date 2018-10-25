@@ -28,7 +28,7 @@ public class FileFragment extends Fragment implements OnClickListener {
       private BaseFileLoader<String>           mStringFileLoader;
       private BaseFileLoader<GankCategoryBean> mJsonFileLoader;
 
-      private String   mData = "{\n"
+      private String                          mData = "{\n"
           + "    \"error\": false,\n"
           + "    \"results\": [\n"
           + "        {\n"
@@ -55,13 +55,15 @@ public class FileFragment extends Fragment implements OnClickListener {
           + "        }\n"
           + "    ]\n"
           + "}";
-      private Button   mSaveString;
-      private Button   mGetString;
-      private Button   mGetStringFile;
-      private Button   mSaveJson;
-      private Button   mGetJson;
-      private Button   mGetJsonFile;
-      private TextView mTextView2;
+      private Button                          mSaveString;
+      private Button                          mGetString;
+      private Button                          mGetStringFile;
+      private Button                          mSaveJson;
+      private Button                          mGetJson;
+      private Button                          mGetJsonFile;
+      private TextView                        mTextView2;
+      private StringConverter                 mStringConverter;
+      private GsonConverter<GankCategoryBean> mGsonConverter;
 
       public static FileFragment newInstance ( ) {
 
@@ -106,12 +108,14 @@ public class FileFragment extends Fragment implements OnClickListener {
 
             File dir = FileManager.getDir( "fileLoader" );
 
+            mStringConverter = new StringConverter();
             mStringFileLoader = new FileLoader<>(
-                dir, new StringConverter() );
+                dir, mStringConverter
+            );
 
+            mGsonConverter = new GsonConverter<>( GankCategoryBean.class );
             mJsonFileLoader = new FileLoader<>(
-                dir,
-                new GsonConverter<>( GankCategoryBean.class )
+                dir, mGsonConverter
             );
       }
 

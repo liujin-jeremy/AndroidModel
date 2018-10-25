@@ -22,17 +22,10 @@ public interface CacheLoader<V> {
        * 从网络下载到文件夹,并不读取成对象
        *
        * @param url url
-       */
-      void download ( String url );
-
-      /**
-       * 从网络下载到文件夹,之后读取成对象
        *
-       * @param url url
-       *
-       * @return 缓存对应得对象
+       * @return 下载后文件
        */
-      V loadFromDownload ( String url );
+      File download ( String url );
 
       /**
        * 保存一个对象到内存

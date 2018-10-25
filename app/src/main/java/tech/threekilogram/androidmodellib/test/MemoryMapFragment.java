@@ -97,7 +97,7 @@ public class MemoryMapFragment extends Fragment implements OnClickListener {
                         setText( "add : " + key + " : " + value );
                         break;
                   case R.id.get:
-                        String load = mMemoryMap.get( key );
+                        String load = mMemoryMap.load( key );
                         setText( "get " + key + " : " + load );
                         break;
                   case R.id.delete:

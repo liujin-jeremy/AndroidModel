@@ -42,15 +42,15 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
        */
       public DiskLruLoader (
           File folder,
-          long maxSize ) throws IOException {
+          long maxSize, StreamConverter<V> converter ) throws IOException {
             /* create DiskLruCache */
-
+            super( converter );
             mDir = folder;
             mDiskLruCache = DiskLruCache.open( folder, 1, 1, maxSize );
       }
 
       @Override
-      public void save ( String key, V value, StreamConverter<V> converter ) {
+      public void save ( String key, V value ) {
 
             String name = encodeKey( key );
 
@@ -85,7 +85,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
             }
 
             try {
-                  converter.to( outputStream, value );
+                  mConverter.to( outputStream, value );
                   Close.close( outputStream );
                   editor.commit();
             } catch(IOException e) {
@@ -149,7 +149,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
       }
 
       @Override
-      public V load ( String key, StreamConverter<V> converter ) {
+      public V load ( String key ) {
 
             String stringKey = encodeKey( key );
 
@@ -173,7 +173,7 @@ public class DiskLruLoader<V> extends BaseFileLoader<V> {
 
                   try {
 
-                        return converter.from( inputStream );
+                        return mConverter.from( inputStream );
                   } catch(Exception e) {
 
                         e.printStackTrace();

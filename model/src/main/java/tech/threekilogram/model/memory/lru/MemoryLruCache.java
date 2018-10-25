@@ -63,21 +63,21 @@ public class MemoryLruCache<K, V> implements Memory<K, V> {
       }
 
       @Override
-      public void save ( K key, V v ) {
+      public V save ( K key, V v ) {
 
-            mContainer.put( key, v );
+            return mContainer.put( key, v );
       }
 
       @Override
-      public V get ( K key ) {
+      public V load ( K key ) {
 
             return mContainer.get( key );
       }
 
       @Override
-      public void remove ( K key ) {
+      public V remove ( K key ) {
 
-            mContainer.remove( key );
+            return mContainer.remove( key );
       }
 
       @Override

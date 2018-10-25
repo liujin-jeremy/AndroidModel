@@ -161,24 +161,13 @@ public class JsonLoader<V> implements CacheLoader<V> {
       }
 
       @Override
-      public void download ( String url ) {
+      public File download ( String url ) {
 
             File file = getFile( url );
             if( file != null && file.exists() ) {
-                  return;
+                  return null;
             }
             Downer.downloadTo( file, url );
-      }
-
-      @Override
-      public V loadFromDownload ( String url ) {
-
-            download( url );
-            File file = getFile( url );
-            if( file != null && file.exists() ) {
-
-                  return loadFromFile( url );
-            }
             return null;
       }
 
@@ -226,7 +215,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V loadFromMemory ( String url ) {
 
-            return mMemoryContainer.get( url );
+            return mMemoryContainer.load( url );
       }
 
       @Override
