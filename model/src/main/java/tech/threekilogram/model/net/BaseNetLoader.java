@@ -1,7 +1,5 @@
 package tech.threekilogram.model.net;
 
-import java.io.IOException;
-import java.io.InputStream;
 import tech.threekilogram.model.Loader;
 import tech.threekilogram.model.converter.StreamConverter;
 
@@ -44,37 +42,5 @@ public abstract class BaseNetLoader<V> implements Loader<String, V> {
           OnErrorListener errorListener ) {
 
             mErrorListener = errorListener;
-      }
-
-      /**
-       * 当网络异常时的监听
-       */
-      public interface OnErrorListener {
-
-            /**
-             * 当从网络下载的文件转换时的异常{@link StreamConverter#from(InputStream)} }
-             *
-             * @param url url
-             * @param e exception exception
-             */
-            void onConvertException ( String url, Exception e );
-
-            /**
-             * 无法连接网络
-             *
-             * @param url url
-             * @param e exception exception
-             */
-            void onConnectException ( String url, IOException e );
-
-            /**
-             * 没有成功获取数据的回调
-             * <p>
-             * when cant get a correct response {response not in 200~300} return failed
-             *
-             * @param url key
-             * @param httpCode http code
-             */
-            void onNullResource ( String url, int httpCode );
       }
 }

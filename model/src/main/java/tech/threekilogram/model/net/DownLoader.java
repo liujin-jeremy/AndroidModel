@@ -7,7 +7,6 @@ import java.io.InputStream;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import tech.threekilogram.model.net.BaseNetLoader.OnErrorListener;
 import tech.threekilogram.model.util.encode.EncodeMode;
 import tech.threekilogram.model.util.encode.StringEncoder;
 import tech.threekilogram.model.util.instance.NetClient;
@@ -24,6 +23,7 @@ public class DownLoader {
 
       public DownLoader ( File dir ) {
 
+            mFileHelper = new FileHelper( dir );
       }
 
       public void setOnErrorListener (
@@ -91,7 +91,7 @@ public class DownLoader {
       protected File readResponse (
           String url, ResponseBody responseBody ) {
 
-            byte[] temp = new byte[ 64 ];
+            byte[] temp = new byte[ 256 ];
             int len = 0;
 
             FileOutputStream outputStream = null;
@@ -134,7 +134,7 @@ public class DownLoader {
                   while( ( len = inputStream.read( temp ) ) != -1 ) {
                         outputStream.write( temp, 0, len );
                         read += len;
-                        updateListener.onUpdate( total, read );
+                        updateListener.onUpdate( url, total, read );
                   }
 
                   return file;
@@ -166,7 +166,7 @@ public class DownLoader {
              * @param total 数据总长
              * @param readLength 已经读取的数据
              */
-            void onUpdate ( long total, long readLength );
+            void onUpdate ( String url, long total, long readLength );
       }
 
       /**

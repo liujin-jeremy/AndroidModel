@@ -1,18 +1,13 @@
 package tech.threekilogram.model.net;
 
-import android.support.annotation.Nullable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import tech.threekilogram.model.net.RetrofitLoader.StreamService;
-import tech.threekilogram.model.util.encode.Md5;
-import tech.threekilogram.model.util.encode.StringHash;
+import tech.threekilogram.model.net.DownLoader.OnProgressUpdateListener;
 import tech.threekilogram.model.util.instance.NetClient;
 import tech.threekilogram.model.util.io.Close;
 
@@ -28,85 +23,45 @@ public class Downer {
 
       private Downer ( ) { }
 
-      /**
-       * retrofit 客户端
-       */
-      private static Retrofit      mRetrofit = NetClient.RETROFIT;
-      /**
-       * 创建的service
-       */
-      private static StreamService sService;
-
-      /**
-       * 下载到指定文件
-       *
-       * @param file 文件
-       * @param url url
-       *
-       * @return 该url对应文件, 或者null保存失败
-       */
-      @Nullable
-      public static File downloadTo (
-          File file,
-          String url ) {
-
-            return downloadTo( file, url, null, null );
-      }
-
-      /**
-       * 下载到指定文件
-       *
-       * @param file 文件
-       * @param url url
-       *
-       * @return 该url对应文件, 或者null保存失败
-       */
-      @Nullable
-      public static File downloadTo (
-          File file,
-          String url,
-          @Nullable OnDownloadUpdateListener updateListener,
-          @Nullable OnErrorListener errorListener ) {
-
-            if( file != null && file.exists() ) {
-
-                  if( updateListener != null ) {
-                        updateListener.onFinished( file, url );
-                  }
-                  return file;
-            }
-
-            /* 制造一个call对象 */
-            if( sService == null ) {
-
-                  sService = mRetrofit.create( StreamService.class );
-            }
-            Call<ResponseBody> call = sService.toGet( url );
+      private static File executeUrl (
+          String url, File file, OnProgressUpdateListener updateListener,
+          OnErrorListener errorListener ) {
 
             /* 执行call */
             try {
-                  Response<ResponseBody> response = call.execute();
+                  Request request = new Request.Builder()
+                      .url( url )
+                      .build();
+                  Response response = NetClient.OKHTTP.newCall( request ).execute();
 
                   /* 如果成功获得数据 */
                   if( response.isSuccessful() ) {
 
                         ResponseBody responseBody = response.body();
 
-                        /* 转换数据 */
-                        assert responseBody != null;
-                        return saveToFile(
-                            url,
-                            file,
-                            responseBody.byteStream(),
-                            responseBody.contentLength(),
-                            updateListener,
-                            errorListener
-                        );
+                        try {
+
+                              /* 转换数据 */
+                              assert responseBody != null;
+                              if( updateListener == null ) {
+
+                                    return readResponse( file, responseBody );
+                              } else {
+                                    return readResponse( url, file, responseBody, updateListener );
+                              }
+                        } catch(Exception e) {
+
+                              e.printStackTrace();
+                              /* 转换异常 */
+                              if( errorListener != null ) {
+                                    errorListener.onConvertException( url, e );
+                              }
+                        }
                   } else {
 
                         /* 连接到网络,但是没有获取到数据 */
                         if( errorListener != null ) {
-                              errorListener.onNoResource( file, url, response.code() );
+                              errorListener.onNullResource( url, response.code() );
                         }
                   }
             } catch(IOException e) {
@@ -114,160 +69,92 @@ public class Downer {
                   /* 没有连接到网络 */
                   e.printStackTrace();
                   if( errorListener != null ) {
-                        errorListener.onConnectException( file, url, e );
+                        errorListener.onConnectException( url, e );
                   }
             }
 
             return null;
       }
 
-      private static File saveToFile (
-          String url,
-          File file,
-          InputStream value,
-          long length,
-          @Nullable OnDownloadUpdateListener updateListener,
-          @Nullable OnErrorListener exceptionListener ) {
+      private static File readResponse ( File file, ResponseBody responseBody ) {
+
+            byte[] temp = new byte[ 256 ];
+            int len = 0;
 
             FileOutputStream outputStream = null;
+            InputStream inputStream = responseBody.byteStream();
+
             try {
                   outputStream = new FileOutputStream( file );
-            } catch(FileNotFoundException e) {
-                  e.printStackTrace();
-                  if( exceptionListener != null ) {
-                        exceptionListener.onFileNotFoundException( file, url, e );
-                  }
-                  return null;
-            }
 
-            try {
-
-                  byte[] bytes = new byte[ 64 ];
-                  int len = 0;
-                  long write = 0;
-
-                  while( ( len = value.read( bytes ) ) != -1 ) {
-
-                        outputStream.write( bytes, 0, len );
-
-                        if( updateListener != null ) {
-
-                              write += len;
-                              updateListener.onProgressUpdate( file, url, length, write );
-                        }
+                  while( ( len = inputStream.read( temp ) ) != -1 ) {
+                        outputStream.write( temp, 0, len );
                   }
 
-                  if( updateListener != null ) {
-                        updateListener.onFinished( file, url );
-                  }
+                  return file;
             } catch(IOException e) {
                   e.printStackTrace();
-
-                  /* 通知没有文件异常 */
-                  if( exceptionListener != null ) {
-                        exceptionListener.onIOException( file, url, e );
-                  }
-                  file = null;
             } finally {
-
-                  Close.close( value );
+                  Close.close( inputStream );
                   Close.close( outputStream );
             }
 
-            return file;
+            return null;
       }
 
-      /**
-       * 根据一个url获取一个文件
-       *
-       * @param dir 文件夹
-       * @param url 文件url,将会转为文件名字
-       *
-       * @return 位于文件夹下的文件
-       */
-      public static File getFileByHash ( File dir, String url ) {
+      private static File readResponse (
+          String url, File file, ResponseBody responseBody,
+          OnProgressUpdateListener updateListener ) {
 
-            return new File( dir, StringHash.hash( url ) );
+            byte[] temp = new byte[ 64 ];
+            int len = 0;
+            int read = 0;
+            long total = responseBody.contentLength();
+
+            FileOutputStream outputStream = null;
+            InputStream inputStream = responseBody.byteStream();
+
+            try {
+                  outputStream = new FileOutputStream( file );
+
+                  while( ( len = inputStream.read( temp ) ) != -1 ) {
+                        outputStream.write( temp, 0, len );
+                        read += len;
+                        updateListener.onUpdate( url, total, read );
+                  }
+
+                  return file;
+            } catch(IOException e) {
+                  e.printStackTrace();
+            } finally {
+                  Close.close( inputStream );
+                  Close.close( outputStream );
+            }
+
+            return null;
       }
 
-      /**
-       * 根据一个url获取一个文件
-       *
-       * @param dir 文件夹
-       * @param url 文件url,将会转为文件名字
-       *
-       * @return 位于文件夹下的文件
-       */
-      public static File getFileByMd5 ( File dir, String url ) {
+      public static File down (
+          String url,
+          File file ) {
 
-            return new File( dir, Md5.encode( url ) );
+            return executeUrl( url, file, null, null );
       }
 
-      /**
-       * 监听下载进度
-       */
-      public interface OnDownloadUpdateListener {
+      public static File down (
+          String url,
+          File file,
+          OnProgressUpdateListener updateListener ) {
 
-            /**
-             * 回调监听
-             *
-             * @param file file
-             * @param url url
-             * @param total 数据总长
-             * @param current 当前下载长度
-             */
-            void onProgressUpdate ( File file, String url, long total, long current );
-
-            /**
-             * 下载完成回调
-             *
-             * @param file file
-             * @param url url
-             */
-            void onFinished ( File file, String url );
+            return executeUrl( url, file, updateListener, null );
       }
 
-      /**
-       * 使用该类处理网络异常
-       */
-      public interface OnErrorListener {
+      public static File down (
+          String url,
+          File file,
+          OnProgressUpdateListener updateListener,
+          OnErrorListener listener ) {
 
-            /**
-             * 无法连接网络
-             *
-             * @param file file
-             * @param url url
-             * @param e exception exception
-             */
-            void onConnectException ( File file, String url, IOException e );
-
-            /**
-             * 没有该文件异常
-             *
-             * @param file file
-             * @param url url
-             * @param e e
-             */
-            void onFileNotFoundException ( File file, String url, FileNotFoundException e );
-
-            /**
-             * io 异常
-             *
-             * @param file file
-             * @param url url
-             * @param e e
-             */
-            void onIOException ( File file, String url, IOException e );
-
-            /**
-             * 没有成功获取数据的回调
-             * <p>
-             * when cant get a correct response {response not in 200~300} return failed
-             *
-             * @param file file
-             * @param url key
-             * @param httpCode http code
-             */
-            void onNoResource ( File file, String url, int httpCode );
+            return executeUrl( url, file, updateListener, listener );
       }
 }
