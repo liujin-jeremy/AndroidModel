@@ -14,6 +14,7 @@ import tech.threekilogram.androidmodellib.test.BitmapFragment;
 import tech.threekilogram.androidmodellib.test.DownLoadFragment;
 import tech.threekilogram.androidmodellib.test.FileDiskFragment;
 import tech.threekilogram.androidmodellib.test.FileFragment;
+import tech.threekilogram.androidmodellib.test.JsonFragment;
 import tech.threekilogram.androidmodellib.test.MemoryBitmapFragment;
 import tech.threekilogram.androidmodellib.test.MemoryMapFragment;
 import tech.threekilogram.androidmodellib.test.OkHttpFragment;
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                               break;
                         case R.id.menu07:
                               changeFragment( BitmapFragment.newInstance() );
+                              break;
+                        case R.id.menu08:
+                              changeFragment( JsonFragment.newInstance() );
                               break;
                         default:
                               break;

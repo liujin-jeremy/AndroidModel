@@ -33,4 +33,8 @@
           android:id="@+id/menu07"
           android:title="Bitmap"/>
 
+      <item
+          android:id="@+id/menu08"
+          android:title="json"/>
+
 </menu>
