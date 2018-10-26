@@ -19,6 +19,7 @@ import tech.threekilogram.androidmodellib.test.MemoryBitmapFragment;
 import tech.threekilogram.androidmodellib.test.MemoryMapFragment;
 import tech.threekilogram.androidmodellib.test.OkHttpFragment;
 import tech.threekilogram.androidmodellib.test.RetrofitFragment;
+import tech.threekilogram.androidmodellib.test.StreamFragment;
 import tech.threekilogram.androidmodellib.util.FileManager;
 import tech.threekilogram.androidmodellib.util.ScreenSize;
 
@@ -82,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
                               break;
                         case R.id.menu08:
                               changeFragment( JsonFragment.newInstance() );
+                              break;
+                        case R.id.menu09:
+                              changeFragment( StreamFragment.newInstance() );
                               break;
                         default:
                               break;

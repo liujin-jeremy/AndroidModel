@@ -37,4 +37,8 @@
           android:id="@+id/menu08"
           android:title="json"/>
 
+      <item
+          android:id="@+id/menu09"
+          android:title="stream"/>
+
 </menu>
