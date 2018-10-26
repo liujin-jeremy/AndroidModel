@@ -9,8 +9,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import tech.threekilogram.model.cache.json.ObjectLoader;
 import tech.threekilogram.model.converter.BitmapConverter;
+import tech.threekilogram.model.converter.GsonConverter;
 import tech.threekilogram.model.converter.InputStreamConverter;
 import tech.threekilogram.model.converter.StringConverter;
 import tech.threekilogram.model.net.DownLoader.OnProgressUpdateListener;
@@ -35,7 +35,7 @@ public class StreamLoader {
       /**
        * 辅助从文件读取保存string
        */
-      private static StringConverter sConverter;
+      private static StringConverter sStringConverter;
       /**
        * 辅助读取保存bitmap数据流
        */
@@ -52,11 +52,11 @@ public class StreamLoader {
        */
       public static String loadStringFromNet ( String url ) {
 
-            if( sConverter == null ) {
-                  sConverter = new StringConverter();
+            if( sStringConverter == null ) {
+                  sStringConverter = new StringConverter();
             }
             InputStream stream = sOkHttpLoader.load( url );
-            return sConverter.from( stream );
+            return sStringConverter.from( stream );
       }
 
       /**
@@ -67,13 +67,13 @@ public class StreamLoader {
        */
       public static void saveStringToFile ( String data, File file ) {
 
-            if( sConverter == null ) {
-                  sConverter = new StringConverter();
+            if( sStringConverter == null ) {
+                  sStringConverter = new StringConverter();
             }
 
             try {
                   FileOutputStream outputStream = new FileOutputStream( file );
-                  sConverter.to( outputStream, data );
+                  sStringConverter.to( outputStream, data );
             } catch(FileNotFoundException e) {
                   e.printStackTrace();
             }
@@ -88,15 +88,15 @@ public class StreamLoader {
        */
       public static String loadStringFromFile ( File file ) {
 
-            if( sConverter == null ) {
-                  sConverter = new StringConverter();
+            if( sStringConverter == null ) {
+                  sStringConverter = new StringConverter();
             }
 
             if( file.exists() && file.isFile() ) {
 
                   try {
                         FileInputStream inputStream = new FileInputStream( file );
-                        return sConverter.from( inputStream );
+                        return sStringConverter.from( inputStream );
                   } catch(Exception e) {
                         e.printStackTrace();
                   }
@@ -114,23 +114,30 @@ public class StreamLoader {
        */
       public static <V> V loadJsonFromNet ( String url, Class<V> beanClass ) {
 
-            return ObjectLoader.loadFromNet( url, beanClass );
+            InputStream inputStream = sOkHttpLoader.load( url );
+            return new GsonConverter<>( beanClass ).from( inputStream );
       }
 
       /**
        * 保存一个json到文件
        *
-       * @param beanClass json bean class
        * @param json string 数据
        * @param file string 需要保存到的文件
        */
-      public static <V> void saveJsonToFile ( File file, Class<V> beanClass, V json ) {
+      @SuppressWarnings("unchecked")
+      public static <V> void saveJsonToFile ( File file, V json ) {
 
-            ObjectLoader.toFile( file, json, beanClass );
+            Class<V> aClass = (Class<V>) json.getClass();
+            try {
+                  FileOutputStream outputStream = new FileOutputStream( file );
+                  new GsonConverter<V>( aClass ).to( outputStream, json );
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            }
       }
 
       /**
-       * 从网络加载json
+       * 从本地加载json
        *
        * @param file json 对应 file
        * @param beanClass json bean class
@@ -139,7 +146,13 @@ public class StreamLoader {
        */
       public static <V> V loadJsonFromFile ( File file, Class<V> beanClass ) {
 
-            return ObjectLoader.loadFromFile( file, beanClass );
+            try {
+                  FileInputStream inputStream = new FileInputStream( file );
+                  return new GsonConverter<>( beanClass ).from( inputStream );
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            }
+            return null;
       }
 
       /**
