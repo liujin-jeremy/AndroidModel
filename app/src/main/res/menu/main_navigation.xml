@@ -29,4 +29,8 @@
           android:id="@+id/menu06"
           android:title="DownLoad"/>
 
+      <item
+          android:id="@+id/menu07"
+          android:title="Bitmap"/>
+
 </menu>

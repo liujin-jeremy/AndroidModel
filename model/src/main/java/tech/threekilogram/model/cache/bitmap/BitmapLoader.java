@@ -70,6 +70,29 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
+       * 从网络读取该url对应的图片,并缓存到内存中,不同于{@link #loadFromNet(String)}使用{@link Config#ARGB_8888}格式
+       *
+       * @param url 图片url
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadSrcFromNet ( String url ) {
+
+            /* 先下载到本地 */
+            File file = mDowner.down( url );
+            /* 解析成bitmap */
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.fromArgb( file );
+                  if( bitmap != null ) {
+                        saveToMemory( url, bitmap );
+                        return bitmap;
+                  }
+            }
+            return null;
+      }
+
+      /**
        * 从网络读取该url对应的图片,并缓存到内存中,缩放至指定尺寸
        *
        * @param url 图片url
@@ -236,6 +259,28 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
       }
 
       /**
+       * 从本地文件读取,不同于{@link #loadFromFile(String)}使用{@link Config#ARGB_8888}格式
+       *
+       * @param url mUrl
+       *
+       * @return bitmap or null
+       */
+      public Bitmap loadSrcFromFile ( String url ) {
+
+            File file = getFile( url );
+            if( file != null && file.exists() ) {
+
+                  Bitmap bitmap = mBitmapConverter.fromArgb( file );
+                  if( bitmap != null ) {
+                        mMemory.save( url, bitmap );
+                        return bitmap;
+                  }
+            }
+
+            return null;
+      }
+
+      /**
        * 从本地文件读取,并且缩放至匹配尺寸,使用的是{@link Bitmap.Config#RGB_565}格式
        *
        * @param url mUrl
@@ -302,6 +347,21 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             }
 
             return loadFromFile( url );
+      }
+
+      /**
+       * 加载url对应的原图,不同于{@link #load(String)}使用{@link Config#ARGB_8888}格式
+       *
+       * @param url url
+       */
+      public Bitmap loadSrc ( String url ) {
+
+            Bitmap bitmap = loadFromMemory( url );
+            if( bitmap != null ) {
+                  return bitmap;
+            }
+
+            return loadSrcFromFile( url );
       }
 
       /**

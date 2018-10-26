@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import tech.threekilogram.androidmodellib.test.BitmapFragment;
 import tech.threekilogram.androidmodellib.test.DownLoadFragment;
 import tech.threekilogram.androidmodellib.test.FileDiskFragment;
 import tech.threekilogram.androidmodellib.test.FileFragment;
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
                               break;
                         case R.id.menu06:
                               changeFragment( DownLoadFragment.newInstance() );
+                              break;
+                        case R.id.menu07:
+                              changeFragment( BitmapFragment.newInstance() );
                               break;
                         default:
                               break;

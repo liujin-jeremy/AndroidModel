@@ -40,6 +40,12 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
       @Override
       public V load ( String url ) {
 
+            return load( url, mConverter );
+      }
+
+      @Override
+      public V load ( String url, StreamConverter<V> converter ) {
+
             /* 执行call */
             try {
                   Request request = new Request.Builder()
@@ -56,7 +62,7 @@ public class OkHttpLoader<V> extends BaseNetLoader<V> {
 
                               /* 转换数据 */
                               assert responseBody != null;
-                              return mConverter.from( responseBody.byteStream() );
+                              return converter.from( responseBody.byteStream() );
                         } catch(Exception e) {
 
                               e.printStackTrace();
