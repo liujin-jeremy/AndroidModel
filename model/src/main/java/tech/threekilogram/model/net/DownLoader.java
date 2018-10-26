@@ -38,6 +38,11 @@ public class DownLoader {
             return mOnErrorListener;
       }
 
+      public void setUrlEncodeMode ( @EncodeMode int mode ) {
+
+            mFileHelper.setMode( mode );
+      }
+
       protected File executeUrl ( String url, OnProgressUpdateListener updateListener ) {
 
             /* 执行call */

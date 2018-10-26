@@ -1,20 +1,18 @@
 package tech.threekilogram.model.cache.json;
 
-import android.support.annotation.Nullable;
-import android.support.v4.util.ArrayMap;
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import tech.threekilogram.model.cache.CacheLoader;
 import tech.threekilogram.model.converter.GsonConverter;
-import tech.threekilogram.model.file.BaseFileLoader;
-import tech.threekilogram.model.file.loader.DiskLruLoader;
-import tech.threekilogram.model.file.loader.FileLoader;
 import tech.threekilogram.model.memory.Memory;
 import tech.threekilogram.model.memory.lru.MemoryLruCache;
 import tech.threekilogram.model.memory.map.MemoryMap;
-import tech.threekilogram.model.net.Downer;
-import tech.threekilogram.model.net.OkHttpLoader;
+import tech.threekilogram.model.net.DownLoader;
+import tech.threekilogram.model.util.io.FileClear;
 
 /**
  * 该类提供json对象三级缓存
@@ -27,28 +25,15 @@ public class JsonLoader<V> implements CacheLoader<V> {
       /**
        * 内存
        */
-      protected       Memory<String, V>     mMemoryContainer;
-      /**
-       * 文件
-       */
-      @Nullable
-      protected       BaseFileLoader<V>     mFileContainer;
-      /**
-       * 网络bean
-       */
-      protected       OkHttpLoader<V>       mOkhttpLoader;
+      protected Memory<String, V> mMemoryContainer;
       /**
        * 辅助将流转换为json bean
        */
-      protected       GsonConverter<V>      mJsonConverter;
+      protected GsonConverter<V>  mGsonConverter;
       /**
-       * 临时保存需要需要写入文件的bean
+       * 下载json文件
        */
-      protected final ArrayMap<String, V>   mWillCacheToFile = new ArrayMap<>();
-      /**
-       * true : 正在缓存文件
-       */
-      protected final AtomicBoolean         mIsCacheToFile   = new AtomicBoolean();
+      protected DownLoader        mDownLoader;
 
       /**
        * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
@@ -56,86 +41,54 @@ public class JsonLoader<V> implements CacheLoader<V> {
        *
        * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
        * @param dir 缓存文件夹
-       * @param maxFileSize 缓存文件夹最大大小
-       * @param jsonConverter 辅助将数据流转换为json对象
-       *
-       * @throws IOException 创建{@link com.jakewharton.disklrucache.DiskLruCache}时异常
-       */
-      public JsonLoader (
-          int memoryItemCount,
-          File dir,
-          long maxFileSize,
-          GsonConverter<V> jsonConverter ) throws IOException {
-
-            mJsonConverter = jsonConverter;
-            if( memoryItemCount > 0 ) {
-                  mMemoryContainer = new MemoryLruCache<>( memoryItemCount );
-            } else {
-                  mMemoryContainer = new MemoryMap<>();
-            }
-            mFileContainer = new DiskLruLoader<>( dir, maxFileSize, jsonConverter );
-            mOkhttpLoader = new OkHttpLoader<>( jsonConverter );
-      }
-
-      /**
-       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
-       * 指定了缓存文件夹及其大小,超多文件夹大小根据规则{@link com.jakewharton.disklrucache.DiskLruCache}删除多余文件
-       *
-       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
-       * @param dir 缓存文件夹
-       * @param maxFileSize 缓存文件夹最大大小
-       * @param jsonType json bean类,会将数据流转换为指定类型的对象
-       *
-       * @throws IOException 创建{@link com.jakewharton.disklrucache.DiskLruCache}时异常
-       */
-      public JsonLoader (
-          int memoryItemCount,
-          File dir,
-          long maxFileSize,
-          Class<V> jsonType ) throws IOException {
-
-            this( memoryItemCount, dir, maxFileSize, new GsonConverter<V>( jsonType ) );
-      }
-
-      /**
-       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
-       * 可以选择指定缓存文件夹,用来支持本地文件缓存操作
-       *
-       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
-       * @param dir 缓存文件夹,如果为null将不支持本地文件缓存
-       * @param jsonConverter 辅助将数据流转换为json对象
-       */
-      public JsonLoader (
-          int memoryItemCount,
-          @Nullable File dir,
-          GsonConverter<V> jsonConverter ) {
-
-            mJsonConverter = jsonConverter;
-            if( memoryItemCount > 0 ) {
-                  mMemoryContainer = new MemoryLruCache<>( memoryItemCount );
-            } else {
-                  mMemoryContainer = new MemoryMap<>();
-            }
-            if( dir != null ) {
-                  mFileContainer = new FileLoader<V>( dir, jsonConverter );
-            }
-            mOkhttpLoader = new OkHttpLoader<>( jsonConverter );
-      }
-
-      /**
-       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
-       * 可以选择指定缓存文件夹,用来支持本地文件缓存操作
-       *
-       * @param memoryItemCount 内存中最大数据量,如果为负数那么将不会从内存中删除数据
-       * @param dir 缓存文件夹,如果为null将不支持本地文件缓存
        * @param jsonType json bean类,会将数据流转换为指定类型的对象
        */
       public JsonLoader (
           int memoryItemCount,
-          @Nullable File dir,
+          File dir,
           Class<V> jsonType ) {
 
-            this( memoryItemCount, dir, new GsonConverter<V>( jsonType ) );
+            if( memoryItemCount > 0 ) {
+                  mMemoryContainer = new MemoryLruCache<>( memoryItemCount );
+            } else {
+                  mMemoryContainer = new MemoryMap<>();
+            }
+            mDownLoader = new DownLoader( dir );
+            mGsonConverter = new GsonConverter<>( jsonType );
+      }
+
+      /**
+       * 创建一个json三级缓存,指定了内存中数据量(超过该数据量,根据{@link android.support.v4.util.LruCache})规则从内存中删除多余条目,
+       * 指定了缓存文件夹及其大小,超多文件夹大小根据规则{@link com.jakewharton.disklrucache.DiskLruCache}删除多余文件
+       *
+       * @param dir 缓存文件夹
+       * @param jsonType json bean类,会将数据流转换为指定类型的对象
+       */
+      public JsonLoader (
+          File dir,
+          Class<V> jsonType ) {
+
+            this( -1, dir, jsonType );
+      }
+
+      private InputStream getFileInputStream ( File file ) {
+
+            try {
+                  return new FileInputStream( file );
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            }
+            return null;
+      }
+
+      private OutputStream getFileOutputStream ( File file ) {
+
+            try {
+                  return new FileOutputStream( file );
+            } catch(FileNotFoundException e) {
+                  e.printStackTrace();
+            }
+            return null;
       }
 
       /**
@@ -148,21 +101,28 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V loadFromNet ( String url ) {
 
-            V v = mOkhttpLoader.load( url );
-            if( v != null ) {
-                  saveToMemory( url, v );
+            File file = mDownLoader.down( url );
+
+            if( file != null && file.exists() ) {
+                  InputStream fileInputStream = getFileInputStream( file );
+                  V v = mGsonConverter.from( fileInputStream );
+                  if( v != null ) {
+                        saveToMemory( url, v );
+                  }
+                  return v;
             }
-            return v;
+
+            return null;
       }
 
       @Override
       public File download ( String url ) {
 
             File file = getFile( url );
-            if( file.exists() ) {
+            if( file != null && file.exists() ) {
                   return file;
             }
-            Downer.down( url, file );
+            mDownLoader.down( url );
             return file;
       }
 
@@ -238,7 +198,8 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public boolean containsOfFile ( String url ) {
 
-            return mFileContainer != null && mFileContainer.containsOf( url );
+            File file = getFile( url );
+            return file != null && file.exists();
       }
 
       /**
@@ -251,23 +212,24 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public void saveToFile ( String url, V v ) {
 
-            if( mFileContainer == null ) {
+            File file = getFile( url );
+            if( file.exists() ) {
                   return;
             }
-            if( mFileContainer.getFile( url ).exists() ) {
-                  return;
-            }
-            /* 只有本地没有缓存时才保存到文件 */
-            mFileContainer.save( url, v );
+
+            OutputStream outputStream = getFileOutputStream( file );
+            mGsonConverter.to( outputStream, v );
       }
 
       @Override
       public File getFile ( String url ) {
 
-            if( mFileContainer == null ) {
-                  return null;
-            }
-            return mFileContainer.getFile( url );
+            return mDownLoader.getFile( url );
+      }
+
+      public File getDir ( ) {
+
+            return mDownLoader.getDir();
       }
 
       /**
@@ -278,11 +240,8 @@ public class JsonLoader<V> implements CacheLoader<V> {
        */
       public void saveToFileForce ( String url, V v ) {
 
-            if( mFileContainer == null ) {
-                  return;
-            }
-            /* 强制保存到文件,无论是否有缓存文件 */
-            mFileContainer.save( url, v );
+            OutputStream outputStream = getFileOutputStream( getFile( url ) );
+            mGsonConverter.to( outputStream, v );
       }
 
       /**
@@ -293,10 +252,10 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public void removeFromFile ( String url ) {
 
-            if( mFileContainer == null ) {
-                  return;
+            File file = getFile( url );
+            if( file != null && file.exists() ) {
+                  boolean delete = file.delete();
             }
-            mFileContainer.remove( url );
       }
 
       /**
@@ -309,14 +268,17 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public V loadFromFile ( String url ) {
 
-            if( mFileContainer == null ) {
-                  return null;
+            File file = getFile( url );
+            if( file != null && file.exists() ) {
+
+                  InputStream inputStream = getFileInputStream( file );
+                  V v = mGsonConverter.from( inputStream );
+                  if( v != null ) {
+                        saveToMemory( url, v );
+                  }
+                  return v;
             }
-            V v = mFileContainer.load( url );
-            if( v != null ) {
-                  saveToMemory( url, v );
-            }
-            return v;
+            return null;
       }
 
       /**
@@ -325,11 +287,7 @@ public class JsonLoader<V> implements CacheLoader<V> {
       @Override
       public void clearFile ( ) {
 
-            if( mFileContainer == null ) {
-                  return;
-            }
-
-            mFileContainer.clear();
+            FileClear.clearFile( mDownLoader.getDir() );
       }
 
       @Override
@@ -355,60 +313,5 @@ public class JsonLoader<V> implements CacheLoader<V> {
             }
 
             return loadFromFile( url );
-      }
-
-      /**
-       * 压缩内存,将指定数据缓存到本地缓存,同时在内存中删除,该方法线程安全
-       *
-       * @param url 需要缓存索引
-       */
-      public void trimMemory ( String url ) {
-
-            V v = mMemoryContainer.remove( url );
-            if( v != null ) {
-
-                  synchronized(mWillCacheToFile) {
-                        mWillCacheToFile.put( url, v );
-                  }
-                  notifyCacheFile();
-            }
-      }
-
-      /**
-       * 通知缓存文件到本地
-       */
-      private void notifyCacheFile ( ) {
-
-            if( mIsCacheToFile.get() ) {
-                  return;
-            }
-
-            mIsCacheToFile.set( true );
-            ArrayMap<String, V> willCacheToFile = mWillCacheToFile;
-            BaseFileLoader<V> fileContainer = mFileContainer;
-
-            while( willCacheToFile.size() > 0 ) {
-
-                  String key = null;
-                  V v = null;
-
-                  synchronized(mWillCacheToFile) {
-
-                        key = willCacheToFile.keyAt( 0 );
-                        v = willCacheToFile.removeAt( 0 );
-                  }
-
-                  if( fileContainer == null ) {
-                        willCacheToFile.clear();
-                        continue;
-                  }
-
-                  File file = fileContainer.getFile( key );
-                  if( !file.exists() ) {
-                        fileContainer.save( key, v );
-                  }
-            }
-
-            mIsCacheToFile.set( false );
       }
 }

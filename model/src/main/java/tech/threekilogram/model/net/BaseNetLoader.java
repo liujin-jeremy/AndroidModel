@@ -23,9 +23,24 @@ public abstract class BaseNetLoader<V> implements ConverterLoader<String, V> {
             mConverter = converter;
       }
 
+      /**
+       * 加载url对应对象
+       *
+       * @param url url
+       *
+       * @return value
+       */
       @Override
       public abstract V load ( String url );
 
+      /**
+       * 加载url对应的对象
+       *
+       * @param url url
+       * @param converter converter converter
+       *
+       * @return value
+       */
       @Override
       public abstract V load ( String url, StreamConverter<V> converter );
 

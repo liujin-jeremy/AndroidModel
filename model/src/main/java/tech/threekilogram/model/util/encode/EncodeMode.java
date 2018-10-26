@@ -15,7 +15,16 @@ import java.lang.annotation.RetentionPolicy;
 @IntDef(value = { MD5, HASH, DEFAULT })
 public @interface EncodeMode {
 
+      /**
+       * 使用md5
+       */
       public static final int MD5     = 11;
+      /**
+       * 使用{@link StringHash}
+       */
       public static final int HASH    = 12;
+      /**
+       * 返回原值
+       */
       public static final int DEFAULT = 13;
 }
