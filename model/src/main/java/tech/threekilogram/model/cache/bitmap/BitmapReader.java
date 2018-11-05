@@ -103,6 +103,68 @@ public class BitmapReader {
       }
 
       /**
+       * 计算图片缩放比例
+       */
+      private static int calculateInSampleSize (
+          Options options, int reqWidth, int reqHeight ) {
+
+            if( reqWidth == 0 || reqHeight == 0 ) {
+                  return 1;
+            }
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            int inSampleSize = 1;
+
+            //如果图片宽或者高 大于 view的宽高
+            if( height > reqHeight || width > reqWidth ) {
+
+                  //计算图片的宽高的一半
+                  final int halfHeight = height / 2;
+                  final int halfWidth = width / 2;
+
+                  //如果原始图片宽高是 view宽高的 2,4,8,16 ... 倍以上,会压缩图片至宽高任意一条边略大于 view 的 宽高为止,图片质量不会太差
+                  while( ( halfHeight / inSampleSize ) >= reqHeight
+                      && ( halfWidth / inSampleSize ) >= reqWidth ) {
+                        inSampleSize *= 2;
+                  }
+            }
+            return inSampleSize;
+      }
+
+      /**
+       * 计算图片极限缩放比例,使用宽高采样率中最大的
+       */
+      private static int calculateMaxInSampleSize (
+          Options options, int reqWidth, int reqHeight ) {
+
+            if( reqWidth == 0 || reqHeight == 0 ) {
+                  return 1;
+            }
+
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            int inSampleSize = 1;
+
+            //如果图片宽或者高 大于 view的宽高
+            if( height > reqHeight || width > reqWidth ) {
+
+                  //分别计算宽高采样率,使用其中最大的值
+                  while( ( height / inSampleSize ) >= reqHeight ) {
+                        inSampleSize *= 2;
+                  }
+
+                  int heightSampleSize = inSampleSize;
+
+                  while( ( width / inSampleSize ) >= reqWidth ) {
+                        inSampleSize *= 2;
+                  }
+
+                  inSampleSize = heightSampleSize > inSampleSize ? heightSampleSize : inSampleSize;
+            }
+            return inSampleSize;
+      }
+
+      /**
        * 压缩图片至 宽度/高度 任一小于要求的 宽度/高度
        *
        * @param context context
@@ -932,65 +994,44 @@ public class BitmapReader {
             return null;
       }
 
-      /**
-       * 计算图片缩放比例
-       */
-      private static int calculateInSampleSize (
-          Options options, int reqWidth, int reqHeight ) {
+      public static Bitmap clip ( Bitmap bitmap, int x, int y, int width, int height ) {
 
-            if( reqWidth == 0 || reqHeight == 0 ) {
-                  return 1;
-            }
-            final int height = options.outHeight;
-            final int width = options.outWidth;
-            int inSampleSize = 1;
-
-            //如果图片宽或者高 大于 view的宽高
-            if( height > reqHeight || width > reqWidth ) {
-
-                  //计算图片的宽高的一半
-                  final int halfHeight = height / 2;
-                  final int halfWidth = width / 2;
-
-                  //如果原始图片宽高是 view宽高的 2,4,8,16 ... 倍以上,会压缩图片至宽高任意一条边略大于 view 的 宽高为止,图片质量不会太差
-                  while( ( halfHeight / inSampleSize ) >= reqHeight
-                      && ( halfWidth / inSampleSize ) >= reqWidth ) {
-                        inSampleSize *= 2;
-                  }
-            }
-            return inSampleSize;
+            return Bitmap.createBitmap( bitmap, x, y, width, height );
       }
 
-      /**
-       * 计算图片极限缩放比例,使用宽高采样率中最大的
-       */
-      private static int calculateMaxInSampleSize (
-          Options options, int reqWidth, int reqHeight ) {
+      public static Bitmap clipStart ( Bitmap bitmap, int height ) {
 
-            if( reqWidth == 0 || reqHeight == 0 ) {
-                  return 1;
-            }
+            return Bitmap.createBitmap( bitmap, 0, 0, bitmap.getWidth(), height );
+      }
 
-            final int height = options.outHeight;
-            final int width = options.outWidth;
-            int inSampleSize = 1;
+      public static Bitmap clipEnd ( Bitmap bitmap, int height ) {
 
-            //如果图片宽或者高 大于 view的宽高
-            if( height > reqHeight || width > reqWidth ) {
+            return Bitmap.createBitmap(
+                bitmap,
+                0,
+                bitmap.getHeight() - height,
+                bitmap.getWidth(),
+                height
+            );
+      }
 
-                  //分别计算宽高采样率,使用其中最大的值
-                  while( ( height / inSampleSize ) >= reqHeight ) {
-                        inSampleSize *= 2;
-                  }
+      public static Bitmap clipLeft ( Bitmap bitmap, int width ) {
 
-                  int heightSampleSize = inSampleSize;
+            return Bitmap.createBitmap( bitmap, 0, 0, width, bitmap.getHeight() );
+      }
 
-                  while( ( width / inSampleSize ) >= reqWidth ) {
-                        inSampleSize *= 2;
-                  }
+      public static Bitmap clipRight ( Bitmap bitmap, int width ) {
 
-                  inSampleSize = heightSampleSize > inSampleSize ? heightSampleSize : inSampleSize;
-            }
-            return inSampleSize;
+            return Bitmap
+                .createBitmap( bitmap, bitmap.getWidth() - width, 0, width, bitmap.getHeight() );
+      }
+
+      public static Bitmap clipCenter ( Bitmap bitmap, int width, int height ) {
+
+            int x = ( bitmap.getWidth() - width ) >> 1;
+            int y = ( bitmap.getHeight() - height ) >> 1;
+
+            return Bitmap
+                .createBitmap( bitmap, x, y, width, height );
       }
 }
