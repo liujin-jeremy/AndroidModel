@@ -3,12 +3,12 @@ package tech.threekilogram.model.converter;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
+import com.threekilogram.bitmapreader.BitmapReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.model.cache.bitmap.BitmapReader;
 
 /**
  * 用于按照规则从file/stream读取bitmap
