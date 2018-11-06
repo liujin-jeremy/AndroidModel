@@ -33,6 +33,6 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation project(':model')
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.github.threekilogram:ObjectBus:2.2.8'
+    implementation 'tech.threekilogram:object-bus:2.0.1'
     implementation 'tech.threekilogram:bitmapReader:2.0.0'
 }
