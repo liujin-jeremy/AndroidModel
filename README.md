@@ -1,7 +1,7 @@
 # 数据层框架
 
 ```
-implementation 'tech.threekilogram:model:2.0.1'
+implementation 'tech.threekilogram:model:2.0.3'
 ```
 
 ### 内存缓存
@@ -14,7 +14,6 @@ implementation 'tech.threekilogram:model:2.0.1'
 >
 > 还有一个是MemoryLruCache,只能保存一定数量数据,到达上限之后删除最近最少使用的数据
 >
-> MemoryList/MemoryMap需要自己定期清理数据
 
 * MemoryList使用
 
@@ -339,17 +338,12 @@ GankDayBean dayBean = ObjectLoader.loadFromNet(
 * 保存到文件
 
 ```
-File cache = getContext().getExternalFilesDir( "cache" );
-File file = ObjectLoader.getFileByHash( cache, url );
 ObjectLoader.toFile( file, categoryBean, GankCategoryBean.class );
 ```
 
 * 从文件读取
 
 ```
-String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1";
-File cache = getContext().getExternalFilesDir( "cache" );
-File file = ObjectLoader.getFileByHash( cache, url );
 GankCategoryBean bean = ObjectLoader.loadFromFile( file, GankCategoryBean.class );
 ```
 
