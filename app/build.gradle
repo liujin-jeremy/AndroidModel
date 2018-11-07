@@ -34,5 +34,5 @@ dependencies {
     implementation project(':model')
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'tech.threekilogram:object-bus:2.1.2'
-    implementation 'tech.threekilogram:bitmapReader:2.0.2'
+    implementation 'tech.threekilogram:bitmapReader:2.0.3'
 }

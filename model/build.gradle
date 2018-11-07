@@ -35,7 +35,7 @@ dependencies {
         exclude group: 'com.squareup.okhttp3'
     }
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'tech.threekilogram:bitmapReader:2.0.2'
+    implementation 'tech.threekilogram:bitmapReader:2.0.3'
 }
 
 //上传到JCenter
