@@ -29,7 +29,7 @@ public class BitmapConverter implements StreamConverter<Bitmap> {
        */
       public Bitmap from ( File file ) {
 
-            return BitmapReader.readRgb( file );
+            return BitmapReader.read( file );
       }
 
       /**
@@ -39,9 +39,9 @@ public class BitmapConverter implements StreamConverter<Bitmap> {
        *
        * @return bitmap
        */
-      public Bitmap fromArgb ( File file ) {
+      public Bitmap from ( File file, Config config ) {
 
-            return BitmapReader.readArgb( file );
+            return BitmapReader.read( file, config );
       }
 
       /**
@@ -83,7 +83,7 @@ public class BitmapConverter implements StreamConverter<Bitmap> {
       @Override
       public Bitmap from ( InputStream inputStream ) {
 
-            return BitmapReader.readRgb( inputStream );
+            return BitmapReader.read( inputStream );
       }
 
       /**
@@ -93,9 +93,9 @@ public class BitmapConverter implements StreamConverter<Bitmap> {
        *
        * @return bitmap bitmap from stream
        */
-      public Bitmap fromArgb ( InputStream inputStream ) {
+      public Bitmap from ( InputStream inputStream, Config config ) {
 
-            return BitmapReader.readArgb( inputStream );
+            return BitmapReader.read( inputStream, config );
       }
 
       /**

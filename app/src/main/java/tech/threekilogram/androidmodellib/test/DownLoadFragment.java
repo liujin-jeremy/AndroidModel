@@ -1,6 +1,7 @@
 package tech.threekilogram.androidmodellib.test;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -81,7 +82,7 @@ public class DownLoadFragment extends Fragment implements OnClickListener {
                               File down = mDownLoader.down(
                                   "http://7xi8d6.com1.z0.glb.clouddn.com/2017-10-31-nozomisasaki_official_31_10_2017_10_49_17_24.jpg" );
 
-                              Bitmap bitmap = BitmapReader.readRgb( down );
+                              Bitmap bitmap = BitmapReader.read( down, Config.ARGB_8888 );
                               v.post( ( ) -> {
 
                                     mImageView2.setImageBitmap( bitmap );
@@ -98,7 +99,7 @@ public class DownLoadFragment extends Fragment implements OnClickListener {
                                   new File( FileManager.getDocuments(), StringHash.hash( url ) )
                               );
 
-                              Bitmap bitmap = BitmapReader.readRgb( down );
+                              Bitmap bitmap = BitmapReader.read( down, Config.RGB_565 );
                               v.post( ( ) -> {
 
                                     mImageView3.setImageBitmap( bitmap );

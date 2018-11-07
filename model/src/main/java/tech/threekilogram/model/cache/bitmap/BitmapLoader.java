@@ -83,7 +83,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             /* 解析成bitmap */
             if( file != null && file.exists() ) {
 
-                  Bitmap bitmap = mBitmapConverter.fromArgb( file );
+                  Bitmap bitmap = mBitmapConverter.from( file, Config.ARGB_8888 );
                   if( bitmap != null ) {
                         saveToMemory( url, bitmap );
                         return bitmap;
@@ -270,7 +270,7 @@ public class BitmapLoader implements CacheLoader<Bitmap> {
             File file = getFile( url );
             if( file != null && file.exists() ) {
 
-                  Bitmap bitmap = mBitmapConverter.fromArgb( file );
+                  Bitmap bitmap = mBitmapConverter.from( file, Config.ARGB_8888 );
                   if( bitmap != null ) {
                         mMemory.save( url, bitmap );
                         return bitmap;
