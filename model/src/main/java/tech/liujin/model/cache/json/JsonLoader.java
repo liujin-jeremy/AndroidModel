@@ -6,13 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.model.cache.CacheLoader;
-import tech.threekilogram.model.converter.GsonConverter;
-import tech.threekilogram.model.memory.Memory;
-import tech.threekilogram.model.memory.lru.MemoryLruCache;
-import tech.threekilogram.model.memory.map.MemoryMap;
-import tech.threekilogram.model.net.DownLoader;
-import tech.threekilogram.model.util.io.FileClear;
+import tech.liujin.model.cache.CacheLoader;
+import tech.liujin.model.converter.GsonConverter;
+import tech.liujin.model.memory.Memory;
+import tech.liujin.model.memory.lru.MemoryLruCache;
+import tech.liujin.model.memory.map.MemoryMap;
+import tech.liujin.model.net.DownLoader;
+import tech.liujin.model.util.io.FileClear;
 
 /**
  * 该类提供json对象三级缓存

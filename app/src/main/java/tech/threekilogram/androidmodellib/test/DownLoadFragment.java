@@ -16,11 +16,11 @@ import android.widget.ImageView;
 import com.threekilogram.bitmapreader.BitmapReader;
 import com.threekilogram.objectbus.Threads;
 import java.io.File;
+import tech.liujin.model.net.DownLoader;
+import tech.liujin.model.net.Downer;
+import tech.liujin.model.util.encode.StringHash;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.util.FileManager;
-import tech.threekilogram.model.net.DownLoader;
-import tech.threekilogram.model.net.Downer;
-import tech.threekilogram.model.util.encode.StringHash;
 
 /**
  * @author Liujin 2018-10-25:22:15

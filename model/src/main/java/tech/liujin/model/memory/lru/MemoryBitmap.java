@@ -1,7 +1,7 @@
 package tech.liujin.model.memory.lru;
 
 import android.graphics.Bitmap;
-import tech.threekilogram.model.memory.lru.size.BitmapSize;
+import tech.liujin.model.memory.lru.size.BitmapSize;
 
 /**
  * {@link MemoryLruCache}的bitmap实现版本,用于在内存中缓存bitmap,当内存中bitmap达到一个阈值时,会清理掉一部分

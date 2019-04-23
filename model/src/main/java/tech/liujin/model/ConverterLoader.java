@@ -1,6 +1,6 @@
 package tech.liujin.model;
 
-import tech.threekilogram.model.converter.StreamConverter;
+import tech.liujin.model.converter.StreamConverter;
 
 /**
  * @author Liujin 2018-10-25:23:01

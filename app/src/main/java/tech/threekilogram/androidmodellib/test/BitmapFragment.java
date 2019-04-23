@@ -14,9 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.objectbus.Threads;
 import java.io.File;
+import tech.liujin.model.cache.bitmap.BitmapLoader;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.util.FileManager;
-import tech.threekilogram.model.cache.bitmap.BitmapLoader;
 
 /**
  * @author Liujin 2018-10-26:8:13

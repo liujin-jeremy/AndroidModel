@@ -1,7 +1,7 @@
 package tech.liujin.model.util.encode;
 
-import static tech.threekilogram.model.util.encode.EncodeMode.HASH;
-import static tech.threekilogram.model.util.encode.EncodeMode.MD5;
+import static tech.liujin.model.util.encode.EncodeMode.HASH;
+import static tech.liujin.model.util.encode.EncodeMode.MD5;
 
 /**
  * @author: Liujin

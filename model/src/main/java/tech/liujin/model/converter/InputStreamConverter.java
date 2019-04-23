@@ -3,7 +3,7 @@ package tech.liujin.model.converter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import tech.threekilogram.model.util.io.Close;
+import tech.liujin.model.util.io.Close;
 
 /**
  * @author Liujin 2018-10-25:13:40

@@ -8,8 +8,8 @@ import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
-import tech.threekilogram.model.converter.StreamConverter;
-import tech.threekilogram.model.util.instance.NetClient;
+import tech.liujin.model.converter.StreamConverter;
+import tech.liujin.model.util.instance.NetClient;
 
 /**
  * 使用 retrofit 从网络使用get方法获取{@link ResponseBody}响应,然后使用{@link StreamConverter}完成转换工作

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import tech.threekilogram.model.util.io.Close;
+import tech.liujin.model.util.io.Close;
 
 /**
  * @author Liujin 2018-10-25:13:30

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import tech.liujin.model.memory.map.MemoryMap;
 import tech.threekilogram.androidmodellib.R;
-import tech.threekilogram.model.memory.map.MemoryMap;
 
 /**
  * @author Liujin 2018-10-25:14:31

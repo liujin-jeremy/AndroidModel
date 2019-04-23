@@ -1,6 +1,6 @@
 package tech.liujin.model.memory.lru.size;
 
-import tech.threekilogram.model.memory.lru.MemoryLruCache;
+import tech.liujin.model.memory.lru.MemoryLruCache;
 
 /**
  * 该接口实现给定一个类{@code V}返回在内存中的大小,

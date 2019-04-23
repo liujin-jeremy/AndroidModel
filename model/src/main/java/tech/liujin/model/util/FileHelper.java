@@ -5,9 +5,9 @@ package tech.liujin.model.util;
  */
 
 import java.io.File;
-import tech.threekilogram.model.util.encode.EncodeMode;
-import tech.threekilogram.model.util.encode.StringEncoder;
-import tech.threekilogram.model.util.io.FileCache;
+import tech.liujin.model.util.encode.EncodeMode;
+import tech.liujin.model.util.encode.StringEncoder;
+import tech.liujin.model.util.io.FileCache;
 
 /**
  * @author Liujin 2018-10-25:19:34

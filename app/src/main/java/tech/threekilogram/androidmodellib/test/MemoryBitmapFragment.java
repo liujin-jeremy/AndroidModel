@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.threekilogram.objectbus.Threads;
+import tech.liujin.model.memory.lru.MemoryBitmap;
 import tech.threekilogram.androidmodellib.R;
-import tech.threekilogram.model.memory.lru.MemoryBitmap;
 
 /**
  * @author Liujin 2018-10-25:15:01

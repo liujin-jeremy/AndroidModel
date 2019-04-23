@@ -7,9 +7,9 @@ import java.io.InputStream;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import tech.threekilogram.model.net.DownLoader.OnProgressUpdateListener;
-import tech.threekilogram.model.util.instance.NetClient;
-import tech.threekilogram.model.util.io.Close;
+import tech.liujin.model.net.DownLoader.OnProgressUpdateListener;
+import tech.liujin.model.util.instance.NetClient;
+import tech.liujin.model.util.io.Close;
 
 /**
  * 一个通用下载器

@@ -1,7 +1,7 @@
 package tech.liujin.model.memory.map;
 
 import android.support.v4.util.ArrayMap;
-import tech.threekilogram.model.memory.Memory;
+import tech.liujin.model.memory.Memory;
 
 /**
  * 使用键值对的形式保存数据到内存中,低层使用的是{@link ArrayMap},线程不安全

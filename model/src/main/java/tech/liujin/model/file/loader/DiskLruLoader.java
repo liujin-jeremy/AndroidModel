@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import tech.liujin.model.converter.StreamConverter;
 import tech.liujin.model.file.BaseFileLoader;
-import tech.threekilogram.model.converter.StreamConverter;
-import tech.threekilogram.model.util.io.Close;
-import tech.threekilogram.model.util.io.FileCache;
+import tech.liujin.model.util.io.Close;
+import tech.liujin.model.util.io.FileCache;
 
 /**
  * 和{@link FileLoader}功能一致,但是底层使用{@link DiskLruCache}缓存数据到文件夹

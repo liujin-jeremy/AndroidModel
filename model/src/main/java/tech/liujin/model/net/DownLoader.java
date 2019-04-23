@@ -7,11 +7,11 @@ import java.io.InputStream;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import tech.threekilogram.model.util.FileHelper;
-import tech.threekilogram.model.util.encode.EncodeMode;
-import tech.threekilogram.model.util.instance.NetClient;
-import tech.threekilogram.model.util.io.Close;
-import tech.threekilogram.model.util.io.FileClear;
+import tech.liujin.model.util.FileHelper;
+import tech.liujin.model.util.encode.EncodeMode;
+import tech.liujin.model.util.instance.NetClient;
+import tech.liujin.model.util.io.Close;
+import tech.liujin.model.util.io.FileClear;
 
 /**
  * @author Liujin 2018-10-25:17:46

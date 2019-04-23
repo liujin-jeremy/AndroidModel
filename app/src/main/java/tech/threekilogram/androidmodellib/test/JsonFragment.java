@@ -14,11 +14,11 @@ import com.threekilogram.objectbus.Threads;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import tech.liujin.model.cache.json.JsonLoader;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
 import tech.threekilogram.androidmodellib.bean.ResultsBean;
 import tech.threekilogram.androidmodellib.util.FileManager;
-import tech.threekilogram.model.cache.json.JsonLoader;
 
 /**
  * @author Liujin 2018-10-26:9:19

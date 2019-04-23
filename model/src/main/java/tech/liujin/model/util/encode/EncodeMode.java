@@ -1,8 +1,7 @@
 package tech.liujin.model.util.encode;
 
-import static tech.threekilogram.model.util.encode.EncodeMode.DEFAULT;
-import static tech.threekilogram.model.util.encode.EncodeMode.HASH;
-import static tech.threekilogram.model.util.encode.EncodeMode.MD5;
+import static tech.liujin.model.util.encode.EncodeMode.HASH;
+import static tech.liujin.model.util.encode.EncodeMode.MD5;
 
 import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
@@ -12,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author Liujin 2018-10-08:10:19
  */
 @Retention(RetentionPolicy.SOURCE)
-@IntDef(value = { MD5, HASH, DEFAULT })
+@IntDef(value = { MD5, HASH, EncodeMode.DEFAULT })
 public @interface EncodeMode {
 
       /**

@@ -1,7 +1,7 @@
 package tech.liujin.model.net;
 
-import tech.threekilogram.model.ConverterLoader;
-import tech.threekilogram.model.converter.StreamConverter;
+import tech.liujin.model.ConverterLoader;
+import tech.liujin.model.converter.StreamConverter;
 
 /**
  * 网络加载接口,给接口发送一个网络请求,然后使用{@link StreamConverter}将网络请求转换为需要的数据类型

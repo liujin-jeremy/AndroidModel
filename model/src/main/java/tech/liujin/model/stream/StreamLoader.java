@@ -9,14 +9,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import tech.threekilogram.model.converter.BitmapConverter;
-import tech.threekilogram.model.converter.GsonConverter;
-import tech.threekilogram.model.converter.InputStreamConverter;
-import tech.threekilogram.model.converter.StringConverter;
-import tech.threekilogram.model.net.DownLoader.OnProgressUpdateListener;
-import tech.threekilogram.model.net.Downer;
-import tech.threekilogram.model.net.OkHttpLoader;
-import tech.threekilogram.model.net.OnErrorListener;
+import tech.liujin.model.converter.BitmapConverter;
+import tech.liujin.model.converter.GsonConverter;
+import tech.liujin.model.converter.InputStreamConverter;
+import tech.liujin.model.converter.StringConverter;
+import tech.liujin.model.net.DownLoader.OnProgressUpdateListener;
+import tech.liujin.model.net.Downer;
+import tech.liujin.model.net.OkHttpLoader;
+import tech.liujin.model.net.OnErrorListener;
 
 /**
  * 从网络

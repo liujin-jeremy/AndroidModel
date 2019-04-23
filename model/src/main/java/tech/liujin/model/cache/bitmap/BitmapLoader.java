@@ -3,10 +3,10 @@ package tech.liujin.model.cache.bitmap;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import java.io.File;
-import tech.threekilogram.model.cache.CacheLoader;
-import tech.threekilogram.model.converter.BitmapConverter;
-import tech.threekilogram.model.memory.lru.MemoryBitmap;
-import tech.threekilogram.model.net.DownLoader;
+import tech.liujin.model.cache.CacheLoader;
+import tech.liujin.model.converter.BitmapConverter;
+import tech.liujin.model.memory.lru.MemoryBitmap;
+import tech.liujin.model.net.DownLoader;
 
 /**
  * 该类提供bitmap三级缓存

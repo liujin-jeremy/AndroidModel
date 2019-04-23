@@ -1,9 +1,9 @@
 package tech.liujin.model.memory.lru;
 
 import android.support.v4.util.LruCache;
-import tech.threekilogram.model.memory.Memory;
-import tech.threekilogram.model.memory.lru.size.ObjectSize;
-import tech.threekilogram.model.memory.lru.size.SimpleObjectSize;
+import tech.liujin.model.memory.Memory;
+import tech.liujin.model.memory.lru.size.ObjectSize;
+import tech.liujin.model.memory.lru.size.SimpleObjectSize;
 
 /**
  * 使用{@link LruCache}在内存中保存数据

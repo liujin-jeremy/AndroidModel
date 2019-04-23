@@ -8,9 +8,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import tech.threekilogram.model.util.instance.GsonClient;
-import tech.threekilogram.model.util.io.Close;
-
+import tech.liujin.model.util.instance.GsonClient;
+import tech.liujin.model.util.io.Close;
 /**
  * @author: Liujin
  * @version: V1.0

@@ -12,14 +12,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
+import tech.liujin.model.converter.GsonConverter;
+import tech.liujin.model.converter.StringConverter;
+import tech.liujin.model.file.BaseFileLoader;
+import tech.liujin.model.file.loader.DiskLruLoader;
+import tech.liujin.model.util.instance.GsonClient;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
 import tech.threekilogram.androidmodellib.util.FileManager;
-import tech.threekilogram.model.converter.GsonConverter;
-import tech.threekilogram.model.converter.StringConverter;
-import tech.threekilogram.model.file.BaseFileLoader;
-import tech.threekilogram.model.file.loader.DiskLruLoader;
-import tech.threekilogram.model.util.instance.GsonClient;
 
 /**
  * @author Liujin 2018-10-25:16:25
