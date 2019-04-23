@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.objectbus.Threads;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.model.memory.lru.MemoryBitmap;
 
@@ -82,7 +82,7 @@ public class MemoryBitmapFragment extends Fragment {
             @Override
             public void onClick ( View v ) {
 
-                  PoolExecutor.execute( ( ) -> {
+                  Threads.COMPUTATION.execute( ( ) -> {
 
                         int i = mRes[ mIndex % mRes.length ];
                         Bitmap bitmap = BitmapFactory.decodeResource( getResources(), i );

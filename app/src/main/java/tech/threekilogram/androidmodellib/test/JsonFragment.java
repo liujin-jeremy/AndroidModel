@@ -10,7 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.objectbus.Threads;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,7 +76,7 @@ public class JsonFragment extends Fragment implements OnClickListener {
 
             switch( v.getId() ) {
                   case R.id.net:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               GankCategoryBean fromNet = mJsonLoader.loadFromNet( url );
                               mMessage.post( ( ) -> {
@@ -86,7 +86,7 @@ public class JsonFragment extends Fragment implements OnClickListener {
                         } );
                         break;
                   case R.id.file:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               GankCategoryBean fromNet = mJsonLoader.loadFromFile( url );
                               mMessage.post( ( ) -> {
@@ -96,7 +96,7 @@ public class JsonFragment extends Fragment implements OnClickListener {
                         } );
                         break;
                   case R.id.createSave:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               GankCategoryBean bean = new GankCategoryBean();
                               bean.setError( true );

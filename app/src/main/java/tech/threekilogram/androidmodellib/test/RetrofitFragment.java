@@ -10,7 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.objectbus.Threads;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
 import tech.threekilogram.model.converter.GsonConverter;
@@ -73,14 +73,14 @@ public class RetrofitFragment extends Fragment implements OnClickListener {
             final String url = "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/2/1";
             switch( v.getId() ) {
                   case R.id.getString:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               String load = mStringNetLoader.load( url );
                               mTextView2.post( ( ) -> setText( load ) );
                         } );
                         break;
                   case R.id.getJson:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               GankCategoryBean load = mJsonNetLoader.load( url );
                               mTextView2.post( ( ) -> setText( load.toString() ) );

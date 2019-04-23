@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.objectbus.Threads;
 import java.io.File;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.util.FileManager;
@@ -81,7 +81,7 @@ public class BitmapFragment extends Fragment implements OnClickListener {
 
             switch( v.getId() ) {
                   case R.id.net:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               Bitmap bitmap = mBitmapLoader.loadFromNet( url );
                               mImageView4.post( ( ) -> {
@@ -93,7 +93,7 @@ public class BitmapFragment extends Fragment implements OnClickListener {
                         } );
                         break;
                   case R.id.file:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               Bitmap bitmap = mBitmapLoader.loadFromFile( url, 500, 500 );
                               mImageView4.post( ( ) -> {
@@ -105,7 +105,7 @@ public class BitmapFragment extends Fragment implements OnClickListener {
                         } );
                         break;
                   case R.id.memory:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               Bitmap bitmap = mBitmapLoader.loadFromMemory( url );
                               mImageView4.post( ( ) -> {

@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.threekilogram.bitmapreader.BitmapReader;
-import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.objectbus.Threads;
 import java.io.File;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.util.FileManager;
@@ -78,7 +78,7 @@ public class DownLoadFragment extends Fragment implements OnClickListener {
 
             switch( v.getId() ) {
                   case R.id.downLoad:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
                               File down = mDownLoader.down(
                                   "http://7xi8d6.com1.z0.glb.clouddn.com/2017-10-31-nozomisasaki_official_31_10_2017_10_49_17_24.jpg" );
 
@@ -91,7 +91,7 @@ public class DownLoadFragment extends Fragment implements OnClickListener {
                         } );
                         break;
                   case R.id.downLoad2:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
 
                               String url = "http://7xi8d6.com1.z0.glb.clouddn.com/20171027114026_v8VFwP_joanne_722_27_10_2017_11_40_17_370.jpeg";
                               File down = Downer.down(

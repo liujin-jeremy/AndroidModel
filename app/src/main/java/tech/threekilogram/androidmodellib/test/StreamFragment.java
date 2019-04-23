@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.threekilogram.objectbus.executor.PoolExecutor;
+import com.threekilogram.objectbus.Threads;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
 import tech.threekilogram.model.stream.StreamLoader;
@@ -75,20 +75,20 @@ public class StreamFragment extends Fragment implements OnClickListener {
 
             switch( v.getId() ) {
                   case R.id.string:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
                               String string = StreamLoader.loadStringFromNet( url );
                               mTextView3.post( ( ) -> mTextView3.setText( string ) );
                         } );
                         break;
                   case R.id.json:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
                               GankCategoryBean bean = StreamLoader
                                   .loadJsonFromNet( url, GankCategoryBean.class );
                               mTextView3.post( ( ) -> mTextView3.setText( bean.toString() ) );
                         } );
                         break;
                   case R.id.bitmap:
-                        PoolExecutor.execute( ( ) -> {
+                        Threads.COMPUTATION.execute( ( ) -> {
                               Bitmap bean = StreamLoader
                                   .loadBitmapFromNet(
                                       "https://ww1.sinaimg.cn/large/0065oQSqgy1fu39hosiwoj30j60qyq96.jpg",
