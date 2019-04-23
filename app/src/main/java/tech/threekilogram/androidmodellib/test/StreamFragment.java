@@ -14,9 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.threekilogram.objectbus.Threads;
+import tech.liujin.model.stream.StreamLoader;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
-import tech.threekilogram.model.stream.StreamLoader;
 
 /**
  * @author Liujin 2018-10-26:9:38

@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.threekilogram.objectbus.Threads;
+import tech.liujin.model.converter.GsonConverter;
+import tech.liujin.model.converter.StringConverter;
+import tech.liujin.model.net.BaseNetLoader;
+import tech.liujin.model.net.RetrofitLoader;
 import tech.threekilogram.androidmodellib.R;
 import tech.threekilogram.androidmodellib.bean.GankCategoryBean;
-import tech.threekilogram.model.converter.GsonConverter;
-import tech.threekilogram.model.converter.StringConverter;
-import tech.threekilogram.model.net.BaseNetLoader;
-import tech.threekilogram.model.net.RetrofitLoader;
 
 /**
  * @author Liujin 2018-10-25:17:26
