@@ -1,7 +1,7 @@
 # 数据层框架
 
 ```
-implementation 'tech.threekilogram:model:2.0.3'
+implementation 'tech.liujin:model:1.0.2'
 ```
 
 ### 内存缓存
