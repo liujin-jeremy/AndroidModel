@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="tech.threekilogram.androidmodellib">
+    package="tech.liujin.androidmodellib">
 
       <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -13,7 +13,7 @@
           android:supportsRtl="true"
           android:theme="@style/AppTheme"
           tools:ignore="GoogleAppIndexingWarning">
-            <activity android:name=".MainActivity">
+            <activity android:name="tech.liujin.androidmodellib.MainActivity">
                   <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
 
